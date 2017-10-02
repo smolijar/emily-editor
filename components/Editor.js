@@ -1,7 +1,23 @@
+import PropTypes from 'prop-types';
+
 class Editor extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            content: props.content,
+        };
+    }
+    static propTypes = {
+        content: PropTypes.string,
+        language: PropTypes.string,
+    }
+    static defaultProps = {
+        content: '',
+        language: 'markdown',
+    }
     render() {
         return (
-            <div>Markup editor</div>
+            <textarea value={this.props.content} readOnly></textarea>
         );
     }
 }

@@ -1,5 +1,6 @@
 import Editor from '../components/Editor';
 import fetch from 'isomorphic-fetch';
+import marked from 'marked';
 
 export default class extends React.Component {
     static async getInitialProps() {
@@ -16,7 +17,7 @@ export default class extends React.Component {
         return (
             <div>
                 <h1>Markup editor</h1>
-                <Editor content={this.props.markdown} language="markdown" />
+                <Editor content={this.props.markdown} language="markdown" toHtml={marked} />
             </div>
         );
     }

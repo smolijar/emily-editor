@@ -11,7 +11,8 @@ class Editor extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            content: props.content,
+            raw: props.content,
+            html: props.toHtml(props.content),
             options: {
                 mode: props.language,
             },
@@ -21,24 +22,29 @@ class Editor extends React.Component {
     static propTypes = {
         content: PropTypes.string,
         language: PropTypes.string,
+        toHtml: PropTypes.func,
     }
     static defaultProps = {
         content: '',
         language: 'markdown',
+        toHtml: (src) => src,
     }
     handleChange(value) {
         this.setState({
-            content: value,
+            raw: value,
+            html: this.props.toHtml(value),
         });
     }
     render() {
-        const options = {};
         return (
             <div>
                 <Head>
                     <link rel="stylesheet" type="text/css" href="markup-editor/lib/codemirror.css" />
                 </Head>
-                <CodeMirror value={this.state.content} onChange={this.handleChange} options={this.state.options} />
+                <div className="markup-editor">
+                    <CodeMirror value={this.state.raw} onChange={this.handleChange} options={this.state.options} />
+                    <div className="preview" dangerouslySetInnerHTML={{ __html: this.state.html }}></div>
+                </div>
             </div>
         );
     }

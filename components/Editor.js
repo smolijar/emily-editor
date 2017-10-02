@@ -1,4 +1,6 @@
 import PropTypes from 'prop-types';
+import Head from 'next/head'
+import CodeMirror from 'react-codemirror';
 
 class Editor extends React.Component {
     constructor(props) {
@@ -6,6 +8,7 @@ class Editor extends React.Component {
         this.state = {
             content: props.content,
         };
+        this.handleChange = this.handleChange.bind(this);
     }
     static propTypes = {
         content: PropTypes.string,
@@ -15,9 +18,19 @@ class Editor extends React.Component {
         content: '',
         language: 'markdown',
     }
+    handleChange(value) {
+        this.setState({
+            content: value,
+        });
+    }
     render() {
         return (
-            <textarea value={this.props.content} readOnly></textarea>
+            <div>
+                <Head>
+                    <link rel="stylesheet" type="text/css" href="markup-editor/lib/codemirror.css" />
+                </Head>
+                <CodeMirror value={this.state.content} onChange={this.handleChange} />
+            </div>
         );
     }
 }

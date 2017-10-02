@@ -10,11 +10,17 @@ if (typeof navigator !== 'undefined') {
 class Editor extends React.Component {
     constructor(props) {
         super(props);
+        const defaultCmOptions = {
+            scrollbarStyle: null,
+            lineWrapping: true,
+            lineNumbers: true,
+        };
         this.state = {
             raw: props.content,
             html: props.toHtml(props.content),
             options: {
                 mode: props.language,
+                ...defaultCmOptions,
             },
         };
         this.handleChange = this.handleChange.bind(this);
@@ -45,6 +51,24 @@ class Editor extends React.Component {
                     <CodeMirror value={this.state.raw} onChange={this.handleChange} options={this.state.options} />
                     <div className="preview" dangerouslySetInnerHTML={{ __html: this.state.html }}></div>
                 </div>
+                <style jsx global>{`
+                .CodeMirror {
+                  font-family: 'Roboto Mono', monospace;
+                  height: 600px;
+                }
+                .markup-editor {
+                    align-items: stretch;
+                    display: flex;
+                    height: 600px;
+                    width: 1200px;
+                    border: 1px solid rgba(0,0,0,0.3);
+                }
+                .markup-editor > * {
+                    flex: 1;
+                    overflow-y: scroll;
+                    overflow-x: hidden;
+                }
+                `}</style>
             </div>
         );
     }

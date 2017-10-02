@@ -16,7 +16,7 @@ export default class extends React.Component {
         return (
             <div>
                 <h1>Markup editor</h1>
-                <Editor content={this.props.markdown} />
+                <Editor content={this.props.markdown} language="markdown" />
             </div>
         );
     }

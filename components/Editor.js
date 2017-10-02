@@ -46,6 +46,7 @@ class Editor extends React.Component {
             <div>
                 <Head>
                     <link rel="stylesheet" type="text/css" href="markup-editor/lib/codemirror.css" />
+                    <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet" />
                 </Head>
                 <div className="markup-editor">
                     <CodeMirror value={this.state.raw} onChange={this.handleChange} options={this.state.options} />
@@ -62,6 +63,10 @@ class Editor extends React.Component {
                     height: 600px;
                     width: 1200px;
                     border: 1px solid rgba(0,0,0,0.3);
+                }
+                .preview {
+                    font-family: 'Roboto', sans-serif;
+                    padding: 0 50px 0 20px;
                 }
                 .markup-editor > * {
                     flex: 1;

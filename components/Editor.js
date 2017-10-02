@@ -7,6 +7,11 @@ if (typeof navigator !== 'undefined') {
     require('codemirror/mode/markdown/markdown');
 }
 
+const COLUMNS = {
+    EDITOR: 'EDITOR',
+    PREVIEW: 'PREVIEW',
+};
+
 class Editor extends React.Component {
     constructor(props) {
         super(props);
@@ -18,6 +23,10 @@ class Editor extends React.Component {
         this.state = {
             raw: props.content,
             html: props.toHtml(props.content),
+            columns: {
+                [COLUMNS.EDITOR]: true,
+                [COLUMNS.PREVIEW]: true,
+            },
             options: {
                 mode: props.language,
                 ...defaultCmOptions,
@@ -42,17 +51,29 @@ class Editor extends React.Component {
             html: this.props.toHtml(value),
         });
     }
-    renderBoolOption(name) {
-        const style = this.state.options[name] ? {} : { textDecoration: 'line-through' };
-        return (
-            <span style={style} onClick={() => {
+    renderBoolOption(name, parent = null) {
+        const getSetterFunction = (name, parent) => {
+            if (parent) {
+                return () => {
+                    this.setState({
+                        [parent]: {
+                            ...this.state[parent],
+                            [name]: !this.state[parent][name],
+                        }
+                    })
+                }
+            };
+            return () => {
                 this.setState({
-                    options: {
-                        ...this.state.options,
-                        [name]: !this.state.options[name],
-                    }
+                    ...this.state,
+                    [name]: !this.state[name],
                 })
-            }}>{name}
+            }
+        };
+        const value = parent ? this.state[parent][name] : this.state[name];
+        const style = value ? {} : { textDecoration: 'line-through' };
+        return (
+            <span style={style} onClick={getSetterFunction(name, parent)}>{name}
             </span>
         );
     };
@@ -65,16 +86,22 @@ class Editor extends React.Component {
                 </Head>
                 <div className="markup-editor">
                     <div className="toolbar">
-                        {this.renderBoolOption('lineNumbers')}
-                        {this.renderBoolOption('lineWrapping')}
+                        {this.renderBoolOption('lineNumbers', 'options')}
+                        {this.renderBoolOption('lineWrapping', 'options')}
+                        {this.renderBoolOption(COLUMNS.EDITOR, 'columns')}
+                        {this.renderBoolOption(COLUMNS.PREVIEW, 'columns')}
                     </div>
                     <div className="workspace">
-                        <div className="column">
-                            <CodeMirror value={this.state.raw} onChange={this.handleChange} options={this.state.options} />
-                        </div>
-                        <div className="column">
-                            <div className="preview" dangerouslySetInnerHTML={{ __html: this.state.html }}></div>
-                        </div>
+                        {this.state.columns[COLUMNS.EDITOR] &&
+                            <div className="column">
+                                <CodeMirror value={this.state.raw} onChange={this.handleChange} options={this.state.options} />
+                            </div>
+                        }
+                        {this.state.columns[COLUMNS.PREVIEW] &&
+                            <div className="column">
+                                <div className="preview" dangerouslySetInnerHTML={{ __html: this.state.html }}></div>
+                            </div>
+                        }
                     </div>
                 </div>
                 <style jsx global>{`

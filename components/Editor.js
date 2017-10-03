@@ -112,8 +112,15 @@ class Editor extends React.Component {
                 .markup-editor .toolbar {
                     height: 20px;
                 }
+                .markup-editor {
+                    border: 1px solid rgba(0,0,0,0.3);
+                    width: 1200px;
+                }
                 .preview {
                     font-family: 'Roboto', sans-serif;
+                    height: 100%;
+                }
+                .preview > div {
                     padding: 0 50px 0 20px;
                 }
                 .markup-editor .workspace {
@@ -121,12 +128,15 @@ class Editor extends React.Component {
                     display: flex;
                     height: 600px;
                     width: 1200px;
-                    border: 1px solid rgba(0,0,0,0.3);
                 }
                 .markup-editor .workspace > .column {
                     flex: 1;
                     overflow-y: scroll;
                     overflow-x: hidden;
+                }
+                .markup-editor .workspace > .column::-webkit-scrollbar {
+                    width: 0;
+                    background: transparent;
                 }
                 `}</style>
             </div>

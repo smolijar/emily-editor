@@ -11,6 +11,8 @@ const COLUMNS = {
     EDITOR: 'EDITOR',
     PREVIEW: 'PREVIEW',
 };
+const SMOOTHSCROLL_ITERATIONS = 15;
+const SMOOTHSCROLL_INTERVAL = 30;
 
 class Editor extends React.Component {
     constructor(props) {
@@ -24,6 +26,7 @@ class Editor extends React.Component {
             raw: props.content,
             html: props.toHtml(props.content),
             activeLine: 0,
+            smoothScrollTimer: null,
             columns: {
                 [COLUMNS.EDITOR]: true,
                 [COLUMNS.PREVIEW]: true,
@@ -36,6 +39,7 @@ class Editor extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleCursorActivity = this.handleCursorActivity.bind(this);
         this.renderBoolOption = this.renderBoolOption.bind(this);
+        this.scrollToPreviewCursor = this.scrollToPreviewCursor.bind(this);
     }
     static propTypes = {
         content: PropTypes.string,
@@ -62,17 +66,41 @@ class Editor extends React.Component {
             while(!rawLines[activeLine].match(/\w$/)) {
                 activeLine--;
             }
-            rawLines[activeLine] = rawLines[activeLine].replace(/(\W*)(\w+)(\W*)$/,'$1$2@$3')
+            rawLines[activeLine] = rawLines[activeLine].replace(/(\W*)(\w+)(\W*)$/,'$1$2@$3');
+
             this.setState({
                 ...this.state,
                 activeLine,
                 html: this.props.toHtml(rawLines.join('\n'))
-                .replace('@', '<span class="cursor">|</span>')
+                     .replace('@', '<span class="cursor">|</span>')
             });
-            const previewCol = document.querySelector('.preview').parentElement;
-            const previewCursor = document.querySelector('.preview .cursor');
-            if(previewCol && previewCursor) {
-                previewCol.scrollTop = previewCursor.offsetTop - 400;
+            this.scrollToPreviewCursor();
+        }
+    }
+    scrollToPreviewCursor() {
+        const previewCol = document.querySelector('.preview').parentElement;
+        const previewCursor = document.querySelector('.preview .cursor');
+        if(previewCol && previewCursor) {
+            if(this.state.smoothScrollTimer) {
+                window.clearInterval(this.state.smoothScrollTimer);
+            }
+
+            const interval = setInterval(smoothScrollIteration, SMOOTHSCROLL_INTERVAL);
+            let iterations = 0;
+            this.setState({
+                ...this.state,
+                smoothScrollTimer: interval,
+            });
+            function smoothScrollIteration() {
+                const from = previewCol.scrollTop;
+                const to = Math.max(0, previewCursor.offsetTop - 400);
+                const goTo = from + (to-from)/2;
+                previewCol.scrollTop = goTo;
+                iterations++;
+                if (iterations >= SMOOTHSCROLL_ITERATIONS || Math.abs(goTo - to) < 2) {
+                    previewCol.scrollTop = to;
+                    clearInterval(interval);
+                }
             }
         }
     }

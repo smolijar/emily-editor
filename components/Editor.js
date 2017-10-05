@@ -23,6 +23,7 @@ class Editor extends React.Component {
         this.state = {
             raw: props.content,
             html: props.toHtml(props.content),
+            activeLine: 0,
             columns: {
                 [COLUMNS.EDITOR]: true,
                 [COLUMNS.PREVIEW]: true,
@@ -33,6 +34,7 @@ class Editor extends React.Component {
             },
         };
         this.handleChange = this.handleChange.bind(this);
+        this.handleCursorActivity = this.handleCursorActivity.bind(this);
         this.renderBoolOption = this.renderBoolOption.bind(this);
     }
     static propTypes = {
@@ -50,6 +52,29 @@ class Editor extends React.Component {
             raw: value,
             html: this.props.toHtml(value),
         });
+    }
+    handleCursorActivity(cm) {
+        let activeLine = cm.getCursor().line;
+        if (this.state.activeLine !== activeLine) {
+            const lines = cm.lineCount();
+            const raw = this.state.raw;
+            let rawLines = raw.split('\n');
+            while(!rawLines[activeLine].match(/\w$/)) {
+                activeLine--;
+            }
+            rawLines[activeLine] = rawLines[activeLine].replace(/(\W*)(\w+)(\W*)$/,'$1$2@$3')
+            this.setState({
+                ...this.state,
+                activeLine,
+                html: this.props.toHtml(rawLines.join('\n'))
+                .replace('@', '<span class="cursor">|</span>')
+            });
+            const previewCol = document.querySelector('.preview').parentElement;
+            const previewCursor = document.querySelector('.preview .cursor');
+            if(previewCol && previewCursor) {
+                previewCol.scrollTop = previewCursor.offsetTop - 400;
+            }
+        }
     }
     renderBoolOption(name, parent = null) {
         const getSetterFunction = (name, parent) => {
@@ -94,7 +119,7 @@ class Editor extends React.Component {
                     <div className="workspace">
                         {this.state.columns[COLUMNS.EDITOR] &&
                             <div className="column">
-                                <CodeMirror value={this.state.raw} onChange={this.handleChange} options={this.state.options} />
+                                <CodeMirror onCursorActivity={this.handleCursorActivity} value={this.state.raw} onChange={this.handleChange} options={this.state.options} />
                             </div>
                         }
                         {this.state.columns[COLUMNS.PREVIEW] &&

@@ -60,7 +60,6 @@ class Editor extends React.Component {
     handleCursorActivity(cm) {
         let activeLine = cm.getCursor().line;
         if (this.state.activeLine !== activeLine) {
-            const lines = cm.lineCount();
             const raw = this.state.raw;
             let rawLines = raw.split('\n');
             while(!rawLines[activeLine].match(/\w$/)) {
@@ -83,9 +82,10 @@ class Editor extends React.Component {
         if(previewCol && previewCursor) {
             if(this.state.smoothScrollTimer) {
                 window.clearInterval(this.state.smoothScrollTimer);
+                previewCol.scrollTop = Math.max(0, previewCursor.offsetTop - 400)
             }
 
-            const interval = setInterval(smoothScrollIteration, SMOOTHSCROLL_INTERVAL);
+            const interval = setInterval(smoothScrollIteration.bind(this), SMOOTHSCROLL_INTERVAL);
             let iterations = 0;
             this.setState({
                 ...this.state,
@@ -100,6 +100,10 @@ class Editor extends React.Component {
                 if (iterations >= SMOOTHSCROLL_ITERATIONS || Math.abs(goTo - to) < 2) {
                     previewCol.scrollTop = to;
                     clearInterval(interval);
+                    this.setState({
+                        ...this.state,
+                        smoothScrollTimer: null,
+                    });
                 }
             }
         }

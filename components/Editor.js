@@ -11,6 +11,9 @@ const COLUMNS = {
     EDITOR: 'EDITOR',
     PREVIEW: 'PREVIEW',
 };
+const SMOOTHSCROLL_ITERATIONS = 15;
+const SMOOTHSCROLL_INTERVAL = 30;
+const CURSOR_STRING = '@@@@@';
 
 class Editor extends React.Component {
     constructor(props) {
@@ -23,6 +26,8 @@ class Editor extends React.Component {
         this.state = {
             raw: props.content,
             html: props.toHtml(props.content),
+            activeLine: 0,
+            smoothScrollTimer: null,
             columns: {
                 [COLUMNS.EDITOR]: true,
                 [COLUMNS.PREVIEW]: true,
@@ -33,7 +38,9 @@ class Editor extends React.Component {
             },
         };
         this.handleChange = this.handleChange.bind(this);
+        this.handleCursorActivity = this.handleCursorActivity.bind(this);
         this.renderBoolOption = this.renderBoolOption.bind(this);
+        this.scrollToPreviewCursor = this.scrollToPreviewCursor.bind(this);
     }
     static propTypes = {
         content: PropTypes.string,
@@ -50,6 +57,66 @@ class Editor extends React.Component {
             raw: value,
             html: this.props.toHtml(value),
         });
+    }
+    handleCursorActivity(cm) {
+        let activeLine = cm.getCursor().line;
+        if (this.state.activeLine !== activeLine) {
+            let rawLines = this.state.raw.split('\n');
+            let renderContext = false;
+            // move up while line has no `context`
+            while(!renderContext) {
+                activeLine--;
+                // context is string that gets rendered as string in html
+                [,,renderContext] = this.props
+                    .toHtml(rawLines[activeLine])
+                    .replace('\n', '')
+                    .match(/^(<.*>)*(\w+)/) || [];
+            }
+
+            rawLines[activeLine] = rawLines[activeLine]
+                .replace(renderContext, `${renderContext}${CURSOR_STRING}`);
+
+            this.setState({
+                ...this.state,
+                activeLine,
+                html: this.props
+                        .toHtml(rawLines.join('\n'))
+                        .replace(CURSOR_STRING, '<span class="cursor">|</span>'),
+            });
+            this.scrollToPreviewCursor();
+        }
+    }
+    scrollToPreviewCursor() {
+        const previewCol = document.querySelector('.preview').parentElement;
+        const previewCursor = document.querySelector('.preview .cursor');
+        if(previewCol && previewCursor) {
+            if(this.state.smoothScrollTimer) {
+                window.clearInterval(this.state.smoothScrollTimer);
+                previewCol.scrollTop = Math.max(0, previewCursor.offsetTop - 400)
+            }
+
+            const interval = setInterval(smoothScrollIteration.bind(this), SMOOTHSCROLL_INTERVAL);
+            let iterations = 0;
+            this.setState({
+                ...this.state,
+                smoothScrollTimer: interval,
+            });
+            function smoothScrollIteration() {
+                const from = previewCol.scrollTop;
+                const to = Math.max(0, previewCursor.offsetTop - 400);
+                const goTo = from + (to-from)/2;
+                previewCol.scrollTop = goTo;
+                iterations++;
+                if (iterations >= SMOOTHSCROLL_ITERATIONS || Math.abs(goTo - to) < 2) {
+                    previewCol.scrollTop = to;
+                    clearInterval(interval);
+                    this.setState({
+                        ...this.state,
+                        smoothScrollTimer: null,
+                    });
+                }
+            }
+        }
     }
     renderBoolOption(name, parent = null) {
         const getSetterFunction = (name, parent) => {
@@ -94,7 +161,7 @@ class Editor extends React.Component {
                     <div className="workspace">
                         {this.state.columns[COLUMNS.EDITOR] &&
                             <div className="column">
-                                <CodeMirror value={this.state.raw} onChange={this.handleChange} options={this.state.options} />
+                                <CodeMirror onCursorActivity={this.handleCursorActivity} value={this.state.raw} onChange={this.handleChange} options={this.state.options} />
                             </div>
                         }
                         {this.state.columns[COLUMNS.PREVIEW] &&
@@ -122,6 +189,12 @@ class Editor extends React.Component {
                 }
                 .preview > div {
                     padding: 0 50px 0 20px;
+                }
+                .preview .cursor {
+                    visibility: hidden;
+                    display: inline-block;
+                    width: 0;
+                    height: 0;
                 }
                 .markup-editor .workspace {
                     align-items: stretch;

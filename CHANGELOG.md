@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+ - Smooth scrolling
+ - Auto-scroll preview when editor cursor changed
  - Basic toolbar controls
  - Two column layout
  - Live html rendered preview column

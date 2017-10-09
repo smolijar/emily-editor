@@ -13,6 +13,7 @@ const COLUMNS = {
 };
 const SMOOTHSCROLL_ITERATIONS = 15;
 const SMOOTHSCROLL_INTERVAL = 30;
+const CURSOR_STRING = '@@@@@';
 
 class Editor extends React.Component {
     constructor(props) {
@@ -60,18 +61,27 @@ class Editor extends React.Component {
     handleCursorActivity(cm) {
         let activeLine = cm.getCursor().line;
         if (this.state.activeLine !== activeLine) {
-            const raw = this.state.raw;
-            let rawLines = raw.split('\n');
-            while(!rawLines[activeLine].match(/\w$/)) {
+            let rawLines = this.state.raw.split('\n');
+            let renderContext = false;
+            // move up while line has no `context`
+            while(!renderContext) {
                 activeLine--;
+                // context is string that gets rendered as string in html
+                [,,renderContext] = this.props
+                    .toHtml(rawLines[activeLine])
+                    .replace('\n', '')
+                    .match(/^(<.*>)*(\w+)/) || [];
             }
-            rawLines[activeLine] = rawLines[activeLine].replace(/(\W*)(\w+)(\W*)$/,'$1$2@$3');
+
+            rawLines[activeLine] = rawLines[activeLine]
+                .replace(renderContext, `${renderContext}${CURSOR_STRING}`);
 
             this.setState({
                 ...this.state,
                 activeLine,
-                html: this.props.toHtml(rawLines.join('\n'))
-                     .replace('@', '<span class="cursor">|</span>')
+                html: this.props
+                        .toHtml(rawLines.join('\n'))
+                        .replace(CURSOR_STRING, '<span class="cursor">|</span>'),
             });
             this.scrollToPreviewCursor();
         }
@@ -179,6 +189,12 @@ class Editor extends React.Component {
                 }
                 .preview > div {
                     padding: 0 50px 0 20px;
+                }
+                .preview .cursor {
+                    visibility: hidden;
+                    display: inline-block;
+                    width: 0;
+                    height: 0;
                 }
                 .markup-editor .workspace {
                     align-items: stretch;

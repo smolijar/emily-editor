@@ -28,6 +28,7 @@ class Editor extends React.Component {
         this.renderBoolOption = this.renderBoolOption.bind(this);
         this.scrollToPreviewCursor = this.scrollToPreviewCursor.bind(this);
         this.generateOutline = this.generateOutline.bind(this);
+        this.handleOutlineClick = this.handleOutlineClick.bind(this);
         const html = props.toHtml(props.content);
         this.state = {
             raw: props.content,
@@ -62,6 +63,15 @@ class Editor extends React.Component {
             html,
             outline: this.generateOutline(html),
         });
+    }
+    handleOutlineClick(heading) {
+        const inCode = heading.content;
+        const cm = this.refs.cmr.getCodeMirror();
+        const value = cm.getValue();
+        const pos = value.indexOf(inCode);
+        const line = value.substr(0, pos).split('\n').length - 1;
+        cm.setCursor(line);
+        this.refs.cmr.focus();
     }
     generateOutline(html) {
         const outline = html
@@ -212,16 +222,16 @@ class Editor extends React.Component {
                                     {this.state.outline.map((heading) => {
                                         function printList(h, index) {
                                             return (<li key={`${h.id}${index}`}>
-                                                {h.content}
+                                                <a onClick={() => this.handleOutlineClick(h)}>{h.content}</a>
                                                 {h.children.length > 0 &&
                                                     <ol key={`${h.id}${index}ol`}>
-                                                        {h.children.map(printList)}
+                                                        {h.children.map(printList.bind(this))}
                                                     </ol>
                                                 }
                                             </li>);
                                         }
                                         return (
-                                            printList(heading, 0)
+                                            printList.bind(this)(heading, 0)
                                         );
                                     })}
                                 </ol>
@@ -229,7 +239,7 @@ class Editor extends React.Component {
                         }
                         {this.state.columns[COLUMNS.EDITOR] &&
                             <div className="column">
-                                <CodeMirror onCursorActivity={this.handleCursorActivity} value={this.state.raw} onChange={this.handleChange} options={this.state.options} />
+                                <CodeMirror ref="cmr" onCursorActivity={this.handleCursorActivity} value={this.state.raw} onChange={this.handleChange} options={this.state.options} />
                             </div>
                         }
                         {this.state.columns[COLUMNS.PREVIEW] &&

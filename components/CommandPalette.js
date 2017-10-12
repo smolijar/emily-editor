@@ -26,9 +26,7 @@ class CommandPalette extends React.Component {
         onSelected: PropTypes.func,
     }
     static defaultProps = {
-        options: {
-            affix: 'affix show', alert: 'alert show', anchor: 'anchor show', autocomplete: 'autocomplete show', avatar: 'avatar show', backtop: 'backtop show', badge: 'badge show', breadcrumb: 'breadcrumb show', button: 'button show', calendar: 'calendar show', card: 'card show', carousel: 'carousel show', cascader: 'cascader show', checkbox: 'checkbox show', col: 'col show', collapse: 'collapse show', datepicker: 'datepicker show', dropdown: 'dropdown show', form: 'form show', grid: 'grid show', icon: 'icon show', indexdts: 'indexdts show', indexjs: 'indexjs show', input: 'input show', inputnumber: 'inputnumber show', layout: 'layout show', localeprovider: 'localeprovider show', mention: 'mention show', menu: 'menu show', message: 'message show', modal: 'modal show', notification: 'notification show', pagination: 'pagination show', popconfirm: 'popconfirm show', popover: 'popover show', progress: 'progress show', radio: 'radio show', rate: 'rate show', row: 'row show', select: 'select show', slider: 'slider show', spin: 'spin show', steps: 'steps show', style: 'style show', switch: 'switch show', table: 'table show', tabs: 'tabs show', tag: 'tag show', timeline: 'timeline show', timepicker: 'timepicker show', tooltip: 'tooltip show', transfer: 'transfer show', tree: 'tree show', treeselect: 'treeselect show', upload: 'upload show', util: '_util show', version: 'version show',
-        },
+        options: {},
         onSelected: () => console.warn('No listener function for Command Palette'),
     }
     hide() {

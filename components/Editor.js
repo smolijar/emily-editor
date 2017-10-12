@@ -23,9 +23,17 @@ class Editor extends React.Component {
             lineWrapping: true,
             lineNumbers: true,
         };
+        this.handleChange = this.handleChange.bind(this);
+        this.handleCursorActivity = this.handleCursorActivity.bind(this);
+        this.renderBoolOption = this.renderBoolOption.bind(this);
+        this.scrollToPreviewCursor = this.scrollToPreviewCursor.bind(this);
+        this.generateOutline = this.generateOutline.bind(this);
+        this.handleOutlineClick = this.handleOutlineClick.bind(this);
+        const html = props.toHtml(props.content);
         this.state = {
             raw: props.content,
-            html: props.toHtml(props.content),
+            html,
+            outline: this.generateOutline(html),
             activeLine: 0,
             smoothScrollTimer: null,
             columns: {
@@ -37,10 +45,6 @@ class Editor extends React.Component {
                 ...defaultCmOptions,
             },
         };
-        this.handleChange = this.handleChange.bind(this);
-        this.handleCursorActivity = this.handleCursorActivity.bind(this);
-        this.renderBoolOption = this.renderBoolOption.bind(this);
-        this.scrollToPreviewCursor = this.scrollToPreviewCursor.bind(this);
     }
     static propTypes = {
         content: PropTypes.string,
@@ -53,10 +57,63 @@ class Editor extends React.Component {
         toHtml: (src) => src,
     }
     handleChange(value) {
+        const html = this.props.toHtml(value);
         this.setState({
             raw: value,
-            html: this.props.toHtml(value),
+            html,
+            outline: this.generateOutline(html),
         });
+    }
+    handleOutlineClick(heading) {
+        const inCode = heading.content;
+        const cm = this.refs.cmr.getCodeMirror();
+        const value = cm.getValue();
+        const pos = value.indexOf(inCode);
+        const line = value.substr(0, pos).split('\n').length - 1;
+        cm.setCursor(line);
+        this.refs.cmr.focus();
+    }
+    generateOutline(html) {
+        const outline = html
+            .match(/<h[0-9][^<>]*>.*<\/h[0-9]>/g)
+            .map(heading => {
+                const [, level, id, content] = heading.match(/<h([0-9])[^<>]*id="(.*)"[^<>]*>(.*)<\/h[0-9]>/);
+                return { content, level: +level, id, children: [], path: [] };
+            })
+            .reduce((acc, val) => {
+                function insert(into, what, acc) {
+                    if (into.children.length === 0 || what.level - into.level == 1) {
+                        what.path.push(into.children.length - 1);
+                        into.children.push(what);
+                    } else if (into.level < what.level) {
+                        what.path.push(into.children.length - 1);
+                        insert(into.children[into.children.length - 1], what, acc);
+                    }
+                    else {
+                        let anotherInto = acc[what.path[0]];
+                        what.path.slice(1, what.path.length - 1).forEach(i => {
+                            anotherInto = anotherInto.children[i];
+                        });
+                        anotherInto.children.push(what);
+                    }
+                }
+                if (acc.length === 0) {
+                    acc.push({ ...val, path: [0] });
+                }
+                else {
+                    const lastHeading = acc[acc.length - 1];
+                    const lastLevel = lastHeading.level;
+                    if (val.level <= lastLevel) {
+                        acc.push({ ...val, path: [acc.length - 1] });
+                    } else {
+                        val.path = [acc.length - 1];
+                        insert(acc[acc.length - 1], val, acc);
+                    }
+                }
+                return acc;
+            }, []);
+
+        return outline;
     }
     handleCursorActivity(cm) {
         let activeLine = cm.getCursor().line;
@@ -159,9 +216,30 @@ class Editor extends React.Component {
                         {this.renderBoolOption(COLUMNS.PREVIEW, 'columns')}
                     </div>
                     <div className="workspace">
+                        {
+                            <div className="column">
+                                <ol>
+                                    {this.state.outline.map((heading) => {
+                                        function printList(h, index) {
+                                            return (<li key={`${h.id}${index}`}>
+                                                <a onClick={() => this.handleOutlineClick(h)}>{h.content}</a>
+                                                {h.children.length > 0 &&
+                                                    <ol key={`${h.id}${index}ol`}>
+                                                        {h.children.map(printList.bind(this))}
+                                                    </ol>
+                                                }
+                                            </li>);
+                                        }
+                                        return (
+                                            printList.bind(this)(heading, 0)
+                                        );
+                                    })}
+                                </ol>
+                            </div>
+                        }
                         {this.state.columns[COLUMNS.EDITOR] &&
                             <div className="column">
-                                <CodeMirror onCursorActivity={this.handleCursorActivity} value={this.state.raw} onChange={this.handleChange} options={this.state.options} />
+                                <CodeMirror ref="cmr" onCursorActivity={this.handleCursorActivity} value={this.state.raw} onChange={this.handleChange} options={this.state.options} />
                             </div>
                         }
                         {this.state.columns[COLUMNS.PREVIEW] &&

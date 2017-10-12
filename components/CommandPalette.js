@@ -4,7 +4,7 @@ const ARROW_UP = 38;
 const ARROW_DOWN = 40;
 const ESCAPE = 27;
 
-const COLOR = '#e67e22';
+const COLOR = '#d3e2f2';
 
 class CommandPalette extends React.Component {
     constructor(props) {
@@ -99,7 +99,9 @@ class CommandPalette extends React.Component {
     render() {
         return (
             <div style={{display: this.state.visible ? 'block': 'none'}} className="command-palette">
-                <input ref="input" onChange={this.handleChange} onKeyDown={this.handleKeyDown} onKeyPress={this.handleKeyPress} value={this.state.value}></input>
+                <div className="inputWrapper">
+                    <input ref="input" onChange={this.handleChange} onKeyDown={this.handleKeyDown} onKeyPress={this.handleKeyPress} value={this.state.value}></input>
+                </div>
                 <ul>
                     {this.state.show
                         .map((optionKey, index) =>
@@ -111,10 +113,10 @@ class CommandPalette extends React.Component {
                 </ul>
                 <style jsx>{`
                     .command-palette {
-                        background-color: rgba(0,0,0,0.8);
-                        color: #fff;
-                        padding: 10px;
+                        background-color: #e9e9e9;
+                        color: #444;
                         font-family: 'Roboto', sans-serif;
+                        padding: 10px 0 5px 0;
                         display: block;
                         position: absolute;
                         width: 50%;
@@ -127,12 +129,15 @@ class CommandPalette extends React.Component {
                     input:focus {
                         outline: none;
                     }
+                    .inputWrapper {
+                        padding: 10px 10px 5px 10px;
+                    }
                     input {
                         width: 100%;
                         border: 1px solid ${COLOR};
                         padding: 7px 23px;
-                        background: none;
-                        color: #fff;
+                        background: #f5f5f5;
+                        color: #444;
                         margin-bottom: 5px;
                         font-size: 16px;
                         box-sizing: border-box;
@@ -141,7 +146,7 @@ class CommandPalette extends React.Component {
                         display: block;
                         content: ">";
                         position: absolute;
-                        top: 15px;
+                        top: 25px;
                         left: 20px;
                         opacity: 0.5;
                     }

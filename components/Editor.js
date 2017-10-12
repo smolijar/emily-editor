@@ -200,8 +200,25 @@ class Editor extends React.Component {
                     <link rel="stylesheet" type="text/css" href="markup-editor/lib/codemirror.css" />
                     <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet" />
                 </Head>
-                <div className="markup-editor">
-                    <CommandPalette ref="commandPalette" options={commandPaletteOptions} onSelected={this.handleCommand} />
+                <div className="markup-editor" onKeyDown={(e) => {
+                        if(e.shiftKey && e.ctrlKey) {
+                            switch(e.key) {
+                                case 'p':
+                                case 'P':
+                                    e.preventDefault();
+                                    this.refs.commandPalette.focus();
+                                    console.log(this.refs.cmr.getCodeMirror().getSelection());
+                            }
+                        }
+                    }}>
+                    <CommandPalette
+                        ref="commandPalette"
+                        options={commandPaletteOptions}
+                        onSelected={this.handleCommand}
+                        onExit={() => {
+                            this.refs.cmr.focus();
+                            }}
+                    />
                     <div className="toolbar">
                         <button onClick={() => this.refs.commandPalette.focus()}>Command Palette</button>
                     </div>

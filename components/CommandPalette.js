@@ -24,10 +24,12 @@ class CommandPalette extends React.Component {
     static propTypes = {
         options: PropTypes.object,
         onSelected: PropTypes.func,
+        onExit: PropTypes.func,
     }
     static defaultProps = {
         options: {},
         onSelected: () => console.warn('No listener function for Command Palette'),
+        onExit: () => {},
     }
     hide() {
         this.setState({
@@ -36,7 +38,7 @@ class CommandPalette extends React.Component {
             value: '',
             selected: 0,
             show: Object.keys(this.props.options),
-        });
+        }, this.props.onExit);
     }
     focus() {
         this.setState({

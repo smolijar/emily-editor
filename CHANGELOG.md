@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+ - Outline seek on click
+ - Outline column
  - Smooth scrolling
  - Auto-scroll preview when editor cursor changed
  - Basic toolbar controls

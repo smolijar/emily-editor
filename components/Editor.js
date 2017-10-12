@@ -37,6 +37,7 @@ class Editor extends React.Component {
             columns: {
                 'editor': true,
                 'preview': true,
+                'outline': false,
             },
             options: {
                 mode: props.language,
@@ -193,6 +194,7 @@ class Editor extends React.Component {
             'options.lineWrapping': 'Line wrapping',
             'columns.editor': 'Column editor',
             'columns.preview': 'Column preview',
+            'columns.outline': 'Column outline',
         };
         return (
             <div>
@@ -224,6 +226,7 @@ class Editor extends React.Component {
                     </div>
                     <div className="workspace">
                         {
+                            this.state.columns.outline &&
                             <div className="column">
                                 <ol>
                                     {this.state.outline.map((heading) => {

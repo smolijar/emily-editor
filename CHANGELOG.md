@@ -3,3 +3,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+
+## [0.1.0] - 2017-10-16
+### Added
+ - Readme
+ - Add sizing to state
+ - Launch command palette on Ctrl+P
+ - Command palette
+ - Outline seek on click
+ - Outline column
+ - Smooth scrolling
+ - Auto-scroll preview when editor cursor changed
+ - Basic toolbar controls
+ - Two column layout
+ - Live html rendered preview column
+ - CodeMirror editor
+
+[0.1.0]: v0.0.0..v0.1.0

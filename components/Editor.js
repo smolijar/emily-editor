@@ -28,10 +28,11 @@ class Editor extends React.Component {
         this.handleOutlineClick = this.handleOutlineClick.bind(this);
         this.handleCommand = this.handleCommand.bind(this);
         const html = props.toHtml(props.content);
+        const raw = props.content;
         this.state = {
             width: props.width,
             height: props.height,
-            raw: props.content,
+            raw,
             html,
             outline: this.generateOutline(html),
             activeLine: 0,
@@ -41,6 +42,7 @@ class Editor extends React.Component {
                 'preview': true,
                 'outline': false,
             },
+            loc: raw.split('\n').length,
             options: {
                 mode: props.language,
                 ...defaultCmOptions,
@@ -77,9 +79,11 @@ class Editor extends React.Component {
     }
     handleChange(value) {
         const html = this.props.toHtml(value);
+        const raw = value;
         this.setState({
-            raw: value,
+            raw,
             html,
+            loc: raw.split('\n').length,
             outline: this.generateOutline(html),
         });
     }
@@ -240,7 +244,12 @@ class Editor extends React.Component {
                         }}
                     />
                     <div className="toolbar">
-                        <button onClick={() => this.refs.commandPalette.focus()}>Command Palette</button>
+                        <div className="left">
+                            <button onClick={() => this.refs.commandPalette.focus()}>Command Palette</button>
+                        </div>
+                        <div className="right">
+                            Ln {this.state.loc}
+                        </div>
                     </div>
                     <div className="workspace" style={workspaceStyles}>
                         {
@@ -296,6 +305,26 @@ class Editor extends React.Component {
                 }
                 .markup-editor .toolbar {
                     height: 20px;
+                    background: #333;
+                    color: #ddd;
+                }
+                .markup-editor .toolbar button,
+                .markup-editor .toolbar button:focus {
+                    outline: none;
+                }
+                .markup-editor .toolbar button {
+                    border: none;
+                    background: none;
+                    color: #ddd;
+                }
+                .markup-editor .toolbar button:hover {
+                    background: rgba(0,0,0,0.5);
+                }
+                .markup-editor .toolbar .left {
+                    float: left;
+                }
+                .markup-editor .toolbar .right {
+                    float: right;
                 }
                 .markup-editor {
                     border: 1px solid rgba(0,0,0,0.3);

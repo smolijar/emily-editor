@@ -254,7 +254,7 @@ class Editor extends React.Component {
                         }
                         {this.state.columns.preview &&
                             <div className="column">
-                                <div className="preview" dangerouslySetInnerHTML={{ __html: this.state.html }}></div>
+                                <div className="preview" spellCheck="false" contentEditable onKeyPress={(e) => {e.preventDefault()}} dangerouslySetInnerHTML={{ __html: this.state.html }}></div>
                             </div>
                         }
                     </div>
@@ -275,6 +275,9 @@ class Editor extends React.Component {
                 .preview {
                     font-family: 'Roboto', sans-serif;
                     height: 100%;
+                }
+                .preview:focus {
+                    outline: 0px solid transparent;
                 }
                 .preview > div {
                     padding: 0 50px 0 20px;

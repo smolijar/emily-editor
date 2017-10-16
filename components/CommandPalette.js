@@ -100,7 +100,15 @@ class CommandPalette extends React.Component {
         return (
             <div style={{display: this.state.visible ? 'block': 'none'}} className="command-palette">
                 <div className="inputWrapper">
-                    <input ref="input" onChange={this.handleChange} onKeyDown={this.handleKeyDown} onKeyPress={this.handleKeyPress} value={this.state.value}></input>
+                    <input
+                        ref="input"
+                        onChange={this.handleChange}
+                        onKeyDown={this.handleKeyDown}
+                        onKeyPress={this.handleKeyPress}
+                        onBlur={this.hide}
+                        value={this.state.value}
+                    >
+                    </input>
                 </div>
                 <ul>
                     {this.state.show

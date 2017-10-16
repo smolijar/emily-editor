@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+ - Launch command palette on Ctrl+P
+ - Command palette
  - Outline seek on click
  - Outline column
  - Smooth scrolling

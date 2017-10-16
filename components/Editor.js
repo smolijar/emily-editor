@@ -65,7 +65,7 @@ class Editor extends React.Component {
                 substate = substate[step];
             }
         );
-        const lastStep = commandPath[commandPath.length-1];
+        const lastStep = commandPath[commandPath.length - 1];
         substate[lastStep] = !substate[lastStep];
         this.setState(state);
     }
@@ -134,10 +134,10 @@ class Editor extends React.Component {
             let rawLines = this.state.raw.split('\n');
             let renderContext = false;
             // move up while line has no `context`
-            while(!renderContext) {
+            while (!renderContext) {
                 activeLine--;
                 // context is string that gets rendered as string in html
-                [,,renderContext] = this.props
+                [, , renderContext] = this.props
                     .toHtml(rawLines[activeLine])
                     .replace('\n', '')
                     .match(/^(<.*>)*(\w+)/) || [];
@@ -150,8 +150,8 @@ class Editor extends React.Component {
                 ...this.state,
                 activeLine,
                 html: this.props
-                        .toHtml(rawLines.join('\n'))
-                        .replace(CURSOR_STRING, '<span class="cursor">|</span>'),
+                    .toHtml(rawLines.join('\n'))
+                    .replace(CURSOR_STRING, '<span class="cursor">|</span>'),
             });
             this.scrollToPreviewCursor();
         }
@@ -159,8 +159,8 @@ class Editor extends React.Component {
     scrollToPreviewCursor() {
         const previewCol = document.querySelector('.preview').parentElement;
         const previewCursor = document.querySelector('.preview .cursor');
-        if(previewCol && previewCursor) {
-            if(this.state.smoothScrollTimer) {
+        if (previewCol && previewCursor) {
+            if (this.state.smoothScrollTimer) {
                 window.clearInterval(this.state.smoothScrollTimer);
                 previewCol.scrollTop = Math.max(0, previewCursor.offsetTop - 400)
             }
@@ -174,7 +174,7 @@ class Editor extends React.Component {
             function smoothScrollIteration() {
                 const from = previewCol.scrollTop;
                 const to = Math.max(0, previewCursor.offsetTop - 400);
-                const goTo = from + (to-from)/2;
+                const goTo = from + (to - from) / 2;
                 previewCol.scrollTop = goTo;
                 iterations++;
                 if (iterations >= SMOOTHSCROLL_ITERATIONS || Math.abs(goTo - to) < 2) {
@@ -203,23 +203,23 @@ class Editor extends React.Component {
                     <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet" />
                 </Head>
                 <div className="markup-editor" onKeyDown={(e) => {
-                        if(e.shiftKey && e.ctrlKey) {
-                            switch(e.key) {
-                                case 'p':
-                                case 'P':
-                                    e.preventDefault();
-                                    this.refs.commandPalette.focus();
-                                    console.log(this.refs.cmr.getCodeMirror().getSelection());
-                            }
+                    if (e.shiftKey && e.ctrlKey) {
+                        switch (e.key) {
+                            case 'p':
+                            case 'P':
+                                e.preventDefault();
+                                this.refs.commandPalette.focus();
+                                console.log(this.refs.cmr.getCodeMirror().getSelection());
                         }
-                    }}>
+                    }
+                }}>
                     <CommandPalette
                         ref="commandPalette"
                         options={commandPaletteOptions}
                         onSelected={this.handleCommand}
                         onExit={() => {
                             this.refs.cmr.focus();
-                            }}
+                        }}
                     />
                     <div className="toolbar">
                         <button onClick={() => this.refs.commandPalette.focus()}>Command Palette</button>
@@ -249,12 +249,24 @@ class Editor extends React.Component {
                         }
                         {this.state.columns.editor &&
                             <div className="column">
-                                <CodeMirror ref="cmr" onCursorActivity={this.handleCursorActivity} value={this.state.raw} onChange={this.handleChange} options={this.state.options} />
+                                <CodeMirror
+                                    ref="cmr"
+                                    onCursorActivity={this.handleCursorActivity}
+                                    value={this.state.raw}
+                                    onChange={this.handleChange}
+                                    options={this.state.options}
+                                />
                             </div>
                         }
                         {this.state.columns.preview &&
                             <div className="column">
-                                <div className="preview" spellCheck="false" contentEditable onKeyPress={(e) => {e.preventDefault()}} dangerouslySetInnerHTML={{ __html: this.state.html }}></div>
+                                <div
+                                    className="preview"
+                                    spellCheck="false"
+                                    contentEditable onKeyPress={(e) => { e.preventDefault() }}
+                                    dangerouslySetInnerHTML={{ __html: this.state.html }}
+                                >
+                                </div>
                             </div>
                         }
                     </div>

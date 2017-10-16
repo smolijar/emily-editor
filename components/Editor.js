@@ -29,6 +29,8 @@ class Editor extends React.Component {
         this.handleCommand = this.handleCommand.bind(this);
         const html = props.toHtml(props.content);
         this.state = {
+            width: props.width,
+            height: props.height,
             raw: props.content,
             html,
             outline: this.generateOutline(html),
@@ -49,11 +51,15 @@ class Editor extends React.Component {
         content: PropTypes.string,
         language: PropTypes.string,
         toHtml: PropTypes.func,
+        width: PropTypes.number,
+        height: PropTypes.number,
     }
     static defaultProps = {
         content: '',
         language: 'markdown',
         toHtml: (src) => src,
+        width: 500,
+        height: 500,
     }
     handleCommand(command) {
         const state = this.state;
@@ -196,23 +202,34 @@ class Editor extends React.Component {
             'columns.preview': 'Column preview',
             'columns.outline': 'Column outline',
         };
+        const workspaceStyles = {
+            width: `${this.state.width}px`,
+            height: `${this.state.height}px`,
+        }
+        const markupEditorStyles = {
+            width: `${this.state.width}px`,
+        }
         return (
             <div>
                 <Head>
                     <link rel="stylesheet" type="text/css" href="markup-editor/lib/codemirror.css" />
                     <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet" />
                 </Head>
-                <div className="markup-editor" onKeyDown={(e) => {
-                    if (e.shiftKey && e.ctrlKey) {
-                        switch (e.key) {
-                            case 'p':
-                            case 'P':
-                                e.preventDefault();
-                                this.refs.commandPalette.focus();
-                                console.log(this.refs.cmr.getCodeMirror().getSelection());
+                <div
+                    className="markup-editor"
+                    onKeyDown={(e) => {
+                        if (e.shiftKey && e.ctrlKey) {
+                            switch (e.key) {
+                                case 'p':
+                                case 'P':
+                                    e.preventDefault();
+                                    this.refs.commandPalette.focus();
+                                    console.log(this.refs.cmr.getCodeMirror().getSelection());
+                            }
                         }
-                    }
-                }}>
+                    }}
+                    style={markupEditorStyles}
+                >
                     <CommandPalette
                         ref="commandPalette"
                         options={commandPaletteOptions}
@@ -224,7 +241,7 @@ class Editor extends React.Component {
                     <div className="toolbar">
                         <button onClick={() => this.refs.commandPalette.focus()}>Command Palette</button>
                     </div>
-                    <div className="workspace">
+                    <div className="workspace" style={workspaceStyles}>
                         {
                             this.state.columns.outline &&
                             <div className="column">
@@ -281,7 +298,6 @@ class Editor extends React.Component {
                 }
                 .markup-editor {
                     border: 1px solid rgba(0,0,0,0.3);
-                    width: 1200px;
                     position: relative;
                 }
                 .preview {
@@ -303,8 +319,6 @@ class Editor extends React.Component {
                 .markup-editor .workspace {
                     align-items: stretch;
                     display: flex;
-                    height: 600px;
-                    width: 1200px;
                 }
                 .markup-editor .workspace > .column {
                     flex: 1;

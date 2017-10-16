@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+ - Readme
  - Add sizing to state
  - Launch command palette on Ctrl+P
  - Command palette

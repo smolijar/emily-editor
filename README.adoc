@@ -1,0 +1,21 @@
+:name: Markup editor
+
+= {name}
+
+{name} is a React editor component for https://en.wikipedia.org/wiki/Lightweight_markup_language[LML]s, like Markup or Asciidoc.
+The focus of the project is to provide fluent efficient interface for advanced users, who are familliar with using IDE or coding text editors.
+
+== Usage
+
+The project is in early stage of development.
+It shall be beundled and published when I find it is ready for use.
+
+=== Running locally
+
+You can run it now in dev mode `npm run dev`.
+
+== Contributing
+
+If you feel like it, do add feature requests, or bug report in https://github.com/grissius/markup-editor/issues[issue tracker].
+
+Much obliged!c

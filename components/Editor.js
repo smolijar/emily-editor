@@ -7,6 +7,16 @@ import StatusBar from './StatusBar';
 // Shame, SSR avoid hack
 if (typeof navigator !== 'undefined') {
     require('codemirror/mode/markdown/markdown');
+    require('codemirror/keymap/sublime');
+    require('codemirror/addon/dialog/dialog');
+    require('codemirror/addon/search/search');
+    require('codemirror/addon/search/searchcursor');
+    require('codemirror/addon/search/jump-to-line');
+    require('codemirror/addon/edit/matchbrackets');
+    require('codemirror/addon/edit/closebrackets');
+    require('codemirror/addon/fold/foldcode');
+    require('codemirror/addon/fold/foldgutter');
+    require('codemirror/addon/fold/markdown-fold');
 }
 
 const SMOOTHSCROLL_ITERATIONS = 15;
@@ -21,6 +31,17 @@ class Editor extends React.Component {
             scrollbarStyle: null,
             lineWrapping: true,
             lineNumbers: true,
+            matchBrackets: true,
+            autoCloseBrackets: true,
+            foldGutter: true,
+            theme: 'ttcn',
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+            extraKeys: {
+                'Ctrl-P': 'jumpToLine',
+                'Ctrl-Space': 'autocomplete',
+                'Ctrl-Q': function (cm) { cm.foldCode(cm.getCursor());},
+            },
+            keyMap: 'sublime',
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleCursorActivity = this.handleCursorActivity.bind(this);
@@ -63,6 +84,9 @@ class Editor extends React.Component {
         toHtml: (src) => src,
         width: 500,
         height: 500,
+    }
+    componentDidMount() {
+        document.querySelector('.CodeMirror').style.height = `${this.state.height}px`;
     }
     handleCommand(command) {
         const state = this.state;
@@ -220,6 +244,9 @@ class Editor extends React.Component {
                 <Head>
                     <link rel="stylesheet" type="text/css" href="markup-editor/lib/codemirror.css" />
                     <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet" />
+                    <link rel="stylesheet" type="text/css" href="markup-editor/theme/ttcn.css" />
+                    <link rel="stylesheet" type="text/css" href="markup-editor/addon/dialog/dialog.css" />
+                    <link rel="stylesheet" type="text/css" href="markup-editor/addon/fold/foldgutter.css" />
                 </Head>
                 <div
                     className="markup-editor"
@@ -295,7 +322,6 @@ class Editor extends React.Component {
                 <style jsx global>{`
                 .CodeMirror {
                     font-family: 'Roboto Mono', monospace;
-                    height: auto;
                 }
                 
                 .markup-editor {
@@ -304,6 +330,7 @@ class Editor extends React.Component {
                 }
                 .preview {
                     font-family: 'Roboto', sans-serif;
+                    padding: 10px 60px;
                 }
                 .preview:focus {
                     outline: 0px solid transparent;

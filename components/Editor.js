@@ -165,10 +165,11 @@ class Editor extends React.Component {
     scrollToPreviewCursor() {
         const previewCol = document.querySelector('.preview').parentElement;
         const previewCursor = document.querySelector('.preview .cursor');
+        const centeringOffset = this.state.height/2.2;
         if (previewCol && previewCursor) {
             if (this.state.smoothScrollTimer) {
                 window.clearInterval(this.state.smoothScrollTimer);
-                previewCol.scrollTop = Math.max(0, previewCursor.offsetTop - 400)
+                previewCol.scrollTop = Math.max(0, previewCursor.offsetTop - centeringOffset)
             }
 
             const interval = setInterval(smoothScrollIteration.bind(this), SMOOTHSCROLL_INTERVAL);
@@ -179,7 +180,7 @@ class Editor extends React.Component {
             });
             function smoothScrollIteration() {
                 const from = previewCol.scrollTop;
-                const to = Math.max(0, previewCursor.offsetTop - 400);
+                const to = Math.max(0, previewCursor.offsetTop - centeringOffset);
                 const goTo = from + (to - from) / 2;
                 previewCol.scrollTop = goTo;
                 iterations++;

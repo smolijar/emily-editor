@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import Head from 'next/head'
 import CodeMirror from 'react-codemirror';
 import CommandPalette from './CommandPalette';
+import StatusBar from './StatusBar';
 
 // Shame, SSR avoid hack
 if (typeof navigator !== 'undefined') {
@@ -28,10 +29,11 @@ class Editor extends React.Component {
         this.handleOutlineClick = this.handleOutlineClick.bind(this);
         this.handleCommand = this.handleCommand.bind(this);
         const html = props.toHtml(props.content);
+        const raw = props.content;
         this.state = {
             width: props.width,
             height: props.height,
-            raw: props.content,
+            raw,
             html,
             outline: this.generateOutline(html),
             activeLine: 0,
@@ -41,6 +43,7 @@ class Editor extends React.Component {
                 'preview': true,
                 'outline': false,
             },
+            loc: raw.split('\n').length,
             options: {
                 mode: props.language,
                 ...defaultCmOptions,
@@ -77,9 +80,11 @@ class Editor extends React.Component {
     }
     handleChange(value) {
         const html = this.props.toHtml(value);
+        const raw = value;
         this.setState({
-            raw: value,
+            raw,
             html,
+            loc: raw.split('\n').length,
             outline: this.generateOutline(html),
         });
     }
@@ -239,9 +244,6 @@ class Editor extends React.Component {
                             this.refs.cmr.focus();
                         }}
                     />
-                    <div className="toolbar">
-                        <button onClick={() => this.refs.commandPalette.focus()}>Command Palette</button>
-                    </div>
                     <div className="workspace" style={workspaceStyles}>
                         {
                             this.state.columns.outline &&
@@ -288,22 +290,20 @@ class Editor extends React.Component {
                             </div>
                         }
                     </div>
+                    <StatusBar loc={this.state.loc} onCommandPalette={() => this.refs.commandPalette.focus()} />
                 </div>
                 <style jsx global>{`
                 .CodeMirror {
                     font-family: 'Roboto Mono', monospace;
-                    height: 600px;
+                    height: auto;
                 }
-                .markup-editor .toolbar {
-                    height: 20px;
-                }
+                
                 .markup-editor {
-                    border: 1px solid rgba(0,0,0,0.3);
                     position: relative;
+                    border: 1px solid #333;
                 }
                 .preview {
                     font-family: 'Roboto', sans-serif;
-                    height: 100%;
                 }
                 .preview:focus {
                     outline: 0px solid transparent;

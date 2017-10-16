@@ -244,7 +244,6 @@ class Editor extends React.Component {
                             this.refs.cmr.focus();
                         }}
                     />
-                    <StatusBar loc={this.state.loc} onCommandPalette={() => this.refs.commandPalette.focus()} />
                     <div className="workspace" style={workspaceStyles}>
                         {
                             this.state.columns.outline &&
@@ -291,20 +290,20 @@ class Editor extends React.Component {
                             </div>
                         }
                     </div>
+                    <StatusBar loc={this.state.loc} onCommandPalette={() => this.refs.commandPalette.focus()} />
                 </div>
                 <style jsx global>{`
                 .CodeMirror {
                     font-family: 'Roboto Mono', monospace;
-                    height: 600px;
+                    height: auto;
                 }
                 
                 .markup-editor {
-                    border: 1px solid rgba(0,0,0,0.3);
                     position: relative;
+                    border: 1px solid #333;
                 }
                 .preview {
                     font-family: 'Roboto', sans-serif;
-                    height: 100%;
                 }
                 .preview:focus {
                     outline: 0px solid transparent;

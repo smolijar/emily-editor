@@ -9,9 +9,7 @@ if (typeof navigator !== 'undefined') {
     require('codemirror/mode/markdown/markdown');
 }
 
-const SMOOTHSCROLL_ITERATIONS = 15;
-const SMOOTHSCROLL_INTERVAL = 30;
-const CURSOR_STRING = '@@@@@';
+const SYNCHRONIZATION_SCROLL_TIMEOUT = 5;
 
 
 class Editor extends React.Component {
@@ -23,12 +21,14 @@ class Editor extends React.Component {
             lineNumbers: true,
         };
         this.handleChange = this.handleChange.bind(this);
-        this.handleCursorActivity = this.handleCursorActivity.bind(this);
-        this.scrollToPreviewCursor = this.scrollToPreviewCursor.bind(this);
         this.generateOutline = this.generateOutline.bind(this);
+        this.generateHtml = this.generateHtml.bind(this);
         this.handleOutlineClick = this.handleOutlineClick.bind(this);
         this.handleCommand = this.handleCommand.bind(this);
-        const html = props.toHtml(props.content);
+        this.handleEditorScroll = this.handleEditorScroll.bind(this);
+        this.handlePreviewScroll = this.handlePreviewScroll.bind(this);
+        this.getVisibleLines = this.getVisibleLines.bind(this);
+        const html = this.generateHtml(props.content);
         const raw = props.content;
         this.state = {
             width: props.width,
@@ -38,6 +38,7 @@ class Editor extends React.Component {
             outline: this.generateOutline(html),
             activeLine: 0,
             smoothScrollTimer: null,
+            newScrollTimer: null,
             columns: {
                 'editor': true,
                 'preview': true,
@@ -78,14 +79,59 @@ class Editor extends React.Component {
         substate[lastStep] = !substate[lastStep];
         this.setState(state);
     }
+    generateHtml(_raw) {
+        function lineIsSafeToEdit(line) {
+            return !line.match(/[\|\]`]\w*/);
+        }
+        const raw = _raw
+        .split('\n')
+        .map((line, i, arr) => {
+            if(lineIsSafeToEdit(line) && (!arr[i+1] || lineIsSafeToEdit(arr[i+1]))) {
+                return `${line} @@@${i+1}@@@ \n`;
+            }
+            return line;
+        })
+        .join('\n');
+        return this.props.toHtml(raw).replace(/@@@([0-9]+)@@@/g, '<strong data-line="$1">($1)</strong>');
+    }
     handleChange(value) {
-        const html = this.props.toHtml(value);
+        const html = this.generateHtml(value);
         const raw = value;
         this.setState({
             raw,
             html,
             loc: raw.split('\n').length,
             outline: this.generateOutline(html),
+        });
+    }
+    handleEditorScroll() {
+        function scrollPreview() {
+            const [firstLine] = this.getVisibleLines(this.editorColumn, '.CodeMirror-line');
+            let lineHelperNode = null;
+            let currentLine = firstLine;
+            while(lineHelperNode === null && currentLine > 0) {
+                lineHelperNode = document.querySelector(`.preview strong[data-line="${currentLine--}"]`);
+            }
+            const offset = lineHelperNode ? lineHelperNode.offsetTop : 0;
+            this.previewColumn.scrollTop = offset;
+        }
+        clearTimeout(this.state.newScrollTimer);
+        this.setState({
+            ...this.state,
+            newScrollTimer: setTimeout(scrollPreview.bind(this), SYNCHRONIZATION_SCROLL_TIMEOUT),
+        });
+    }
+    handlePreviewScroll() {
+        function scrollEditor() {
+            const [firstLine] = this.getVisibleLines(this.previewColumn, '[data-line]', (lineNode => Number(lineNode.dataset.line)));
+            let lineHelperNode = [...this.editorColumn.querySelectorAll('.CodeMirror-line')][firstLine-1].parentElement;
+            const offset = lineHelperNode ? lineHelperNode.offsetTop : 0;
+            this.editorColumn.scrollTop = offset;
+        }
+        clearTimeout(this.state.newScrollTimer);
+        this.setState({
+            ...this.state,
+            newScrollTimer: setTimeout(scrollEditor.bind(this), SYNCHRONIZATION_SCROLL_TIMEOUT),
         });
     }
     handleOutlineClick(heading) {
@@ -96,6 +142,26 @@ class Editor extends React.Component {
         const line = value.substr(0, pos).split('\n').length - 1;
         cm.setCursor(line);
         this.refs.cmr.focus();
+    }
+    getVisibleLines(columnNode, lineSelector, numberSelector = null) {
+        const editorScroll = columnNode.scrollTop;
+        let firstVisibleLine = null;
+        const visibleLines = [...columnNode.querySelectorAll(lineSelector)]
+        .map((_, i) => [_, i])
+        .filter(([lineNode, i]) => {
+            const lineOffsetTop = lineNode.parentElement.offsetTop;
+            if(lineOffsetTop >= editorScroll) {
+                if(firstVisibleLine === null) {
+                    firstVisibleLine = i;
+                    return true;
+                }
+                return lineOffsetTop <= editorScroll + this.state.height;
+            }
+            return false;
+        })
+        // if numberSelector null, use index
+        .map(([lineNode, i]) => numberSelector ? numberSelector(lineNode) : i);
+        return visibleLines;
     }
     generateOutline(html) {
         const outline = html
@@ -138,67 +204,6 @@ class Editor extends React.Component {
             }, []);
 
         return outline;
-    }
-    handleCursorActivity(cm) {
-        let activeLine = cm.getCursor().line;
-        if (this.state.activeLine !== activeLine) {
-            let rawLines = this.state.raw.split('\n');
-            let renderContext = false;
-            // move up while line has no `context`
-            while (!renderContext) {
-                activeLine--;
-                // context is string that gets rendered as string in html
-                [, , renderContext] = this.props
-                    .toHtml(rawLines[activeLine])
-                    .replace('\n', '')
-                    .match(/^(<.*>)*(\w+)/) || [];
-            }
-
-            rawLines[activeLine] = rawLines[activeLine]
-                .replace(renderContext, `${renderContext}${CURSOR_STRING}`);
-
-            this.setState({
-                ...this.state,
-                activeLine,
-                html: this.props
-                    .toHtml(rawLines.join('\n'))
-                    .replace(CURSOR_STRING, '<span class="cursor">|</span>'),
-            });
-            this.scrollToPreviewCursor();
-        }
-    }
-    scrollToPreviewCursor() {
-        const previewCol = document.querySelector('.preview').parentElement;
-        const previewCursor = document.querySelector('.preview .cursor');
-        const centeringOffset = this.state.height/2.2;
-        if (previewCol && previewCursor) {
-            if (this.state.smoothScrollTimer) {
-                window.clearInterval(this.state.smoothScrollTimer);
-                previewCol.scrollTop = Math.max(0, previewCursor.offsetTop - centeringOffset)
-            }
-
-            const interval = setInterval(smoothScrollIteration.bind(this), SMOOTHSCROLL_INTERVAL);
-            let iterations = 0;
-            this.setState({
-                ...this.state,
-                smoothScrollTimer: interval,
-            });
-            function smoothScrollIteration() {
-                const from = previewCol.scrollTop;
-                const to = Math.max(0, previewCursor.offsetTop - centeringOffset);
-                const goTo = from + (to - from) / 2;
-                previewCol.scrollTop = goTo;
-                iterations++;
-                if (iterations >= SMOOTHSCROLL_ITERATIONS || Math.abs(goTo - to) < 2) {
-                    previewCol.scrollTop = to;
-                    clearInterval(interval);
-                    this.setState({
-                        ...this.state,
-                        smoothScrollTimer: null,
-                    });
-                }
-            }
-        }
     }
     render() {
         const commandPaletteOptions = {
@@ -268,7 +273,7 @@ class Editor extends React.Component {
                             </div>
                         }
                         {this.state.columns.editor &&
-                            <div className="column">
+                            <div className="column" onScroll={this.handleEditorScroll} ref={el => this.editorColumn = el}>
                                 <CodeMirror
                                     ref="cmr"
                                     onCursorActivity={this.handleCursorActivity}
@@ -279,7 +284,7 @@ class Editor extends React.Component {
                             </div>
                         }
                         {this.state.columns.preview &&
-                            <div className="column">
+                            <div className="column" onScroll={this.handlePreviewScroll} ref={el => this.previewColumn = el}>
                                 <div
                                     className="preview"
                                     spellCheck="false"
@@ -314,6 +319,12 @@ class Editor extends React.Component {
                 .preview .cursor {
                     visibility: hidden;
                     display: inline-block;
+                    width: 0;
+                    height: 0;
+                }
+                .preview *[data-line] {
+                    display: block;
+                    visibility: hidden;
                     width: 0;
                     height: 0;
                 }

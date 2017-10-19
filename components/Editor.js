@@ -44,6 +44,7 @@ class Editor extends React.Component {
                 'preview': true,
                 'outline': false,
             },
+            lastScrolled: null,
             loc: raw.split('\n').length,
             options: {
                 mode: props.language,
@@ -105,6 +106,10 @@ class Editor extends React.Component {
         });
     }
     handleEditorScroll() {
+        if(this.state.lastScrolled === 'preview') {
+            this.setState({...this.state, lastScrolled: null});
+            return;
+        }
         function scrollPreview() {
             const [firstLine] = this.getVisibleLines(this.editorColumn, '.CodeMirror-line');
             let lineHelperNode = null;
@@ -114,24 +119,36 @@ class Editor extends React.Component {
             }
             const offset = lineHelperNode ? lineHelperNode.offsetTop : 0;
             this.previewColumn.scrollTop = offset;
+            this.setState({...this.state, newScrollTimer: null});
         }
-        clearTimeout(this.state.newScrollTimer);
+        if(this.state.newScrollTimer) {
+            clearTimeout(this.state.newScrollTimer);
+        }
         this.setState({
             ...this.state,
             newScrollTimer: setTimeout(scrollPreview.bind(this), SYNCHRONIZATION_SCROLL_TIMEOUT),
+            lastScrolled: 'editor',
         });
     }
     handlePreviewScroll() {
+        if(this.state.lastScrolled === 'editor') {
+            this.setState({...this.state, lastScrolled: null});
+            return;
+        }
         function scrollEditor() {
             const [firstLine] = this.getVisibleLines(this.previewColumn, '[data-line]', (lineNode => Number(lineNode.dataset.line)));
             let lineHelperNode = [...this.editorColumn.querySelectorAll('.CodeMirror-line')][firstLine-1].parentElement;
             const offset = lineHelperNode ? lineHelperNode.offsetTop : 0;
             this.editorColumn.scrollTop = offset;
+            this.setState({...this.state, newScrollTimer: null});
         }
-        clearTimeout(this.state.newScrollTimer);
+        if(this.state.newScrollTimer) {
+            clearTimeout(this.state.newScrollTimer);
+        }
         this.setState({
             ...this.state,
             newScrollTimer: setTimeout(scrollEditor.bind(this), SYNCHRONIZATION_SCROLL_TIMEOUT),
+            lastScrolled: 'preview',
         });
     }
     handleOutlineClick(heading) {

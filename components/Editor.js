@@ -48,6 +48,7 @@ class Editor extends React.Component {
         this.scrollToPreviewCursor = this.scrollToPreviewCursor.bind(this);
         this.generateOutline = this.generateOutline.bind(this);
         this.handleOutlineClick = this.handleOutlineClick.bind(this);
+        this.renderProportianalStyles = this.renderProportianalStyles.bind(this);
         this.handleCommand = this.handleCommand.bind(this);
         const html = props.toHtml(props.content);
         const raw = props.content;
@@ -55,6 +56,7 @@ class Editor extends React.Component {
             width: props.width,
             height: props.height,
             raw,
+            proportionalSizes: true,
             html,
             outline: this.generateOutline(html),
             activeLine: 0,
@@ -224,6 +226,20 @@ class Editor extends React.Component {
             }
         }
     }
+    renderProportianalStyles() {
+        if(this.state.proportionalSizes) {
+            return (
+                <style jsx global>{`
+                    .cm-header-1 { font-size: 2em; }
+                    .cm-header-2 { font-size: 1.5em; }
+                    .cm-header-3 { font-size: 1.17em; }
+                    .cm-header-4 { font-size: 1.12em; }
+                    .cm-header-5 { font-size: .83em; }
+                    .cm-header-6 { font-size: .75em; }
+                `}</style>
+            )
+        }
+    }
     render() {
         const commandPaletteOptions = {
             'options.lineNumbers': 'Line numbers',
@@ -231,6 +247,7 @@ class Editor extends React.Component {
             'columns.editor': 'Column editor',
             'columns.preview': 'Column preview',
             'columns.outline': 'Column outline',
+            'proportionalSizes': 'Proportional sizes',
         };
         const workspaceStyles = {
             width: `${this.state.width}px`,
@@ -358,6 +375,7 @@ class Editor extends React.Component {
                     background: transparent;
                 }
                 `}</style>
+                {this.renderProportianalStyles()}
             </div>
         );
     }

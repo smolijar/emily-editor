@@ -16,8 +16,7 @@ export default class extends React.Component {
     render() {
         return (
             <div>
-                <h1>Markup editor</h1>
-                <Editor content={this.props.markdown} language="markdown" toHtml={marked} />
+                <Editor content={this.props.markdown} language="markdown" toHtml={marked} width={1800} height={850} />
             </div>
         );
     }

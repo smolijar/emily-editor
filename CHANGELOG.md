@@ -6,7 +6,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+ - Src line no hiding in html
+ - Scrolling synchronization for both columns
+ - Scrolling onScroll event
  - Statusbar
+
+### Changed
+ - Scrolling synchronization
+
+### Removed
+ - Cursor position hiding in html
 
 ## [0.1.0] - 2017-10-16
 ### Added

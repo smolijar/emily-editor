@@ -104,16 +104,20 @@ class Editor extends React.Component {
         this.setState(state);
     }
     generateHtml(_raw) {
-        function lineIsSafeToEdit(line) {
-            return !line.match(/[\|\]`]\w*/);
+        function lineSafeInsert(line, content) {
+            // if contains link, insert not to break href
+            if(line.match(/.*\[.*\]\s*\(.*\).*/)) {
+                const segments = line.split(')');
+                segments[segments.length-1] += content;
+                return segments.join(')');
+            }
+            // else append to any word
+            return line.replace(/(.*)(\w)(.*)/,`$1$2${content}$3`);
         }
         const raw = _raw
         .split('\n')
-        .map((line, i, arr) => {
-            if(lineIsSafeToEdit(line) && (!arr[i+1] || lineIsSafeToEdit(arr[i+1]))) {
-                return `${line} @@@${i+1}@@@ \n`;
-            }
-            return line;
+        .map((line, i) => {
+            return lineSafeInsert(line, `@@@${i+1}@@@`);
         })
         .join('\n');
         return this.props.toHtml(raw).replace(/@@@([0-9]+)@@@/g, '<strong data-line="$1">($1)</strong>');
@@ -140,7 +144,21 @@ class Editor extends React.Component {
             while(lineHelperNode === null && currentLine > 0) {
                 lineHelperNode = document.querySelector(`.preview strong[data-line="${currentLine--}"]`);
             }
-            const offset = lineHelperNode ? lineHelperNode.offsetTop : 0;
+            let offset = 0;
+            let currentNode = lineHelperNode;
+            let nodes = [];
+            while(currentNode && currentNode.parentElement && currentNode.parentElement != this.previewColumn) {
+                nodes.push(currentNode);
+                currentNode = currentNode.parentElement;
+            }
+            // OffsetTops are ill mannered. You cannot add them up,
+            // because in traversal chain, nodes might give same offsets,
+            // while being placed on the same y. Using only offsets that are
+            // bigger than the previous in traverse seems to work.
+            nodes.filter((node, i, arr) => {
+                return !arr[i-1] || arr[i-1].offsetTop < node.offsetTop;
+            }).forEach(node => offset += node.offsetTop);
+
             this.previewColumn.scrollTop = offset;
             this.setState({...this.state, newScrollTimer: null});
         }
@@ -393,6 +411,7 @@ class Editor extends React.Component {
                 }
                 .markup-editor .workspace > .column {
                     flex: 1;
+                    position: relative; // important for scroll synchro!
                     overflow-y: scroll;
                     overflow-x: hidden;
                 }

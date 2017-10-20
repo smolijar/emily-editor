@@ -89,9 +89,6 @@ class Editor extends React.Component {
         width: 500,
         height: 500,
     }
-    componentDidMount() {
-        document.querySelector('.CodeMirror').style.height = `${this.state.height}px`;
-    }
     handleCommand(command) {
         const state = this.state;
         let substate = state;
@@ -361,6 +358,7 @@ class Editor extends React.Component {
                 <style jsx global>{`
                 .CodeMirror {
                     font-family: 'Roboto Mono', monospace;
+                    height: auto;
                 }
                 
                 .markup-editor {
@@ -384,7 +382,7 @@ class Editor extends React.Component {
                     height: 0;
                 }
                 .preview *[data-line] {
-                    display: block;
+                    display: inline-flex;
                     visibility: hidden;
                     width: 0;
                     height: 0;

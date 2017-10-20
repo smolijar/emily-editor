@@ -9,7 +9,7 @@ if (typeof navigator !== 'undefined') {
     require('codemirror/mode/markdown/markdown');
 }
 
-const SYNCHRONIZATION_SCROLL_TIMEOUT = 5;
+const SCROLL_TIMEOUT = 5;
 
 
 class Editor extends React.Component {
@@ -126,7 +126,7 @@ class Editor extends React.Component {
         }
         this.setState({
             ...this.state,
-            newScrollTimer: setTimeout(scrollPreview.bind(this), SYNCHRONIZATION_SCROLL_TIMEOUT),
+            newScrollTimer: setTimeout(scrollPreview.bind(this), SCROLL_TIMEOUT),
             lastScrolled: 'editor',
         });
     }
@@ -147,7 +147,7 @@ class Editor extends React.Component {
         }
         this.setState({
             ...this.state,
-            newScrollTimer: setTimeout(scrollEditor.bind(this), SYNCHRONIZATION_SCROLL_TIMEOUT),
+            newScrollTimer: setTimeout(scrollEditor.bind(this), SCROLL_TIMEOUT),
             lastScrolled: 'preview',
         });
     }

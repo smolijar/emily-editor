@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+ - Add proportional font sizes option
+ - Enlarge editor demo size
+ - Multiple addons with more or less basic configuration
  - Src line no hiding in html
  - Scrolling synchronization for both columns
  - Scrolling onScroll event

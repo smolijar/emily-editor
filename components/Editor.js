@@ -7,6 +7,16 @@ import StatusBar from './StatusBar';
 // Shame, SSR avoid hack
 if (typeof navigator !== 'undefined') {
     require('codemirror/mode/markdown/markdown');
+    require('codemirror/keymap/sublime');
+    require('codemirror/addon/dialog/dialog');
+    require('codemirror/addon/search/search');
+    require('codemirror/addon/search/searchcursor');
+    require('codemirror/addon/search/jump-to-line');
+    require('codemirror/addon/edit/matchbrackets');
+    require('codemirror/addon/edit/closebrackets');
+    require('codemirror/addon/fold/foldcode');
+    require('codemirror/addon/fold/foldgutter');
+    require('codemirror/addon/fold/markdown-fold');
 }
 
 const SCROLL_TIMEOUT = 5;
@@ -19,11 +29,23 @@ class Editor extends React.Component {
             scrollbarStyle: null,
             lineWrapping: true,
             lineNumbers: true,
+            matchBrackets: true,
+            autoCloseBrackets: true,
+            foldGutter: true,
+            theme: 'ttcn',
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+            extraKeys: {
+                'Ctrl-P': 'jumpToLine',
+                'Ctrl-Space': 'autocomplete',
+                'Ctrl-Q': function (cm) { cm.foldCode(cm.getCursor());},
+            },
+            keyMap: 'sublime',
         };
         this.handleChange = this.handleChange.bind(this);
         this.generateOutline = this.generateOutline.bind(this);
         this.generateHtml = this.generateHtml.bind(this);
         this.handleOutlineClick = this.handleOutlineClick.bind(this);
+        this.renderProportianalStyles = this.renderProportianalStyles.bind(this);
         this.handleCommand = this.handleCommand.bind(this);
         this.handleEditorScroll = this.handleEditorScroll.bind(this);
         this.handlePreviewScroll = this.handlePreviewScroll.bind(this);
@@ -34,6 +56,7 @@ class Editor extends React.Component {
             width: props.width,
             height: props.height,
             raw,
+            proportionalSizes: true,
             html,
             outline: this.generateOutline(html),
             activeLine: 0,
@@ -65,6 +88,9 @@ class Editor extends React.Component {
         toHtml: (src) => src,
         width: 500,
         height: 500,
+    }
+    componentDidMount() {
+        document.querySelector('.CodeMirror').style.height = `${this.state.height}px`;
     }
     handleCommand(command) {
         const state = this.state;
@@ -222,6 +248,20 @@ class Editor extends React.Component {
 
         return outline;
     }
+    renderProportianalStyles() {
+        if(this.state.proportionalSizes) {
+            return (
+                <style jsx global>{`
+                    .cm-header-1 { font-size: 2em; }
+                    .cm-header-2 { font-size: 1.5em; }
+                    .cm-header-3 { font-size: 1.17em; }
+                    .cm-header-4 { font-size: 1.12em; }
+                    .cm-header-5 { font-size: .83em; }
+                    .cm-header-6 { font-size: .75em; }
+                `}</style>
+            )
+        }
+    }
     render() {
         const commandPaletteOptions = {
             'options.lineNumbers': 'Line numbers',
@@ -229,6 +269,7 @@ class Editor extends React.Component {
             'columns.editor': 'Column editor',
             'columns.preview': 'Column preview',
             'columns.outline': 'Column outline',
+            'proportionalSizes': 'Proportional sizes',
         };
         const workspaceStyles = {
             width: `${this.state.width}px`,
@@ -242,6 +283,9 @@ class Editor extends React.Component {
                 <Head>
                     <link rel="stylesheet" type="text/css" href="markup-editor/lib/codemirror.css" />
                     <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet" />
+                    <link rel="stylesheet" type="text/css" href="markup-editor/theme/ttcn.css" />
+                    <link rel="stylesheet" type="text/css" href="markup-editor/addon/dialog/dialog.css" />
+                    <link rel="stylesheet" type="text/css" href="markup-editor/addon/fold/foldgutter.css" />
                 </Head>
                 <div
                     className="markup-editor"
@@ -317,7 +361,6 @@ class Editor extends React.Component {
                 <style jsx global>{`
                 .CodeMirror {
                     font-family: 'Roboto Mono', monospace;
-                    height: auto;
                 }
                 
                 .markup-editor {
@@ -326,6 +369,7 @@ class Editor extends React.Component {
                 }
                 .preview {
                     font-family: 'Roboto', sans-serif;
+                    padding: 10px 60px;
                 }
                 .preview:focus {
                     outline: 0px solid transparent;
@@ -359,6 +403,7 @@ class Editor extends React.Component {
                     background: transparent;
                 }
                 `}</style>
+                {this.renderProportianalStyles()}
             </div>
         );
     }

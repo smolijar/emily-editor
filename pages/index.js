@@ -16,7 +16,24 @@ export default class extends React.Component {
     render() {
         return (
             <div>
-                <Editor content={this.props.markdown} language="markdown" toHtml={marked} width={1800} height={850} />
+                <Editor
+                    content={this.props.markdown}
+                    language={{
+                        name: 'markdown',
+                        toHtml: marked,
+                        lineSafeInsert: (line, content) => {
+                            // if contains link, insert not to break href
+                            if(line.match(/.*\[.*\]\s*\(.*\).*/)) {
+                                const segments = line.split(')');
+                                segments[segments.length-1] += content;
+                                return segments.join(')');
+                            }
+                            // else append to any word
+                            return line.replace(/(.*)(\w)(.*)/,`$1$2${content}$3`);
+                        }
+                    }}
+                    width={1800}
+                    height={850} />
             </div>
         );
     }

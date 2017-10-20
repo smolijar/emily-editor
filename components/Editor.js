@@ -70,22 +70,28 @@ class Editor extends React.Component {
             lastScrolled: null,
             loc: raw.split('\n').length,
             options: {
-                mode: props.language,
+                mode: props.language.name,
                 ...defaultCmOptions,
             },
         };
     }
     static propTypes = {
         content: PropTypes.string,
-        language: PropTypes.string,
-        toHtml: PropTypes.func,
+        language: PropTypes.shape({
+            name: PropTypes.string,
+            toHtml: PropTypes.func,
+            lineSafeInsert: PropTypes.func,
+        }),
         width: PropTypes.number,
         height: PropTypes.number,
     }
     static defaultProps = {
         content: '',
-        language: 'markdown',
-        toHtml: (src) => src,
+        language: {
+            name: 'markdown',
+            toHtml: (src) => src,
+            lineSafeInsert: (line) => line,
+        },
         width: 500,
         height: 500,
     }
@@ -104,23 +110,13 @@ class Editor extends React.Component {
         this.setState(state);
     }
     generateHtml(_raw) {
-        function lineSafeInsert(line, content) {
-            // if contains link, insert not to break href
-            if(line.match(/.*\[.*\]\s*\(.*\).*/)) {
-                const segments = line.split(')');
-                segments[segments.length-1] += content;
-                return segments.join(')');
-            }
-            // else append to any word
-            return line.replace(/(.*)(\w)(.*)/,`$1$2${content}$3`);
-        }
         const raw = _raw
         .split('\n')
         .map((line, i) => {
-            return lineSafeInsert(line, `@@@${i+1}@@@`);
+            return this.props.language.lineSafeInsert(line, `@@@${i+1}@@@`);
         })
         .join('\n');
-        return this.props.toHtml(raw).replace(/@@@([0-9]+)@@@/g, '<strong data-line="$1">($1)</strong>');
+        return this.props.language.toHtml(raw).replace(/@@@([0-9]+)@@@/g, '<strong data-line="$1">($1)</strong>');
     }
     handleChange(value) {
         const html = this.generateHtml(value);

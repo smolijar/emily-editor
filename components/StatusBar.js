@@ -1,24 +1,25 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 
 class StatusBar extends React.Component {
     static propTypes = {
-        loc: PropTypes.number,
-        onCommandPalette: PropTypes.func,
+      loc: PropTypes.number,
+      onCommandPalette: PropTypes.func,
     }
     static defaultProps = {
-        loc: 0,
-        onCommandPalette: () => console.warn('StatusBar: no onCommandPalette handler set.'),
+      loc: 0,
+      onCommandPalette: () => console.warn('StatusBar: no onCommandPalette handler set.'),
     }
     render() {
-        return(
-            <div className="statusBar">
-                <div className="left">
-                    <button onClick={this.props.onCommandPalette}>Command Palette</button>
-                </div>
-                <div className="right">
-                    Ln {this.props.loc}
-                </div>
-                <style jsx>{`
+      return (
+        <div className="statusBar">
+          <div className="left">
+            <button onClick={this.props.onCommandPalette}>Command Palette</button>
+          </div>
+          <div className="right">
+            Ln {this.props.loc}
+          </div>
+          <style jsx>{`
                     .statusBar {
                         height: 20px;
                         background: #333;
@@ -42,9 +43,10 @@ class StatusBar extends React.Component {
                     .statusBar .right {
                         float: right;
                     }
-                `}</style>
-            </div>
-        );
+                `}
+          </style>
+        </div>
+      );
     }
 }
 

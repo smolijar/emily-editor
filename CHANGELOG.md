@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+ - Airbnb coding style
  - Local demo markdown document
  - Add proportional font sizes option
  - Enlarge editor demo size

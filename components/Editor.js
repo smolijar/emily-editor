@@ -110,7 +110,7 @@ class Editor extends React.Component {
       matchBrackets: true,
       autoCloseBrackets: true,
       foldGutter: true,
-      theme: 'ttcn',
+      theme: 'material',
       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
       extraKeys: {
         'Ctrl-P': 'jumpToLine',
@@ -126,6 +126,7 @@ class Editor extends React.Component {
     this.handleCommand = this.handleCommand.bind(this);
     this.handleEditorScroll = this.handleEditorScroll.bind(this);
     this.handlePreviewScroll = this.handlePreviewScroll.bind(this);
+    this.handleCursorActivity = this.handleCursorActivity.bind(this);
     this.getVisibleLines = this.getVisibleLines.bind(this);
     this.printList = this.printList.bind(this);
     const html = this.generateHtml(props.content);
@@ -149,6 +150,8 @@ class Editor extends React.Component {
         mode: props.language.name,
         ...defaultCmOptions,
       },
+      cursorLine: 1,
+      cursorCol: 1,
     };
   }
   getVisibleLines(columnNode, lineSelector, numberSelector = null) {
@@ -270,6 +273,17 @@ class Editor extends React.Component {
       </li>
     );
   }
+  handleCursorActivity() {
+    if (this.cmr) {
+      const { line, ch } = this.cmr.getCodeMirror().getCursor();
+      console.log(this.cmr.getCodeMirror().getCursor());
+      this.setState({
+        ...this.state,
+        cursorLine: line + 1,
+        cursorCol: ch + 1,
+      });
+    }
+  }
   renderProportianalStyles() {
     if (this.state.proportionalSizes) {
       return (
@@ -307,7 +321,7 @@ class Editor extends React.Component {
         <Head>
           <link rel="stylesheet" type="text/css" href="markup-editor/lib/codemirror.css" />
           <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet" />
-          <link rel="stylesheet" type="text/css" href="markup-editor/theme/ttcn.css" />
+          <link rel="stylesheet" type="text/css" href="markup-editor/theme/material.css" />
           <link rel="stylesheet" type="text/css" href="markup-editor/addon/dialog/dialog.css" />
           <link rel="stylesheet" type="text/css" href="markup-editor/addon/fold/foldgutter.css" />
         </Head>
@@ -330,7 +344,7 @@ class Editor extends React.Component {
           style={markupEditorStyles}
         >
           <CommandPalette
-            ref={(el) => { this.CommandPalette = el; }}
+            ref={(el) => { this.commandPalette = el; }}
             options={commandPaletteOptions}
             onSelected={this.handleCommand}
             onExit={() => { this.cmr.focus(); }}
@@ -369,7 +383,12 @@ class Editor extends React.Component {
             </div>
             }
           </div>
-          <StatusBar loc={this.state.loc} onCommandPalette={() => this.commandPalette.focus()} />
+          <StatusBar
+            loc={this.state.loc}
+            col={this.state.cursorCol}
+            line={this.state.cursorLine}
+            onCommandPalette={() => this.commandPalette.focus()}
+          />
         </div>
         <style jsx global>{`
                   .CodeMirror {
@@ -378,7 +397,8 @@ class Editor extends React.Component {
                   }
                   .markup-editor {
                       position: relative;
-                      border: 1px solid #333;
+                      border: 3px solid #222;
+                      border-bottom: 0;
                   }
                   .preview {
                       font-family: 'Roboto', sans-serif;

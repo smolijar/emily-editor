@@ -71,8 +71,6 @@ class Editor extends React.Component {
             proportionalSizes: true,
             html,
             outline: this.generateOutline(html),
-            activeLine: 0,
-            smoothScrollTimer: null,
             newScrollTimer: null,
             columns: {
                 'editor': true,

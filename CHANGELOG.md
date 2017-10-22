@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+ - Local demo markdown document
  - Add proportional font sizes option
  - Enlarge editor demo size
  - Multiple addons with more or less basic configuration

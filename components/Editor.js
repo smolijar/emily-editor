@@ -19,6 +19,18 @@ if (typeof navigator !== 'undefined') {
     require('codemirror/addon/fold/markdown-fold');
 }
 
+function findRelativeOffset(node, container) {
+    // container must have position absolute or relative
+    let currentNode = node;
+    let nodes = [];
+    let offset = 0;
+    while(currentNode && currentNode.offsetParent && currentNode != container) {
+        nodes.push(currentNode);
+        currentNode = currentNode.offsetParent;
+    }
+    return nodes.reduce((acc, v) => acc + v.offsetTop, 0);
+}
+
 const SCROLL_TIMEOUT = 5;
 
 
@@ -140,21 +152,7 @@ class Editor extends React.Component {
             while(lineHelperNode === null && currentLine > 0) {
                 lineHelperNode = document.querySelector(`.preview strong[data-line="${currentLine--}"]`);
             }
-            let offset = 0;
-            let currentNode = lineHelperNode;
-            let nodes = [];
-            while(currentNode && currentNode.parentElement && currentNode.parentElement != this.previewColumn) {
-                nodes.push(currentNode);
-                currentNode = currentNode.parentElement;
-            }
-            // OffsetTops are ill mannered. You cannot add them up,
-            // because in traversal chain, nodes might give same offsets,
-            // while being placed on the same y. Using only offsets that are
-            // bigger than the previous in traverse seems to work.
-            nodes.filter((node, i, arr) => {
-                return !arr[i-1] || arr[i-1].offsetTop < node.offsetTop;
-            }).forEach(node => offset += node.offsetTop);
-
+            let offset = findRelativeOffset(lineHelperNode, this.previewColumn);
             this.previewColumn.scrollTop = offset;
             this.setState({...this.state, newScrollTimer: null});
         }

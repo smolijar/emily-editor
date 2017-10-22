@@ -15,10 +15,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Statusbar
 
 ### Changed
+ - Language specific func. is provided as prop
+ - Make more scrolling breakpoints
+ - Scrolling sync. using lang. specific function
  - Scrolling synchronization
 
 ### Removed
  - Cursor position hiding in html
+
+### Fixed
+ - Scroll sync. in both columns
 
 ## [0.1.0] - 2017-10-16
 ### Added

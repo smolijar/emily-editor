@@ -19,6 +19,18 @@ if (typeof navigator !== 'undefined') {
     require('codemirror/addon/fold/markdown-fold');
 }
 
+function findRelativeOffset(node, container) {
+    // container must have position absolute or relative
+    let currentNode = node;
+    let nodes = [];
+    let offset = 0;
+    while(currentNode && currentNode.offsetParent && currentNode != container) {
+        nodes.push(currentNode);
+        currentNode = currentNode.offsetParent;
+    }
+    return nodes.reduce((acc, v) => acc + v.offsetTop, 0);
+}
+
 const SCROLL_TIMEOUT = 5;
 
 
@@ -59,8 +71,6 @@ class Editor extends React.Component {
             proportionalSizes: true,
             html,
             outline: this.generateOutline(html),
-            activeLine: 0,
-            smoothScrollTimer: null,
             newScrollTimer: null,
             columns: {
                 'editor': true,
@@ -70,27 +80,30 @@ class Editor extends React.Component {
             lastScrolled: null,
             loc: raw.split('\n').length,
             options: {
-                mode: props.language,
+                mode: props.language.name,
                 ...defaultCmOptions,
             },
         };
     }
     static propTypes = {
         content: PropTypes.string,
-        language: PropTypes.string,
-        toHtml: PropTypes.func,
+        language: PropTypes.shape({
+            name: PropTypes.string,
+            toHtml: PropTypes.func,
+            lineSafeInsert: PropTypes.func,
+        }),
         width: PropTypes.number,
         height: PropTypes.number,
     }
     static defaultProps = {
         content: '',
-        language: 'markdown',
-        toHtml: (src) => src,
+        language: {
+            name: 'markdown',
+            toHtml: (src) => src,
+            lineSafeInsert: (line) => line,
+        },
         width: 500,
         height: 500,
-    }
-    componentDidMount() {
-        document.querySelector('.CodeMirror').style.height = `${this.state.height}px`;
     }
     handleCommand(command) {
         const state = this.state;
@@ -107,19 +120,13 @@ class Editor extends React.Component {
         this.setState(state);
     }
     generateHtml(_raw) {
-        function lineIsSafeToEdit(line) {
-            return !line.match(/[\|\]`]\w*/);
-        }
         const raw = _raw
         .split('\n')
-        .map((line, i, arr) => {
-            if(lineIsSafeToEdit(line) && (!arr[i+1] || lineIsSafeToEdit(arr[i+1]))) {
-                return `${line} @@@${i+1}@@@ \n`;
-            }
-            return line;
+        .map((line, i) => {
+            return this.props.language.lineSafeInsert(line, `@@@${i+1}@@@`);
         })
         .join('\n');
-        return this.props.toHtml(raw).replace(/@@@([0-9]+)@@@/g, '<strong data-line="$1">($1)</strong>');
+        return this.props.language.toHtml(raw).replace(/@@@([0-9]+)@@@/g, '<strong data-line="$1">($1)</strong>');
     }
     handleChange(value) {
         const html = this.generateHtml(value);
@@ -143,7 +150,7 @@ class Editor extends React.Component {
             while(lineHelperNode === null && currentLine > 0) {
                 lineHelperNode = document.querySelector(`.preview strong[data-line="${currentLine--}"]`);
             }
-            const offset = lineHelperNode ? lineHelperNode.offsetTop : 0;
+            let offset = findRelativeOffset(lineHelperNode, this.previewColumn);
             this.previewColumn.scrollTop = offset;
             this.setState({...this.state, newScrollTimer: null});
         }
@@ -192,7 +199,7 @@ class Editor extends React.Component {
         const visibleLines = [...columnNode.querySelectorAll(lineSelector)]
         .map((_, i) => [_, i])
         .filter(([lineNode, i]) => {
-            const lineOffsetTop = lineNode.parentElement.offsetTop;
+            const lineOffsetTop = findRelativeOffset(lineNode, columnNode);
             if(lineOffsetTop >= editorScroll) {
                 if(firstVisibleLine === null) {
                     firstVisibleLine = i;
@@ -361,6 +368,7 @@ class Editor extends React.Component {
                 <style jsx global>{`
                 .CodeMirror {
                     font-family: 'Roboto Mono', monospace;
+                    height: auto;
                 }
                 
                 .markup-editor {
@@ -384,7 +392,7 @@ class Editor extends React.Component {
                     height: 0;
                 }
                 .preview *[data-line] {
-                    display: block;
+                    display: inline-flex;
                     visibility: hidden;
                     width: 0;
                     height: 0;
@@ -395,6 +403,7 @@ class Editor extends React.Component {
                 }
                 .markup-editor .workspace > .column {
                     flex: 1;
+                    position: relative; // important for scroll synchro!
                     overflow-y: scroll;
                     overflow-x: hidden;
                 }

@@ -6,10 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
- - Add cursor postition statusbar
+ - Cursor postition statusbar
  - Airbnb coding style
  - Local demo markdown document
- - Add proportional font sizes option
+ - Proportional font sizes option
  - Enlarge editor demo size
  - Multiple addons with more or less basic configuration
  - Src line no hiding in html

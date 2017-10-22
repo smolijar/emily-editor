@@ -201,7 +201,7 @@ class Editor extends React.Component {
         const visibleLines = [...columnNode.querySelectorAll(lineSelector)]
         .map((_, i) => [_, i])
         .filter(([lineNode, i]) => {
-            const lineOffsetTop = lineNode.parentElement.offsetTop;
+            const lineOffsetTop = findRelativeOffset(lineNode, columnNode);
             if(lineOffsetTop >= editorScroll) {
                 if(firstVisibleLine === null) {
                     firstVisibleLine = i;

@@ -397,10 +397,10 @@ class Editor extends React.Component {
         <style jsx global>{`
                 .cm-header-1 { font-size: 2em; }
                 .cm-header-2 { font-size: 1.5em; }
-                .cm-header-3 { font-size: 1.17em; }
-                .cm-header-4 { font-size: 1.12em; }
-                .cm-header-5 { font-size: .83em; }
-                .cm-header-6 { font-size: .75em; }
+                .cm-header-3 { font-size: 1.32em; }
+                .cm-header-4 { font-size: 1.15em; }
+                .cm-header-5 { font-size: 1.07em; }
+                .cm-header-6 { font-size: 1.03em; }
             `}
         </style>
       );

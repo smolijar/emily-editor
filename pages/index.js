@@ -23,8 +23,8 @@ export default class extends React.Component {
     return (
       <div
         style={{
-          width: '500px',
-          height: '500px',
+          width: '1400px',
+          height: '750px',
           display: 'flex',
         }}
       >

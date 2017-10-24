@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
 import CodeMirror from 'react-codemirror';
+import screenfull from 'screenfull';
 import CommandPalette from './CommandPalette';
 import StatusBar from './StatusBar';
 
@@ -130,6 +131,7 @@ class Editor extends React.Component {
     this.getVisibleLines = this.getVisibleLines.bind(this);
     this.printList = this.printList.bind(this);
     this.availableCommands = this.availableCommands.bind(this);
+    this.toggleFullscreen = this.toggleFullscreen.bind(this);
     const html = this.generateHtml(props.content);
     const raw = props.content;
     this.state = {
@@ -370,6 +372,25 @@ class Editor extends React.Component {
       },
     };
   }
+  toggleFullscreen() {
+    screenfull.on('change', () => {
+      if (!screenfull.isFullscreen && this.state.fullscreen) {
+        this.setState({
+          ...this.state,
+          fullscreen: false,
+        });
+      }
+    });
+    if (this.state.fullscreen) {
+      screenfull.exit();
+    } else {
+      screenfull.request(this.editor);
+    }
+    this.setState({
+      ...this.state,
+      fullscreen: !this.state.fullscreen,
+    });
+  }
   renderProportianalStyles() {
     if (this.state.proportionalSizes) {
       return (
@@ -394,6 +415,13 @@ class Editor extends React.Component {
       width: 'inherit',
       height: 'inherit',
     };
+    if (this.state.fullscreen) {
+      markupEditorStyles = {
+        ...markupEditorStyles,
+        width: '100vw',
+        height: '100vh',
+      };
+    }
     return (
       <div className="markup-editor-wrapper">
         <Head>
@@ -413,13 +441,13 @@ class Editor extends React.Component {
                               case 'P':
                                   e.preventDefault();
                                   this.commandPalette.focus();
-                                  console.log(this.cmr.getCodeMirror().getSelection());
                                   break;
                               default:
                           }
                         }
                     }}
           style={markupEditorStyles}
+          ref={(el) => { this.editor = el; }}
         >
           <CommandPalette
             ref={(el) => { this.commandPalette = el; }}

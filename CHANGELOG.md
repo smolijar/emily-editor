@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Cursor position hiding in html
 
 ### Fixed
+ - Proportional font sizes
  - Scroll sync. in both columns
 
 ## [0.1.0] - 2017-10-16

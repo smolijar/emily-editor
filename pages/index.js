@@ -26,7 +26,8 @@ export default class extends React.Component {
           width: '500px',
           height: '500px',
           display: 'flex',
-      }}>
+        }}
+      >
         <Editor
           content={this.props.markdown}
           language={{

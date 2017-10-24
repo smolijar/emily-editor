@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
 import CodeMirror from 'react-codemirror';
+import screenfull from 'screenfull';
 import CommandPalette from './CommandPalette';
 import StatusBar from './StatusBar';
 
@@ -129,6 +130,8 @@ class Editor extends React.Component {
     this.handleCursorActivity = this.handleCursorActivity.bind(this);
     this.getVisibleLines = this.getVisibleLines.bind(this);
     this.printList = this.printList.bind(this);
+    this.availableCommands = this.availableCommands.bind(this);
+    this.toggleFullscreen = this.toggleFullscreen.bind(this);
     const html = this.generateHtml(props.content);
     const raw = props.content;
     this.state = {
@@ -248,16 +251,7 @@ class Editor extends React.Component {
     return this.props.language.toHtml(raw).replace(/@@@([0-9]+)@@@/g, '<strong data-line="$1">($1)</strong>');
   }
   handleCommand(command) {
-    const { state } = this;
-    let substate = state;
-
-    const commandPath = command.split('.');
-    commandPath.slice(0, commandPath.length - 1).forEach((step) => {
-      substate = substate[step];
-    });
-    const lastStep = commandPath[commandPath.length - 1];
-    substate[lastStep] = !substate[lastStep];
-    this.setState(state);
+    this.availableCommands()[command].execute();
   }
   printList(h, index) {
     return (
@@ -284,6 +278,119 @@ class Editor extends React.Component {
       });
     }
   }
+  availableCommands() {
+    return {
+      'options.lineNumbers': {
+        text: 'Toggle: Line numbers',
+        execute: () => {
+          const to = !this.state.options.lineNumbers;
+          this.setState({
+            ...this.state,
+            options: {
+              ...this.state.options,
+              lineNumbers: to,
+              foldGutter: to,
+            },
+          });
+        },
+      },
+      'options.lineWrapping': {
+        text: 'Toggle: Line wrapping',
+        execute: () => {
+          this.setState({
+            ...this.state,
+            options: {
+              ...this.state.options,
+              lineWrapping: !this.state.options.lineWrapping,
+            },
+          });
+        },
+      },
+      'columns.both': {
+        text: 'View: Editor & Preview',
+        execute: () => {
+          this.setState({
+            ...this.state,
+            columns: {
+              ...this.state.columns,
+              preview: true,
+              editor: true,
+            },
+          });
+        },
+      },
+      'columns.editor': {
+        text: 'View: Editor',
+        execute: () => {
+          this.setState({
+            ...this.state,
+            columns: {
+              ...this.state.columns,
+              preview: false,
+              editor: true,
+            },
+          });
+        },
+      },
+      'columns.preview': {
+        text: 'View: Preview',
+        execute: () => {
+          this.setState({
+            ...this.state,
+            columns: {
+              ...this.state.columns,
+              preview: true,
+              editor: false,
+            },
+          });
+        },
+      },
+      'columns.outline': {
+        text: 'Column outline',
+        execute: () => {
+          this.setState({
+            ...this.state,
+            columns: {
+              ...this.state.columns,
+              outline: !this.state.columns.outline,
+            },
+          });
+        },
+      },
+      proportionalSizes: {
+        text: 'Proportional sizes',
+        execute: () => {
+          this.setState({
+            ...this.state,
+            proportionalSizes: !this.state.proportionalSizes,
+          });
+        },
+      },
+      fullscreen: {
+        text: 'Toggle: Fullscreen',
+        execute: this.toggleFullscreen,
+      },
+    };
+  }
+  toggleFullscreen() {
+    screenfull.on('change', () => {
+      if (!screenfull.isFullscreen && this.state.fullscreen) {
+        this.setState({
+          ...this.state,
+          fullscreen: false,
+        });
+      }
+    });
+    if (this.state.fullscreen) {
+      screenfull.exit();
+    } else {
+      screenfull.request(this.editor);
+    }
+    this.setState({
+      ...this.state,
+      fullscreen: !this.state.fullscreen,
+    });
+  }
   renderProportianalStyles() {
     if (this.state.proportionalSizes) {
       return (
@@ -301,23 +408,22 @@ class Editor extends React.Component {
     return null;
   }
   render() {
-    const commandPaletteOptions = {
-      'options.lineNumbers': 'Line numbers',
-      'options.lineWrapping': 'Line wrapping',
-      'columns.editor': 'Column editor',
-      'columns.preview': 'Column preview',
-      'columns.outline': 'Column outline',
-      proportionalSizes: 'Proportional sizes',
+    const commandPaletteOptions = Object.entries(this.availableCommands())
+      .reduce((acc, [k, v]) => { acc[k] = v.text; return acc; }, {});
+    let markupEditorStyles = {
+      display: 'flex',
+      width: 'inherit',
+      height: 'inherit',
     };
-    const workspaceStyles = {
-      width: `${this.state.width}px`,
-      height: `${this.state.height}px`,
-    };
-    const markupEditorStyles = {
-      width: `${this.state.width}px`,
-    };
+    if (this.state.fullscreen) {
+      markupEditorStyles = {
+        ...markupEditorStyles,
+        width: '100vw',
+        height: '100vh',
+      };
+    }
     return (
-      <div>
+      <div className="markup-editor-wrapper">
         <Head>
           <link rel="stylesheet" type="text/css" href="markup-editor/lib/codemirror.css" />
           <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet" />
@@ -335,13 +441,13 @@ class Editor extends React.Component {
                               case 'P':
                                   e.preventDefault();
                                   this.commandPalette.focus();
-                                  console.log(this.cmr.getCodeMirror().getSelection());
                                   break;
                               default:
                           }
                         }
                     }}
           style={markupEditorStyles}
+          ref={(el) => { this.editor = el; }}
         >
           <CommandPalette
             ref={(el) => { this.commandPalette = el; }}
@@ -349,7 +455,7 @@ class Editor extends React.Component {
             onSelected={this.handleCommand}
             onExit={() => { this.cmr.focus(); }}
           />
-          <div className="workspace" style={workspaceStyles}>
+          <div className="workspace">
             {
                 this.state.columns.outline &&
                 <div className="column">
@@ -391,6 +497,12 @@ class Editor extends React.Component {
           />
         </div>
         <style jsx global>{`
+                  .markup-editor-wrapper {
+                    display: flex;
+                    height: inherit;
+                    width: inherit;
+                    align-items: flex-start;
+                  }
                   .CodeMirror {
                       font-family: 'Roboto Mono', monospace;
                       height: auto;
@@ -399,6 +511,11 @@ class Editor extends React.Component {
                       position: relative;
                       border: 3px solid #222;
                       border-bottom: 0;
+                      width: auto;
+                      height: auto;
+                      display: flex;
+                      align-items: flex-start;
+                      padding-bottom: 20px;
                   }
                   .preview {
                       font-family: 'Roboto', sans-serif;
@@ -425,12 +542,16 @@ class Editor extends React.Component {
                   .markup-editor .workspace {
                       align-items: stretch;
                       display: flex;
+                      height: inherit;
+                      width: inherit;
+                      align-items: flex-start;
                   }
                   .markup-editor .workspace > .column {
                       flex: 1;
                       position: relative; // important for scroll synchro!
                       overflow-y: scroll;
                       overflow-x: hidden;
+                      height: inherit;
                   }
                   .markup-editor .workspace > .column::-webkit-scrollbar {
                       width: 0;

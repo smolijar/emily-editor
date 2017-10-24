@@ -35,6 +35,10 @@ class StatusBar extends React.Component {
                         font-size: 13px;
                         line-height: 20px;
                         font-family: 'Roboto', sans-serif;
+                        position: absolute;
+                        bottom: 0;
+                        z-index: 100;
+                        width: 100%;
                     }
                     .statusBar span {
                       margin: 0 10px;

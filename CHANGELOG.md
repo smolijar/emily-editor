@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+ - Fullscreen mode
  - Cursor postition statusbar
  - Airbnb coding style
  - Local demo markdown document
@@ -18,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Statusbar
 
 ### Changed
+ - Fixed editor size to fluid parent
  - Language specific func. is provided as prop
  - Make more scrolling breakpoints
  - Scrolling sync. using lang. specific function

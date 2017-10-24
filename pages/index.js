@@ -21,7 +21,13 @@ export default class extends React.Component {
 
   render() {
     return (
-      <div>
+      <div
+        style={{
+          width: '1400px',
+          height: '750px',
+          display: 'flex',
+        }}
+      >
         <Editor
           content={this.props.markdown}
           language={{

@@ -367,7 +367,7 @@ class Editor extends React.Component {
         },
       },
       fullscreen: {
-        text: 'Fullscreen',
+        text: 'Toggle: Fullscreen',
         execute: this.toggleFullscreen,
       },
     };

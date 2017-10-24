@@ -395,7 +395,7 @@ class Editor extends React.Component {
       height: 'inherit',
     };
     return (
-      <div>
+      <div className="markup-editor-wrapper">
         <Head>
           <link rel="stylesheet" type="text/css" href="markup-editor/lib/codemirror.css" />
           <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet" />
@@ -427,7 +427,7 @@ class Editor extends React.Component {
             onSelected={this.handleCommand}
             onExit={() => { this.cmr.focus(); }}
           />
-          <div className="workspace" style={workspaceStyles}>
+          <div className="workspace">
             {
                 this.state.columns.outline &&
                 <div className="column">
@@ -469,6 +469,12 @@ class Editor extends React.Component {
           />
         </div>
         <style jsx global>{`
+                  .markup-editor-wrapper {
+                    display: flex;
+                    height: inherit;
+                    width: inherit;
+                    align-items: flex-start;
+                  }
                   .CodeMirror {
                       font-family: 'Roboto Mono', monospace;
                       height: auto;
@@ -477,6 +483,11 @@ class Editor extends React.Component {
                       position: relative;
                       border: 3px solid #222;
                       border-bottom: 0;
+                      width: auto;
+                      height: auto;
+                      display: flex;
+                      align-items: flex-start;
+                      padding-bottom: 20px;
                   }
                   .preview {
                       font-family: 'Roboto', sans-serif;
@@ -503,12 +514,16 @@ class Editor extends React.Component {
                   .markup-editor .workspace {
                       align-items: stretch;
                       display: flex;
+                      height: inherit;
+                      width: inherit;
+                      align-items: flex-start;
                   }
                   .markup-editor .workspace > .column {
                       flex: 1;
                       position: relative; // important for scroll synchro!
                       overflow-y: scroll;
                       overflow-x: hidden;
+                      height: inherit;
                   }
                   .markup-editor .workspace > .column::-webkit-scrollbar {
                       width: 0;

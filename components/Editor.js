@@ -4,6 +4,7 @@ import Head from 'next/head';
 import CodeMirror from 'react-codemirror';
 import screenfull from 'screenfull';
 import CommandPalette from './CommandPalette';
+import Outline, { generateOutline } from './Outline';
 import StatusBar from './StatusBar';
 
 // Shame, SSR avoid hack
@@ -21,66 +22,6 @@ if (typeof navigator !== 'undefined') {
   require('codemirror/addon/fold/foldgutter');
   require('codemirror/addon/fold/markdown-fold');
   /* eslint-enable global-require */
-}
-
-function findHeaders(source, toHtml, headerRegex) {
-  const dupIndexMap = {};
-  return source.match(headerRegex).map((headerSource, index) => {
-    dupIndexMap[headerSource] = (dupIndexMap[headerSource] || 0) + 1;
-    const html = toHtml(headerSource);
-    const [, level, id, content] = html.match(/<h([0-9])[^<>]*id="(.*)"[^<>]*>(.*)<\/h[0-9]>/);
-    return {
-      source: headerSource,
-      html,
-      level: Number(level),
-      id,
-      content,
-      index,
-      dupIndex: dupIndexMap[headerSource],
-    };
-  });
-}
-
-function generateOutline(source, toHtml, headerRegex) {
-  const outline = findHeaders(source, toHtml, headerRegex)
-    .map(heading => ({
-      ...heading,
-      children: [],
-      path: [],
-    }))
-    .reduce((acc, _val) => {
-      const val = _val;
-      function insert(into, what, ac) {
-        if (into.children.length === 0 || what.level - into.level === 1) {
-          what.path.push(into.children.length - 1);
-          into.children.push(what);
-        } else if (into.level < what.level) {
-          what.path.push(into.children.length - 1);
-          insert(into.children[into.children.length - 1], what, ac);
-        } else {
-          let anotherInto = ac[what.path[0]];
-          what.path.slice(1, what.path.length - 1).forEach((i) => {
-            anotherInto = anotherInto.children[i];
-          });
-          anotherInto.children.push(what);
-        }
-      }
-      if (acc.length === 0) {
-        acc.push({ ...val, path: [0] });
-      } else {
-        const lastHeading = acc[acc.length - 1];
-        const lastLevel = lastHeading.level;
-        if (val.level <= lastLevel) {
-          acc.push({ ...val, path: [acc.length - 1] });
-        } else {
-          val.path = [acc.length - 1];
-          insert(acc[acc.length - 1], val, acc);
-        }
-      }
-      return acc;
-    }, []);
-
-  return outline;
 }
 
 function findRelativeOffset(node, container) {
@@ -146,7 +87,6 @@ class Editor extends React.Component {
     this.handlePreviewScroll = this.handlePreviewScroll.bind(this);
     this.handleCursorActivity = this.handleCursorActivity.bind(this);
     this.getVisibleLines = this.getVisibleLines.bind(this);
-    this.printList = this.printList.bind(this);
     this.availableCommands = this.availableCommands.bind(this);
     this.toggleFullscreen = this.toggleFullscreen.bind(this);
     const html = this.generateHtml(props.content);
@@ -274,20 +214,6 @@ class Editor extends React.Component {
   }
   handleCommand(command) {
     this.availableCommands()[command].execute();
-  }
-  printList(h) {
-    return (
-      <li key={`${h.id}${h.dupIndex}`}>
-        <button onClick={() => { this.handleOutlineClick(h); }}>
-          {h.content}
-        </button>
-        {h.children.length > 0 &&
-          <ol key={`${h.id}${h.dupIndex}ol`}>
-            {h.children.map(this.printList)}
-          </ol>
-          }
-      </li>
-    );
   }
   handleCursorActivity() {
     if (this.cmr) {
@@ -481,9 +407,7 @@ class Editor extends React.Component {
             {
                 this.state.columns.outline &&
                 <div className="column">
-                  <ol>
-                    {this.state.outline.map(heading => this.printList(heading, 0))}
-                  </ol>
+                  <Outline outline={this.state.outline} onItemClick={this.handleOutlineClick} />
                 </div>
             }
             {this.state.columns.editor &&

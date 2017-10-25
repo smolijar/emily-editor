@@ -43,6 +43,7 @@ export default class extends React.Component {
               // else append to any word
               return line.replace(/(.*)(\w)(.*)/, `$1$2${content}$3`);
             },
+            headerRegex: /(#+\s+\S.*)|(\S.*\n(===+|---+))/g,
           }}
           width={1800}
           height={850}

@@ -23,15 +23,31 @@ if (typeof navigator !== 'undefined') {
   /* eslint-enable global-require */
 }
 
-function generateOutline(html) {
-  const outline = html
-    .match(/<h[0-9][^<>]*>.*<\/h[0-9]>/g)
-    .map((heading) => {
-      const [, level, id, content] = heading.match(/<h([0-9])[^<>]*id="(.*)"[^<>]*>(.*)<\/h[0-9]>/);
-      return {
-        content, level: +level, id, children: [], path: [],
-      };
-    })
+function findHeaders(source, toHtml, headerRegex) {
+  const dupIndexMap = {};
+  return source.match(headerRegex).map((headerSource, index) => {
+    dupIndexMap[headerSource] = (dupIndexMap[headerSource] || 0) + 1;
+    const html = toHtml(headerSource);
+    const [, level, id, content] = html.match(/<h([0-9])[^<>]*id="(.*)"[^<>]*>(.*)<\/h[0-9]>/);
+    return {
+      source: headerSource,
+      html,
+      level: Number(level),
+      id,
+      content,
+      index,
+      dupIndex: dupIndexMap[headerSource],
+    };
+  });
+}
+
+function generateOutline(source, toHtml, headerRegex) {
+  const outline = findHeaders(source, toHtml, headerRegex)
+    .map(heading => ({
+      ...heading,
+      children: [],
+      path: [],
+    }))
     .reduce((acc, _val) => {
       const val = _val;
       function insert(into, what, ac) {
@@ -88,6 +104,7 @@ class Editor extends React.Component {
       name: PropTypes.string,
       toHtml: PropTypes.func,
       lineSafeInsert: PropTypes.func,
+      headerRegex: PropTypes.regex,
     }),
     width: PropTypes.number,
     height: PropTypes.number,
@@ -140,12 +157,16 @@ class Editor extends React.Component {
       raw,
       proportionalSizes: true,
       html,
-      outline: generateOutline(html),
+      outline: generateOutline(
+        this.props.content,
+        this.props.language.toHtml,
+        this.props.language.headerRegex,
+      ),
       newScrollTimer: null,
       columns: {
         editor: true,
         preview: true,
-        outline: false,
+        outline: true,
       },
       lastScrolled: null,
       loc: raw.split('\n').length,
@@ -178,10 +199,11 @@ class Editor extends React.Component {
     return visibleLines;
   }
   handleOutlineClick(heading) {
-    const inCode = heading.content;
+    const nthIndexOf = (haystack, needle, n) => haystack.split(needle, n).join(needle).length;
+    const inCode = heading.source;
     const cm = this.cmr.getCodeMirror();
-    const value = cm.getValue();
-    const pos = value.indexOf(inCode);
+    const value = this.state.raw;
+    const pos = nthIndexOf(value, inCode, heading.dupIndex);
     const line = value.substr(0, pos).split('\n').length - 1;
     cm.setCursor(line);
     this.cmr.focus();
@@ -240,7 +262,7 @@ class Editor extends React.Component {
       raw,
       html,
       loc: raw.split('\n').length,
-      outline: generateOutline(html),
+      outline: generateOutline(value, this.props.language.toHtml, this.props.language.headerRegex),
     });
   }
   generateHtml(_raw) {
@@ -253,14 +275,14 @@ class Editor extends React.Component {
   handleCommand(command) {
     this.availableCommands()[command].execute();
   }
-  printList(h, index) {
+  printList(h) {
     return (
-      <li key={`${h.id}${index}`}>
+      <li key={`${h.id}${h.dupIndex}`}>
         <button onClick={() => { this.handleOutlineClick(h); }}>
           {h.content}
         </button>
         {h.children.length > 0 &&
-          <ol key={`${h.id}${index}ol`}>
+          <ol key={`${h.id}${h.dupIndex}ol`}>
             {h.children.map(this.printList)}
           </ol>
           }

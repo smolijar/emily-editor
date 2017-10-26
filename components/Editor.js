@@ -406,7 +406,7 @@ class Editor extends React.Component {
           <div className="workspace">
             {
                 this.state.columns.outline &&
-                <div className="column">
+                <div className="column outline">
                   <Outline outline={this.state.outline} onItemClick={this.handleOutlineClick} />
                 </div>
             }
@@ -493,11 +493,14 @@ class Editor extends React.Component {
                       align-items: flex-start;
                   }
                   .markup-editor .workspace > .column {
-                      flex: 1;
+                      flex: 3;
                       position: relative; // important for scroll synchro!
                       overflow-y: scroll;
                       overflow-x: hidden;
                       height: inherit;
+                  }
+                  .markup-editor .workspace > .column.outline {
+                    flex: 1;
                   }
                   .markup-editor .workspace > .column::-webkit-scrollbar {
                       width: 0;

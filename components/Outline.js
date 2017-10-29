@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 
 function findHeaders(source, toHtml, headerRegex) {
   const dupIndexMap = {};
@@ -31,7 +31,7 @@ module.exports.generateOutline = (source, toHtml, headerRegex) => {
       const val = _val;
       function insert(into, what, ac) {
         if (into.children.length === 0 || what.level - into.level === 1) {
-          what.path.push(into.children.length - 1);
+          what.path.push(into.children.length);
           into.children.push(what);
         } else if (into.level < what.level) {
           what.path.push(into.children.length - 1);
@@ -58,13 +58,13 @@ module.exports.generateOutline = (source, toHtml, headerRegex) => {
       }
       return acc;
     }, []);
-
   return outline;
 };
 
 class Outline extends React.Component {
   static propTypes = {
     onItemClick: PropTypes.func.isRequired,
+    onOrderChange: PropTypes.func.isRequired,
     outline: PropTypes.arrayOf(PropTypes.shape({
       content: PropTypes.string,
       id: PropTypes.string,
@@ -76,32 +76,32 @@ class Outline extends React.Component {
   }
   constructor(props) {
     super(props);
-    this.printList = this.printList.bind(this);
     this.state = {
     };
   }
-  printList(h) {
-    return (
-      <li key={`${h.id}${h.dupIndex}`}>
-        <button onClick={() => this.props.onItemClick(h)}>
-          {h.content}
-        </button>
-        {h.children.length > 0 &&
-          <ol key={`${h.id}${h.dupIndex}ol`}>
-            {h.children.map(this.printList)}
-          </ol>
-          }
-      </li>
-    );
-  }
   render() {
+    const SortableItem = SortableElement(({ value }) => (
+      <li>
+        <button onClick={() => this.props.onItemClick(value)}>{value.content}</button>
+        <SortableList
+          items={value.children}
+          onSortEnd={indicies => this.props.onOrderChange(value, indicies)}
+        />
+      </li>
+    ));
+    const SortableList = SortableContainer(({ items }) => (
+      <ul>
+        {items.map(value => (
+          <SortableItem key={`item-${value.index}`} index={value.index} value={value} />
+        ))}
+      </ul>
+    ));
     return (
       <div>
-        <div className="column">
-          <ol>
-            {this.props.outline.map(heading => this.printList(heading))}
-          </ol>
-        </div>
+        <SortableList
+          items={this.props.outline}
+          onSortEnd={indicies => this.props.onOrderChange(null, indicies)}
+        />
       </div>
     );
   }

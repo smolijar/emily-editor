@@ -89,6 +89,7 @@ class Editor extends React.Component {
     this.getVisibleLines = this.getVisibleLines.bind(this);
     this.availableCommands = this.availableCommands.bind(this);
     this.toggleFullscreen = this.toggleFullscreen.bind(this);
+    this.handleOutlineOrderChange = this.handleOutlineOrderChange.bind(this);
     const html = this.generateHtml(props.content);
     const raw = props.content;
     this.state = {
@@ -339,6 +340,14 @@ class Editor extends React.Component {
       fullscreen: !this.state.fullscreen,
     });
   }
+  handleOutlineOrderChange(header, { oldIndex, newIndex }) {
+    console.warn('Swap sections not implemented', {
+      outline: this.outline,
+      header,
+      oldIndex,
+      newIndex,
+    });
+  }
   renderProportianalStyles() {
     if (this.state.proportionalSizes) {
       return (
@@ -407,7 +416,11 @@ class Editor extends React.Component {
             {
                 this.state.columns.outline &&
                 <div className="column outline">
-                  <Outline outline={this.state.outline} onItemClick={this.handleOutlineClick} />
+                  <Outline
+                    outline={this.state.outline}
+                    onItemClick={this.handleOutlineClick}
+                    onOrderChange={this.handleOutlineOrderChange}
+                  />
                 </div>
             }
             {this.state.columns.editor &&

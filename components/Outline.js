@@ -81,7 +81,7 @@ class Outline extends React.Component {
   }
   render() {
     const SortableItem = SortableElement(({ value }) => (
-      <li>
+      <li className="item">
         <button onClick={() => this.props.onItemClick(value)}>{value.content}</button>
         <SortableList
           items={value.children}
@@ -90,18 +90,51 @@ class Outline extends React.Component {
       </li>
     ));
     const SortableList = SortableContainer(({ items }) => (
-      <ul>
+      <ul className="list">
         {items.map(value => (
           <SortableItem key={`item-${value.index}`} index={value.index} value={value} />
         ))}
       </ul>
     ));
     return (
-      <div>
+      <div className="root">
         <SortableList
           items={this.props.outline}
           onSortEnd={indicies => this.props.onOrderChange(null, indicies)}
         />
+        <style jsx global>{`
+            .root {
+              background-color: #222;
+            }
+            .list {
+              list-style-type: none;
+              // background-color: blue;
+              padding-left: 15px;
+              margin-bottom: 5px;
+              border-left: 1px solid #333;
+              // padding-left: 3px;
+            }
+            .list:first-child {
+              margin-top: 0;
+              padding-left: 0px;
+              border-top: 0;
+            }
+            .item {
+              margin: 2px 0;
+            }
+            .item button {
+              text-align: left;
+              color: #ddd;
+              background-color: transparent;
+              padding: 5px 0;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              width: 100%;
+              border: 0;
+            }
+        `}
+        </style>
       </div>
     );
   }

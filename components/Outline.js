@@ -2,6 +2,59 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 
+const DragHandle = SortableHandle(() => <span className="dragHandle">𝍢</span>);
+const SortableItem = SortableElement(({
+  value,
+  onOrderChange,
+  onItemClick,
+  hidden,
+  onSectionToggle,
+}) => {
+  const key = `${value.content}${value.index}`;
+  return (
+    <li className={`item level-${value.level}`}>
+      <button
+        className={`toggle ${value.children.length > 0 ? '' : 'invisible'} ${hidden[key] ? 'closed' : 'opened'}`}
+        onClick={() => onSectionToggle(key)}
+      />
+      <DragHandle />
+      <button className="outlineItem" onClick={() => onItemClick(value)}>{value.content}</button>
+      {!hidden[key] &&
+        <SortableList
+          items={value.children}
+          onSortEnd={indicies => onOrderChange(value, indicies)}
+          hidden={hidden}
+          onOrderChange={onOrderChange}
+          onItemClick={onItemClick}
+          onSectionToggle={onSectionToggle}
+        />
+      }
+    </li>
+  );
+});
+const SortableList = SortableContainer(({
+  items,
+  hidden,
+  onOrderChange,
+  onItemClick,
+  onSectionToggle,
+}) => (
+  <ul className="list">
+    {items.map((value, index) => (
+      <SortableItem
+        key={`item-${value.index}`}
+        index={index}
+        value={value}
+        pressDelay={200}
+        hidden={hidden}
+        onOrderChange={onOrderChange}
+        onItemClick={onItemClick}
+        onSectionToggle={onSectionToggle}
+      />
+    ))}
+  </ul>
+));
+
 class Outline extends React.Component {
   static propTypes = {
     onItemClick: PropTypes.func.isRequired,
@@ -17,57 +70,31 @@ class Outline extends React.Component {
   }
   constructor(props) {
     super(props);
+    this.onSectionToggle = this.onSectionToggle.bind(this);
     this.state = {
       hidden: {},
     };
   }
-  render() {
-    const DragHandle = SortableHandle(() => <span className="dragHandle">𝍢</span>);
-    const SortableItem = SortableElement(({ value }) => {
-      const key = `${value.content}${value.index}`;
-      return (
-        <li className={`item level-${value.level}`}>
-          <button
-            className={`toggle ${value.children.length > 0 ? '' : 'invisible'} ${this.state.hidden[key] ? 'closed' : 'opened'}`}
-            onClick={() => {
-            this.setState({
-                ...this.state,
-                hidden: {
-                  ...this.state.hidden,
-                  [key]: !this.state.hidden[key],
-                },
-              });
-            }}
-          />
-          <DragHandle />
-          <button className="outlineItem" onClick={() => this.props.onItemClick(value)}>{value.content}</button>
-          {!this.state.hidden[key] &&
-          <SortableList
-            items={value.children}
-            onSortEnd={indicies => this.props.onOrderChange(value, indicies)}
-          />
-          }
-        </li>
-      );
+  onSectionToggle(key) {
+    this.setState({
+      ...this.state,
+      hidden: {
+        ...this.state.hidden,
+        [key]: !this.state.hidden[key],
+      },
     });
-    const SortableList = SortableContainer(({ items }) => (
-      <ul className="list">
-        {items.map((value, index) => (
-          <SortableItem
-            key={`item-${value.index}`}
-            index={index}
-            value={value}
-            pressDelay={200}
-          />
-        ))}
-      </ul>
-    ));
+  }
+  render() {
     return (
       <div className="root">
         <SortableList
           items={this.props.outline}
           onSortEnd={indicies => this.props.onOrderChange(null, indicies)}
           pressDelay={200}
+          onOrderChange={this.props.onOrderChange}
+          onItemClick={this.props.onItemClick}
+          hidden={this.state.hidden}
+          onSectionToggle={this.onSectionToggle}
         />
         <style jsx global>{`
             .root {

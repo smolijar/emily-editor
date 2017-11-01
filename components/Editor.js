@@ -400,6 +400,7 @@ class Editor extends React.Component {
           <link rel="stylesheet" type="text/css" href="markup-editor/theme/material.css" />
           <link rel="stylesheet" type="text/css" href="markup-editor/addon/dialog/dialog.css" />
           <link rel="stylesheet" type="text/css" href="markup-editor/addon/fold/foldgutter.css" />
+          <link rel="stylesheet" type="text/css" href="hljs/styles/github.css" />
         </Head>
         <div
           className="markup-editor"

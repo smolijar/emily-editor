@@ -118,10 +118,10 @@ class Outline extends React.Component {
     });
     const SortableList = SortableContainer(({ items }) => (
       <ul className="list">
-        {items.map(value => (
+        {items.map((value, index) => (
           <SortableItem
             key={`item-${value.index}`}
-            index={value.index}
+            index={index}
             value={value}
             pressDelay={200}
           />

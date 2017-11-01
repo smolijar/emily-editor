@@ -51,6 +51,9 @@ export default class extends React.Component {
             name: 'markdown',
             toHtml: marked,
             lineSafeInsert: (line, content) => {
+              if (line.match(/(```|~~~)/)) {
+                return line;
+              }
               // if contains link, insert not to break href
               if (line.match(/.*\[.*\]\s*\(.*\).*/)) {
                 const segments = line.split(')');

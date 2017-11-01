@@ -48,7 +48,7 @@ class Outline extends React.Component {
               font-family: 'Roboto', sans-serif;
               background-color: #222;
               color: #ddd;
-              height: 100%;
+              min-height: 100%;
             }
             button:active, button:focus {
               outline: 0;
@@ -57,8 +57,17 @@ class Outline extends React.Component {
               list-style-type: none;
               padding-left: 15px;
               margin-bottom: 5px;
-              border-left: 1px solid #333;
               position: relative;
+            }
+            .list:not(:first-child)::before {
+              content: '';
+              position: absolute;
+              top: 0;
+              left: 0.22em;
+              background-color: #444;
+              display: block;
+              width: 1px;
+              height: 100%;
             }
             .list:first-child {
               margin-top: 0;
@@ -78,6 +87,7 @@ class Outline extends React.Component {
             }
             .item .dragHandle {
               margin-right: 5px;
+              cursor: move;
             }
             .toggle::before {
               display: inline-block;
@@ -96,7 +106,7 @@ class Outline extends React.Component {
               padding: 0 0 0 0.21em;
             }
             .item button.outlineItem {
-              width: 100%;
+              width: calc(100% - 42px);
               position: absolute;
             }
             .item button {

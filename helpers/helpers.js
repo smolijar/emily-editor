@@ -48,12 +48,11 @@ const findHeaders = (source, toHtml, headerRegex) => {
   return source.match(headerRegex).map((headerSource, index) => {
     dupIndexMap[headerSource] = (dupIndexMap[headerSource] || 0) + 1;
     const html = toHtml(headerSource);
-    const [, level, id, content] = html.match(/<h([0-9])[^<>]*id="(.*)"[^<>]*>(.*)<\/h[0-9]>/);
+    const [, level, content] = html.match(/<h([0-9])[^<>]*>(.*)<\/h[0-9]>/);
     return {
       source: headerSource,
       html,
       level: Number(level),
-      id,
       content,
       index,
       dupIndex: dupIndexMap[headerSource],

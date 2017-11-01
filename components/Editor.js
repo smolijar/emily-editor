@@ -341,12 +341,70 @@ class Editor extends React.Component {
     });
   }
   handleOutlineOrderChange(header, { oldIndex, newIndex }) {
-    console.warn('Swap sections not implemented', {
-      outline: this.outline,
-      header,
-      oldIndex,
-      newIndex,
+    // Do nothing if no distance
+    if (oldIndex === newIndex) {
+      return;
+    }
+    // Move substring defined by cut indices to pasteIndex in ginven string
+    const moveSubstring = (string, cutStartIndex, cutEndIndex, _pasteIndex) => {
+      const cutted = string.slice(cutStartIndex, cutEndIndex);
+      const holed = [
+        string.slice(0, cutStartIndex),
+        string.slice(cutEndIndex),
+      ].join('');
+      let pasteIndex = _pasteIndex;
+      if (cutEndIndex <= pasteIndex) {
+        pasteIndex -= (cutEndIndex - cutStartIndex);
+      }
+      return [
+        holed.slice(0, pasteIndex),
+        cutted,
+        holed.slice(pasteIndex),
+      ].join('');
+    };
+    // Find nth occurance of needle in haystack
+    const nthIndexOf = (haystack, needle, n) => haystack.split(needle, n).join(needle).length;
+    const findNextSibling = (_heading) => {
+      let currentNode = _heading.successor;
+      while (currentNode && currentNode.level > _heading.level) {
+        currentNode = currentNode.successor;
+      }
+      return currentNode;
+    };
+    // Container in which headers are swapped
+    const container = header ? header.children : this.state.outline;
+    // Header section to move
+    const movingItem = container[oldIndex];
+    // Header section to paste before
+    let targetItem = container[newIndex];
+    if (newIndex > oldIndex) {
+      targetItem = findNextSibling(targetItem);
+    }
+    // Find header section which ends movingItem section
+    const nextSibling = findNextSibling(movingItem);
+
+    // Find indicies
+    const value = this.state.raw;
+    const cutStart = nthIndexOf(value, movingItem.source, movingItem.dupIndex);
+    const cutEnd = nthIndexOf(value, nextSibling.source, nextSibling.dupIndex);
+    const pasteIndex = nthIndexOf(value, targetItem.source, targetItem.dupIndex);
+
+    // Move the section
+    const newValue = moveSubstring(value, cutStart, cutEnd, pasteIndex);
+
+    const html = this.generateHtml(newValue);
+    const raw = newValue;
+    this.setState({
+      raw,
+      html,
+      loc: raw.split('\n').length,
+      outline: generateOutline(
+        newValue,
+        this.props.language.toHtml,
+        this.props.language.headerRegex,
+      ),
     });
+    this.cmr.getCodeMirror().setValue(newValue);
   }
   renderProportianalStyles() {
     if (this.state.proportionalSizes) {

@@ -22,7 +22,7 @@ class Outline extends React.Component {
     };
   }
   render() {
-    const DragHandle = SortableHandle(() => <span className="dragHandle">::</span>);
+    const DragHandle = SortableHandle(() => <span className="dragHandle">𝍢</span>);
     const SortableItem = SortableElement(({ value }) => {
       const key = `${value.content}${value.index}`;
       return (
@@ -76,7 +76,7 @@ class Outline extends React.Component {
               color: #ddd;
               height: 100%;
             }
-            button:active {
+            button:active, button:focus {
               outline: 0;
             }
             .list {
@@ -105,16 +105,21 @@ class Outline extends React.Component {
             .item .dragHandle {
               margin-right: 5px;
             }
+            .toggle::before {
+              display: inline-block;
+              width: 10px;
+            }
             .toggle.invisible::before {
               opacity: 0;
             }
             .toggle.opened::before {
-              content: '▼';
+              content: '⌵';
+              padding: 0 0.21em 0 0;
             }
             .toggle.closed::before {
-              content: '▶';
-              font-size: 0.76em;
-              padding: 0 0.32em;
+              content: '❯';
+              font-size: 0.55em;
+              padding: 0 0 0 0.21em;
             }
             .item button.outlineItem {
               width: 100%;

@@ -1,9 +1,11 @@
 import fetch from 'isomorphic-fetch';
-import marked from 'marked';
 import React from 'react';
 import PropTypes from 'prop-types';
 import hljs from 'highlight.js';
+import MarkdownIt from 'markdown-it';
 import Editor from '../components/Editor';
+
+require('markdown-it/dist/markdown-it.min.js');
 
 export default class extends React.Component {
   static async getInitialProps({ req }) {
@@ -25,7 +27,9 @@ export default class extends React.Component {
   }
 
   render() {
-    marked.setOptions({
+    const mdOptions = {
+      linkify: true,
+      typographer: true,
       highlight: (code) => {
         const matches = code.match(/@@@([0-9]+)@@@/g);
         const highlighted = hljs
@@ -36,10 +40,8 @@ export default class extends React.Component {
           .join('\n');
         return highlighted;
       },
-      gfm: true,
-      sanitize: true,
-      smartypants: true,
-    });
+    };
+    const md = MarkdownIt(mdOptions);
     return (
       <div
         style={{
@@ -52,7 +54,13 @@ export default class extends React.Component {
           content={this.props.markdown}
           language={{
             name: 'markdown',
-            getToHtml: () => marked,
+            getToHtml: () => {
+              if (typeof window !== 'undefined' && window.markdownit) {
+                return window.markdownit(mdOptions);
+              }
+              // eslint-disable-next-line react/jsx-no-bind
+              return md.render.bind(md);
+            },
             lineSafeInsert: (line, content) => {
               if (line.match(/(```|~~~)/)) {
                 return line;

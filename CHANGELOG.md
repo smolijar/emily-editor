@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+ - Reordering sections in outline feature
+ - Outline appearance
  - Fullscreen mode
  - Cursor postition statusbar
  - Airbnb coding style
@@ -19,6 +21,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Statusbar
 
 ### Changed
+ - Scattered helper functions are in seperate file
+ - Outline as component is in seperate file
  - Fixed editor size to fluid parent
  - Language specific func. is provided as prop
  - Make more scrolling breakpoints
@@ -29,6 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Cursor position hiding in html
 
 ### Fixed
+ - Outline lookup with duplicate header source codes
  - Proportional font sizes
  - Scroll sync. in both columns
 

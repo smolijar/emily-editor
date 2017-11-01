@@ -21,12 +21,19 @@ function findHeaders(source, toHtml, headerRegex) {
 }
 
 module.exports.generateOutline = (source, toHtml, headerRegex) => {
-  const outline = findHeaders(source, toHtml, headerRegex)
+  const headers = findHeaders(source, toHtml, headerRegex)
     .map(heading => ({
       ...heading,
       children: [],
       path: [],
-    }))
+    }));
+  headers.forEach((heading, i) => {
+    const predecessor = headers[i - 1] || null;
+    const successor = headers[i + 1] || null;
+    headers[i].predecessor = predecessor;
+    headers[i].successor = successor;
+  });
+  const outline = headers
     .reduce((acc, _val) => {
       const val = _val;
       function insert(into, what, ac) {

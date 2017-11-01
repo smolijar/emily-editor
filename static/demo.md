@@ -1,3 +1,67 @@
+# GFM
+
+## Code
+
+### Tick block
+
+```javascript
+function fancyAlert(arg) {
+  if(arg) {
+    $.facebox({div:'#foo'})
+  }
+}
+```
+
+### Indent
+
+
+    function fancyAlert(arg) {
+      if(arg) {
+        $.facebox({div:'#foo'})
+      }
+    }
+
+### Python without synhi
+
+
+def foo():
+    if not bar:
+        return True
+
+## Task Lists
+
+- [x] @mentions, #refs, [links](), **formatting**, and <del>tags</del> supported
+- [x] list syntax required (any unordered or ordered list supported)
+- [x] this is a complete item
+- [ ] this is an incomplete item
+
+
+## Tables
+
+First Header | Second Header
+------------ | -------------
+Content from cell 1 | Content from cell 2
+Content in the first column | Content in the second column
+
+## SHA references
+
+16c999e8c71134401a78d4d46435517b2271d6ac
+mojombo@16c999e8c71134401a78d4d46435517b2271d6ac
+mojombo/github-flavored-markdown@16c999e8c71134401a78d4d46435517b2271d6ac
+
+
+## Automatic linking for URLs
+
+Any URL (like http://www.github.com/) will be automatically converted into a clickable link.
+
+## Strikethrough
+
+Any word wrapped with two tildes (like ~~this~~) will appear crossed out.
+
+# Emoji
+
+GitHub supports emoji! :sparkles: :camel: :boom:
+
 # An exhibit of Markdown
 
 ![Stormtroopocat](https://octodex.github.com/images/stormtroopocat.jpg "The Stormtroopocat")

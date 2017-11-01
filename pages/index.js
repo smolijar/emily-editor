@@ -36,6 +36,9 @@ export default class extends React.Component {
           .join('\n');
         return highlighted;
       },
+      gfm: true,
+      sanitize: true,
+      smartypants: true,
     });
     return (
       <div

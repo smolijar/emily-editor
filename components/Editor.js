@@ -4,7 +4,9 @@ import Head from 'next/head';
 import CodeMirror from 'react-codemirror';
 import screenfull from 'screenfull';
 import CommandPalette from './CommandPalette';
+import Outline from './Outline';
 import StatusBar from './StatusBar';
+import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline } from '../helpers/helpers';
 
 // Shame, SSR avoid hack
 if (typeof navigator !== 'undefined') {
@@ -23,63 +25,7 @@ if (typeof navigator !== 'undefined') {
   /* eslint-enable global-require */
 }
 
-function generateOutline(html) {
-  const outline = html
-    .match(/<h[0-9][^<>]*>.*<\/h[0-9]>/g)
-    .map((heading) => {
-      const [, level, id, content] = heading.match(/<h([0-9])[^<>]*id="(.*)"[^<>]*>(.*)<\/h[0-9]>/);
-      return {
-        content, level: +level, id, children: [], path: [],
-      };
-    })
-    .reduce((acc, _val) => {
-      const val = _val;
-      function insert(into, what, ac) {
-        if (into.children.length === 0 || what.level - into.level === 1) {
-          what.path.push(into.children.length - 1);
-          into.children.push(what);
-        } else if (into.level < what.level) {
-          what.path.push(into.children.length - 1);
-          insert(into.children[into.children.length - 1], what, ac);
-        } else {
-          let anotherInto = ac[what.path[0]];
-          what.path.slice(1, what.path.length - 1).forEach((i) => {
-            anotherInto = anotherInto.children[i];
-          });
-          anotherInto.children.push(what);
-        }
-      }
-      if (acc.length === 0) {
-        acc.push({ ...val, path: [0] });
-      } else {
-        const lastHeading = acc[acc.length - 1];
-        const lastLevel = lastHeading.level;
-        if (val.level <= lastLevel) {
-          acc.push({ ...val, path: [acc.length - 1] });
-        } else {
-          val.path = [acc.length - 1];
-          insert(acc[acc.length - 1], val, acc);
-        }
-      }
-      return acc;
-    }, []);
-
-  return outline;
-}
-
-function findRelativeOffset(node, container) {
-  // container must have position absolute or relative
-  let currentNode = node;
-  const nodes = [];
-  while (currentNode && currentNode.offsetParent && currentNode !== container) {
-    nodes.push(currentNode);
-    currentNode = currentNode.offsetParent;
-  }
-  return nodes.reduce((acc, v) => acc + v.offsetTop, 0);
-}
-
 const SCROLL_TIMEOUT = 5;
-
 
 class Editor extends React.Component {
   static propTypes = {
@@ -88,6 +34,7 @@ class Editor extends React.Component {
       name: PropTypes.string,
       toHtml: PropTypes.func,
       lineSafeInsert: PropTypes.func,
+      headerRegex: PropTypes.regex,
     }),
     width: PropTypes.number,
     height: PropTypes.number,
@@ -121,6 +68,7 @@ class Editor extends React.Component {
       keyMap: 'sublime',
     };
     this.handleChange = this.handleChange.bind(this);
+    this.updateStateValue = this.updateStateValue.bind(this);
     this.generateHtml = this.generateHtml.bind(this);
     this.handleOutlineClick = this.handleOutlineClick.bind(this);
     this.renderProportianalStyles = this.renderProportianalStyles.bind(this);
@@ -129,9 +77,9 @@ class Editor extends React.Component {
     this.handlePreviewScroll = this.handlePreviewScroll.bind(this);
     this.handleCursorActivity = this.handleCursorActivity.bind(this);
     this.getVisibleLines = this.getVisibleLines.bind(this);
-    this.printList = this.printList.bind(this);
     this.availableCommands = this.availableCommands.bind(this);
     this.toggleFullscreen = this.toggleFullscreen.bind(this);
+    this.handleOutlineOrderChange = this.handleOutlineOrderChange.bind(this);
     const html = this.generateHtml(props.content);
     const raw = props.content;
     this.state = {
@@ -140,12 +88,16 @@ class Editor extends React.Component {
       raw,
       proportionalSizes: true,
       html,
-      outline: generateOutline(html),
+      outline: generateOutline(
+        this.props.content,
+        this.props.language.toHtml,
+        this.props.language.headerRegex,
+      ),
       newScrollTimer: null,
       columns: {
         editor: true,
         preview: true,
-        outline: false,
+        outline: true,
       },
       lastScrolled: null,
       loc: raw.split('\n').length,
@@ -178,10 +130,10 @@ class Editor extends React.Component {
     return visibleLines;
   }
   handleOutlineClick(heading) {
-    const inCode = heading.content;
+    const inCode = heading.source;
     const cm = this.cmr.getCodeMirror();
-    const value = cm.getValue();
-    const pos = value.indexOf(inCode);
+    const value = this.state.raw;
+    const pos = nthIndexOf(value, inCode, heading.dupIndex);
     const line = value.substr(0, pos).split('\n').length - 1;
     cm.setCursor(line);
     this.cmr.focus();
@@ -233,15 +185,18 @@ class Editor extends React.Component {
       lastScrolled: 'editor',
     });
   }
-  handleChange(value) {
+  updateStateValue(value) {
     const html = this.generateHtml(value);
     const raw = value;
     this.setState({
       raw,
       html,
       loc: raw.split('\n').length,
-      outline: generateOutline(html),
+      outline: generateOutline(value, this.props.language.toHtml, this.props.language.headerRegex),
     });
+  }
+  handleChange(value) {
+    this.updateStateValue(value);
   }
   generateHtml(_raw) {
     const raw = _raw
@@ -252,20 +207,6 @@ class Editor extends React.Component {
   }
   handleCommand(command) {
     this.availableCommands()[command].execute();
-  }
-  printList(h, index) {
-    return (
-      <li key={`${h.id}${index}`}>
-        <button onClick={() => { this.handleOutlineClick(h); }}>
-          {h.content}
-        </button>
-        {h.children.length > 0 &&
-          <ol key={`${h.id}${index}ol`}>
-            {h.children.map(this.printList)}
-          </ol>
-          }
-      </li>
-    );
   }
   handleCursorActivity() {
     if (this.cmr) {
@@ -391,6 +332,35 @@ class Editor extends React.Component {
       fullscreen: !this.state.fullscreen,
     });
   }
+  handleOutlineOrderChange(header, { oldIndex, newIndex }) {
+    // Do nothing if no distance
+    if (oldIndex === newIndex) {
+      return;
+    }
+    // Container in which headers are swapped
+    const container = header ? header.children : this.state.outline;
+    // Header section to move
+    const movingItem = container[oldIndex];
+    // Header section to paste before
+    let targetItem = container[newIndex];
+    if (newIndex > oldIndex) {
+      targetItem = findNextSibling(targetItem);
+    }
+    // Find header section which ends movingItem section
+    const nextSibling = findNextSibling(movingItem);
+
+    // Find indicies
+    const value = this.state.raw;
+    const cutStart = nthIndexOf(value, movingItem.source, movingItem.dupIndex);
+    const cutEnd = nthIndexOf(value, nextSibling.source, nextSibling.dupIndex);
+    const pasteIndex = nthIndexOf(value, targetItem.source, targetItem.dupIndex);
+
+    // Move the section
+    const newValue = moveSubstring(value, cutStart, cutEnd, pasteIndex);
+
+    this.updateStateValue(newValue);
+    this.cmr.getCodeMirror().setValue(newValue);
+  }
   renderProportianalStyles() {
     if (this.state.proportionalSizes) {
       return (
@@ -458,10 +428,12 @@ class Editor extends React.Component {
           <div className="workspace">
             {
                 this.state.columns.outline &&
-                <div className="column">
-                  <ol>
-                    {this.state.outline.map(heading => this.printList(heading, 0))}
-                  </ol>
+                <div className="column outline">
+                  <Outline
+                    outline={this.state.outline}
+                    onItemClick={this.handleOutlineClick}
+                    onOrderChange={this.handleOutlineOrderChange}
+                  />
                 </div>
             }
             {this.state.columns.editor &&
@@ -547,11 +519,14 @@ class Editor extends React.Component {
                       align-items: flex-start;
                   }
                   .markup-editor .workspace > .column {
-                      flex: 1;
+                      flex: 3;
                       position: relative; // important for scroll synchro!
                       overflow-y: scroll;
                       overflow-x: hidden;
                       height: inherit;
+                  }
+                  .markup-editor .workspace > .column.outline {
+                    flex: 1;
                   }
                   .markup-editor .workspace > .column::-webkit-scrollbar {
                       width: 0;

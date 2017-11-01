@@ -401,6 +401,7 @@ class Editor extends React.Component {
           <link rel="stylesheet" type="text/css" href="markup-editor/addon/dialog/dialog.css" />
           <link rel="stylesheet" type="text/css" href="markup-editor/addon/fold/foldgutter.css" />
           <link rel="stylesheet" type="text/css" href="hljs/styles/github.css" />
+          <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.9.0/github-markdown.min.css" />
         </Head>
         <div
           className="markup-editor"
@@ -451,7 +452,7 @@ class Editor extends React.Component {
             {this.state.columns.preview &&
             <div className="column" onScroll={this.handlePreviewScroll} ref={(el) => { this.previewColumn = el; }}>
               <div
-                className="preview"
+                className="preview markdown-body"
                 role="presentation"
                 spellCheck="false"
                 contentEditable
@@ -532,6 +533,19 @@ class Editor extends React.Component {
                   .markup-editor .workspace > .column::-webkit-scrollbar {
                       width: 0;
                       background: transparent;
+                  }
+                  .markdown-body {
+                    box-sizing: border-box;
+                    min-width: 200px;
+                    max-width: 980px;
+                    margin: 0 auto;
+                    padding: 45px;
+                  }
+
+                  @media (max-width: 767px) {
+                    .markdown-body {
+                      padding: 15px;
+                    }
                   }
                 `}
         </style>

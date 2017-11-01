@@ -79,6 +79,7 @@ class Editor extends React.Component {
       keyMap: 'sublime',
     };
     this.handleChange = this.handleChange.bind(this);
+    this.updateStateValue = this.updateStateValue.bind(this);
     this.generateHtml = this.generateHtml.bind(this);
     this.handleOutlineClick = this.handleOutlineClick.bind(this);
     this.renderProportianalStyles = this.renderProportianalStyles.bind(this);
@@ -196,7 +197,7 @@ class Editor extends React.Component {
       lastScrolled: 'editor',
     });
   }
-  handleChange(value) {
+  updateStateValue(value) {
     const html = this.generateHtml(value);
     const raw = value;
     this.setState({
@@ -205,6 +206,9 @@ class Editor extends React.Component {
       loc: raw.split('\n').length,
       outline: generateOutline(value, this.props.language.toHtml, this.props.language.headerRegex),
     });
+  }
+  handleChange(value) {
+    this.updateStateValue(value);
   }
   generateHtml(_raw) {
     const raw = _raw
@@ -392,18 +396,7 @@ class Editor extends React.Component {
     // Move the section
     const newValue = moveSubstring(value, cutStart, cutEnd, pasteIndex);
 
-    const html = this.generateHtml(newValue);
-    const raw = newValue;
-    this.setState({
-      raw,
-      html,
-      loc: raw.split('\n').length,
-      outline: generateOutline(
-        newValue,
-        this.props.language.toHtml,
-        this.props.language.headerRegex,
-      ),
-    });
+    this.updateStateValue(newValue);
     this.cmr.getCodeMirror().setValue(newValue);
   }
   renderProportianalStyles() {

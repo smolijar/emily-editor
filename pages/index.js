@@ -5,8 +5,12 @@ import PropTypes from 'prop-types';
 import Editor from '../components/Editor';
 
 export default class extends React.Component {
-  static async getInitialProps() {
-    const res = await fetch('http://localhost:3000/static/demo.md', {
+  static async getInitialProps({ req }) {
+    let uri = '/static/demo.md';
+    if (req) {
+      uri = `${req.protocol}://${req.get('host')}${uri}`;
+    }
+    const res = await fetch(uri, {
       method: 'GET',
     });
     const markdown = await res.text();

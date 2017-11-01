@@ -32,7 +32,7 @@ class Editor extends React.Component {
     content: PropTypes.string,
     language: PropTypes.shape({
       name: PropTypes.string,
-      toHtml: PropTypes.func,
+      getToHtml: PropTypes.func,
       lineSafeInsert: PropTypes.func,
       headerRegex: PropTypes.regex,
     }),
@@ -43,7 +43,6 @@ class Editor extends React.Component {
     content: '',
     language: {
       name: 'markdown',
-      toHtml: src => src,
       lineSafeInsert: line => line,
     },
     width: 500,
@@ -189,7 +188,7 @@ class Editor extends React.Component {
       raw,
       html,
       loc: raw.split('\n').length,
-      outline: this.generateOutline()
+      outline: this.generateOutline(),
     });
   }
   handleChange(value) {
@@ -200,7 +199,7 @@ class Editor extends React.Component {
       .split('\n')
       .map((line, i) => this.props.language.lineSafeInsert(line, `@@@${i + 1}@@@`))
       .join('\n');
-    return this.props.language.toHtml(raw).replace(/@@@([0-9]+)@@@/g, '<strong data-line="$1">($1)</strong>');
+    return this.props.language.getToHtml()(raw).replace(/@@@([0-9]+)@@@/g, '<strong data-line="$1">($1)</strong>');
   }
   handleCommand(command) {
     this.availableCommands()[command].execute();
@@ -361,7 +360,7 @@ class Editor extends React.Component {
   generateOutline() {
     return generateOutline(
       this.props.content,
-      this.props.language.toHtml,
+      this.props.language.getToHtml(),
       this.props.language.headerRegex,
     );
   }

@@ -52,7 +52,7 @@ export default class extends React.Component {
           content={this.props.markdown}
           language={{
             name: 'markdown',
-            toHtml: marked,
+            getToHtml: () => marked,
             lineSafeInsert: (line, content) => {
               if (line.match(/(```|~~~)/)) {
                 return line;

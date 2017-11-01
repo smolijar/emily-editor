@@ -71,8 +71,15 @@ class Outline extends React.Component {
             }
             .list:first-child {
               margin-top: 0;
+              margin-bottom: 0;
               padding-left: 0px;
               border-top: 0;
+            }
+            .list:last-child {
+              margin-bottom: 0;
+            }
+            .item:last-child {
+              margin-bottom: 0;
             }
             .item:first-child {
               margin-top: 0;

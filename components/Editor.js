@@ -4,8 +4,9 @@ import Head from 'next/head';
 import CodeMirror from 'react-codemirror';
 import screenfull from 'screenfull';
 import CommandPalette from './CommandPalette';
-import Outline, { generateOutline } from './Outline';
+import Outline from './Outline';
 import StatusBar from './StatusBar';
+import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline } from '../helpers/helpers';
 
 // Shame, SSR avoid hack
 if (typeof navigator !== 'undefined') {
@@ -24,19 +25,7 @@ if (typeof navigator !== 'undefined') {
   /* eslint-enable global-require */
 }
 
-function findRelativeOffset(node, container) {
-  // container must have position absolute or relative
-  let currentNode = node;
-  const nodes = [];
-  while (currentNode && currentNode.offsetParent && currentNode !== container) {
-    nodes.push(currentNode);
-    currentNode = currentNode.offsetParent;
-  }
-  return nodes.reduce((acc, v) => acc + v.offsetTop, 0);
-}
-
 const SCROLL_TIMEOUT = 5;
-
 
 class Editor extends React.Component {
   static propTypes = {
@@ -141,7 +130,6 @@ class Editor extends React.Component {
     return visibleLines;
   }
   handleOutlineClick(heading) {
-    const nthIndexOf = (haystack, needle, n) => haystack.split(needle, n).join(needle).length;
     const inCode = heading.source;
     const cm = this.cmr.getCodeMirror();
     const value = this.state.raw;
@@ -349,32 +337,6 @@ class Editor extends React.Component {
     if (oldIndex === newIndex) {
       return;
     }
-    // Move substring defined by cut indices to pasteIndex in ginven string
-    const moveSubstring = (string, cutStartIndex, cutEndIndex, _pasteIndex) => {
-      const cutted = string.slice(cutStartIndex, cutEndIndex);
-      const holed = [
-        string.slice(0, cutStartIndex),
-        string.slice(cutEndIndex),
-      ].join('');
-      let pasteIndex = _pasteIndex;
-      if (cutEndIndex <= pasteIndex) {
-        pasteIndex -= (cutEndIndex - cutStartIndex);
-      }
-      return [
-        holed.slice(0, pasteIndex),
-        cutted,
-        holed.slice(pasteIndex),
-      ].join('');
-    };
-    // Find nth occurance of needle in haystack
-    const nthIndexOf = (haystack, needle, n) => haystack.split(needle, n).join(needle).length;
-    const findNextSibling = (_heading) => {
-      let currentNode = _heading.successor;
-      while (currentNode && currentNode.level > _heading.level) {
-        currentNode = currentNode.successor;
-      }
-      return currentNode;
-    };
     // Container in which headers are swapped
     const container = header ? header.children : this.state.outline;
     // Header section to move

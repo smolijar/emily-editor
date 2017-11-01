@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+ - Heroku postbuild script
+ - npm start script
  - Reordering sections in outline feature
  - Outline appearance
  - Fullscreen mode
@@ -21,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Statusbar
 
 ### Changed
+ - Port is accepted from env
  - Scattered helper functions are in seperate file
  - Outline as component is in seperate file
  - Fixed editor size to fluid parent
@@ -33,6 +36,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Cursor position hiding in html
 
 ### Fixed
+ - Demo initalProps SSR domain independent
  - Outline lookup with duplicate header source codes
  - Proportional font sizes
  - Scroll sync. in both columns

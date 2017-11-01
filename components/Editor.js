@@ -80,6 +80,7 @@ class Editor extends React.Component {
     this.availableCommands = this.availableCommands.bind(this);
     this.toggleFullscreen = this.toggleFullscreen.bind(this);
     this.handleOutlineOrderChange = this.handleOutlineOrderChange.bind(this);
+    this.generateOutline = this.generateOutline.bind(this);
     const html = this.generateHtml(props.content);
     const raw = props.content;
     this.state = {
@@ -88,11 +89,7 @@ class Editor extends React.Component {
       raw,
       proportionalSizes: true,
       html,
-      outline: generateOutline(
-        this.props.content,
-        this.props.language.toHtml,
-        this.props.language.headerRegex,
-      ),
+      outline: this.generateOutline(),
       newScrollTimer: null,
       columns: {
         editor: true,
@@ -192,7 +189,7 @@ class Editor extends React.Component {
       raw,
       html,
       loc: raw.split('\n').length,
-      outline: generateOutline(value, this.props.language.toHtml, this.props.language.headerRegex),
+      outline: this.generateOutline()
     });
   }
   handleChange(value) {
@@ -360,6 +357,13 @@ class Editor extends React.Component {
 
     this.updateStateValue(newValue);
     this.cmr.getCodeMirror().setValue(newValue);
+  }
+  generateOutline() {
+    return generateOutline(
+      this.props.content,
+      this.props.language.toHtml,
+      this.props.language.headerRegex,
+    );
   }
   renderProportianalStyles() {
     if (this.state.proportionalSizes) {

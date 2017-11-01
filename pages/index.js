@@ -2,6 +2,7 @@ import fetch from 'isomorphic-fetch';
 import marked from 'marked';
 import React from 'react';
 import PropTypes from 'prop-types';
+import hljs from 'highlight.js';
 import Editor from '../components/Editor';
 
 export default class extends React.Component {
@@ -24,6 +25,18 @@ export default class extends React.Component {
   }
 
   render() {
+    marked.setOptions({
+      highlight: (code) => {
+        const matches = code.match(/@@@([0-9]+)@@@/g);
+        const highlighted = hljs
+          .highlightAuto(code.replace(/@@@([0-9]+)@@@/g, ''))
+          .value
+          .split('\n')
+          .map((line, i) => line + (matches[i] || ''))
+          .join('\n');
+        return highlighted;
+      },
+    });
     return (
       <div
         style={{

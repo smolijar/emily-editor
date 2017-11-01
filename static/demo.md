@@ -1,5 +1,7 @@
 # GFM
 
+Classic markup: :wink: :crush: :cry: :tear: :laughing: :yum:
+
 ## Code
 
 ### Tick block

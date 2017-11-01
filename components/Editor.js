@@ -550,6 +550,9 @@ class Editor extends React.Component {
                       padding: 15px;
                     }
                   }
+                  .emoji {
+                    height: 1.2em;
+                  }
                 `}
         </style>
         {this.renderProportianalStyles()}

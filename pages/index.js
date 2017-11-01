@@ -3,9 +3,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import hljs from 'highlight.js';
 import MarkdownIt from 'markdown-it';
-import Editor from '../components/Editor';
+import emoji from 'markdown-it-emoji';
 
-require('markdown-it/dist/markdown-it.min.js');
+import sub from 'markdown-it-sub';
+import sup from 'markdown-it-sup';
+import footnote from 'markdown-it-footnote';
+import deflist from 'markdown-it-deflist';
+import abbr from 'markdown-it-abbr';
+import ins from 'markdown-it-ins';
+import mark from 'markdown-it-mark';
+
+import twemoji from 'twemoji';
+import Editor from '../components/Editor';
 
 export default class extends React.Component {
   static async getInitialProps({ req }) {
@@ -42,6 +51,16 @@ export default class extends React.Component {
       },
     };
     const md = MarkdownIt(mdOptions);
+    md.use(emoji);
+    md.use(sub);
+    md.use(sup);
+    md.use(footnote);
+    md.use(deflist);
+    md.use(abbr);
+    md.use(ins);
+    md.use(mark);
+
+    md.renderer.rules.emoji = (token, idx) => twemoji.parse(token[idx].content);
     return (
       <div
         style={{
@@ -55,14 +74,15 @@ export default class extends React.Component {
           language={{
             name: 'markdown',
             getToHtml: () => {
-              if (typeof window !== 'undefined' && window.markdownit) {
-                return window.markdownit(mdOptions);
-              }
               // eslint-disable-next-line react/jsx-no-bind
-              return md.render.bind(md);
+              const renderer = md.render.bind(md);
+              return renderer;
             },
             lineSafeInsert: (line, content) => {
-              if (line.match(/(```|~~~)/)) {
+              // Skip code block start / end (~~~,---)
+              // Skip footnotes ([^...])
+              // Skip abbreviations (*[...])
+              if (line.match(/(```|~~~|\[\^|\*\[)/)) {
                 return line;
               }
               // if contains link, insert not to break href

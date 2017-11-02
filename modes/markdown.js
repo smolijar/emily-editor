@@ -53,11 +53,13 @@ const markdown = {
     if (line.match(/(```|~~~|\[\^|\*\[)/)) {
       return line;
     }
-    // if contains link, insert not to break href
-    if (line.match(/.*\[.*\]\s*\(.*\).*/)) {
-      const segments = line.split(')');
-      segments[segments.length - 1] += content;
-      return segments.join(')');
+    // if image, place after
+    if (line.match(/!\[.*\]\(.*\)/)) {
+      return line.replace(/(.*)\)(.*)/, `$1)${content}$2`);
+    }
+    // if emoji do not spoil
+    if (line.match(/:/)) {
+      return line.replace(/(:[^:]*:)|(\w+)/, `$1$2${content}`);
     }
     // else append to any word
     return line.replace(/(.*)(\w)(.*)/, `$1$2${content}$3`);

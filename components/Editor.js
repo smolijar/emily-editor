@@ -25,7 +25,6 @@ if (typeof navigator !== 'undefined') {
   /* eslint-enable global-require */
 }
 
-const SCROLL_TIMEOUT = 5;
 const STOPPED_TYPING_TIMEOUT = 300;
 
 class Editor extends React.Component {
@@ -58,7 +57,7 @@ class Editor extends React.Component {
     const defaultCmOptions = {
       scrollbarStyle: null,
       lineWrapping: true,
-      lineNumbers: true,
+      lineNumbers: false,
       matchBrackets: true,
       autoCloseBrackets: true,
       foldGutter: true,
@@ -81,6 +80,8 @@ class Editor extends React.Component {
     this.handleCommand = this.handleCommand.bind(this);
     this.handleEditorScroll = this.handleEditorScroll.bind(this);
     this.handlePreviewScroll = this.handlePreviewScroll.bind(this);
+    this.scrollEditorToLine = this.scrollEditorToLine.bind(this);
+    this.scrollPreviewToLine = this.scrollPreviewToLine.bind(this);
     this.handleCursorActivity = this.handleCursorActivity.bind(this);
     this.getVisibleLines = this.getVisibleLines.bind(this);
     this.availableCommands = this.availableCommands.bind(this);
@@ -143,50 +144,47 @@ class Editor extends React.Component {
     cm.setCursor(line);
     this.cmr.focus();
   }
+  scrollPreviewToLine(ln) {
+    let lineNode = this.previewColumn.querySelector(`strong[data-line="${ln}"]`);
+    for (let i = ln; i > 0 && !lineNode; i -= 1) {
+      lineNode = this.previewColumn.querySelector(`strong[data-line="${i}"]`);
+    }
+    this.previewColumn.scrollTop = findRelativeOffset(lineNode, this.previewColumn);
+  }
+  scrollEditorToLine(ln) {
+    const cm = this.cmr.getCodeMirror();
+    const to = cm.charCoords({ line: ln - 1, ch: 0 }, 'local').top;
+    cm.scrollTo(null, to);
+  }
   handlePreviewScroll() {
     if (this.state.lastScrolled === 'editor') {
-      this.setState({ ...this.state, lastScrolled: null });
+      this.setState({
+        ...this.state,
+        lastScrolled: null,
+      });
       return;
     }
-    function scrollEditor() {
-      const [firstLine] = this.getVisibleLines(this.previewColumn, '[data-line]', (lineNode => Number(lineNode.dataset.line)));
-      const lineHelperNode = [...this.editorColumn.querySelectorAll('.CodeMirror-line')][firstLine - 1].parentElement;
-      const offset = lineHelperNode ? lineHelperNode.offsetTop : 0;
-      this.editorColumn.scrollTop = offset;
-      this.setState({ ...this.state, newScrollTimer: null });
-    }
-    if (this.state.newScrollTimer) {
-      clearTimeout(this.state.newScrollTimer);
-    }
+    const [firstVisibleLine] = this.getVisibleLines(this.previewColumn, 'strong[data-line]', node => Number(node.dataset.line));
+    this.scrollEditorToLine(firstVisibleLine);
     this.setState({
       ...this.state,
-      newScrollTimer: setTimeout(scrollEditor.bind(this), SCROLL_TIMEOUT),
       lastScrolled: 'preview',
     });
   }
   handleEditorScroll() {
     if (this.state.lastScrolled === 'preview') {
-      this.setState({ ...this.state, lastScrolled: null });
+      this.setState({
+        ...this.state,
+        lastScrolled: null,
+      });
       return;
     }
-    function scrollPreview() {
-      const [firstLine] = this.getVisibleLines(this.editorColumn, '.CodeMirror-line');
-      let lineHelperNode = null;
-      let currentLine = firstLine;
-      while (lineHelperNode === null && currentLine > 0) {
-        lineHelperNode = document.querySelector(`.preview strong[data-line="${currentLine}"]`);
-        currentLine -= 1;
-      }
-      const offset = findRelativeOffset(lineHelperNode, this.previewColumn);
-      this.previewColumn.scrollTop = offset;
-      this.setState({ ...this.state, newScrollTimer: null });
-    }
-    if (this.state.newScrollTimer) {
-      clearTimeout(this.state.newScrollTimer);
-    }
+    const offset = this.cmr.getCodeMirror().getViewport().from;
+    const [firstVisibleLineRelative] = this.getVisibleLines(this.cmr.getCodeMirror().getScrollerElement(), '.CodeMirror-line');
+    const firstVisibleLine = firstVisibleLineRelative + offset;
+    this.scrollPreviewToLine(firstVisibleLine);
     this.setState({
       ...this.state,
-      newScrollTimer: setTimeout(scrollPreview.bind(this), SCROLL_TIMEOUT),
       lastScrolled: 'editor',
     });
   }
@@ -500,6 +498,9 @@ class Editor extends React.Component {
                   }
                   .CodeMirror {
                       font-family: 'Roboto Mono', monospace;
+                      // TODO anything higher than editor window
+                      height: 2000px;
+                      overflow: visible;
                   }
                   .markup-editor {
                       position: relative;

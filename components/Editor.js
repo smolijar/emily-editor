@@ -31,10 +31,12 @@ class Editor extends React.Component {
   static propTypes = {
     content: PropTypes.string,
     language: PropTypes.shape({
-      name: PropTypes.string,
-      toHtml: PropTypes.func,
+      name: PropTypes.string.isRequired,
+      getToHtml: PropTypes.func.isRequired,
       lineSafeInsert: PropTypes.func,
       headerRegex: PropTypes.regex,
+      renderJsxStyle: PropTypes.func,
+      previewClassName: PropTypes.string,
     }),
     width: PropTypes.number,
     height: PropTypes.number,
@@ -43,8 +45,9 @@ class Editor extends React.Component {
     content: '',
     language: {
       name: 'markdown',
-      toHtml: src => src,
       lineSafeInsert: line => line,
+      renderJsxStyle: () => {},
+      previewClassName: '',
     },
     width: 500,
     height: 500,
@@ -80,6 +83,7 @@ class Editor extends React.Component {
     this.availableCommands = this.availableCommands.bind(this);
     this.toggleFullscreen = this.toggleFullscreen.bind(this);
     this.handleOutlineOrderChange = this.handleOutlineOrderChange.bind(this);
+    this.generateOutline = this.generateOutline.bind(this);
     const html = this.generateHtml(props.content);
     const raw = props.content;
     this.state = {
@@ -88,11 +92,7 @@ class Editor extends React.Component {
       raw,
       proportionalSizes: true,
       html,
-      outline: generateOutline(
-        this.props.content,
-        this.props.language.toHtml,
-        this.props.language.headerRegex,
-      ),
+      outline: this.generateOutline(),
       newScrollTimer: null,
       columns: {
         editor: true,
@@ -192,7 +192,7 @@ class Editor extends React.Component {
       raw,
       html,
       loc: raw.split('\n').length,
-      outline: generateOutline(value, this.props.language.toHtml, this.props.language.headerRegex),
+      outline: this.generateOutline(),
     });
   }
   handleChange(value) {
@@ -203,7 +203,7 @@ class Editor extends React.Component {
       .split('\n')
       .map((line, i) => this.props.language.lineSafeInsert(line, `@@@${i + 1}@@@`))
       .join('\n');
-    return this.props.language.toHtml(raw).replace(/@@@([0-9]+)@@@/g, '<strong data-line="$1">($1)</strong>');
+    return this.props.language.getToHtml()(raw).replace(/@@@([0-9]+)@@@/g, '<strong data-line="$1">($1)</strong>');
   }
   handleCommand(command) {
     this.availableCommands()[command].execute();
@@ -361,6 +361,13 @@ class Editor extends React.Component {
     this.updateStateValue(newValue);
     this.cmr.getCodeMirror().setValue(newValue);
   }
+  generateOutline() {
+    return generateOutline(
+      this.props.content,
+      this.props.language.getToHtml(),
+      this.props.language.headerRegex,
+    );
+  }
   renderProportianalStyles() {
     if (this.state.proportionalSizes) {
       return (
@@ -400,6 +407,8 @@ class Editor extends React.Component {
           <link rel="stylesheet" type="text/css" href="markup-editor/theme/material.css" />
           <link rel="stylesheet" type="text/css" href="markup-editor/addon/dialog/dialog.css" />
           <link rel="stylesheet" type="text/css" href="markup-editor/addon/fold/foldgutter.css" />
+          <link rel="stylesheet" type="text/css" href="hljs/styles/github.css" />
+          <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.9.0/github-markdown.min.css" />
         </Head>
         <div
           className="markup-editor"
@@ -450,7 +459,7 @@ class Editor extends React.Component {
             {this.state.columns.preview &&
             <div className="column" onScroll={this.handlePreviewScroll} ref={(el) => { this.previewColumn = el; }}>
               <div
-                className="preview"
+                className={`preview ${this.props.language.previewClassName}`}
                 role="presentation"
                 spellCheck="false"
                 contentEditable
@@ -534,6 +543,7 @@ class Editor extends React.Component {
                   }
                 `}
         </style>
+        {this.props.language.renderJsxStyle()}
         {this.renderProportianalStyles()}
       </div>
     );

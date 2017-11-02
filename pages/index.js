@@ -1,8 +1,8 @@
 import fetch from 'isomorphic-fetch';
-import marked from 'marked';
 import React from 'react';
 import PropTypes from 'prop-types';
 import Editor from '../components/Editor';
+import markdown from '../modes/markdown';
 
 export default class extends React.Component {
   static async getInitialProps({ req }) {
@@ -13,14 +13,14 @@ export default class extends React.Component {
     const res = await fetch(uri, {
       method: 'GET',
     });
-    const markdown = await res.text();
+    const markdownExample = await res.text();
     return {
-      markdown,
+      markdownExample,
     };
   }
 
   static propTypes = {
-    markdown: PropTypes.string.isRequired,
+    markdownExample: PropTypes.string.isRequired,
   }
 
   render() {
@@ -33,23 +33,8 @@ export default class extends React.Component {
         }}
       >
         <Editor
-          content={this.props.markdown}
-          language={{
-            name: 'markdown',
-            toHtml: marked,
-            lineSafeInsert: (line, content) => {
-              // if contains link, insert not to break href
-              if (line.match(/.*\[.*\]\s*\(.*\).*/)) {
-                const segments = line.split(')');
-                segments[segments.length - 1] += content;
-                return segments.join(')');
-              }
-              // else append to any word
-              return line.replace(/(.*)(\w)(.*)/, `$1$2${content}$3`);
-            },
-            // must include newline after
-            headerRegex: /(#+\s+\S.*\n)|(\S.*\n(===+|---+)\n)/g,
-          }}
+          content={this.props.markdownExample}
+          language={markdown}
           width={1800}
           height={850}
         />

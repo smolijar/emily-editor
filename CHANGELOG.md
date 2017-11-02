@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+ - Markdown preview GitHub style
+ - Markdown preview abbr
+ - Markdown preview deflist
+ - Markdown preview sub, sup, ins
+ - Markdown preview mark
+ - Markdown preview footnotes
+ - Markdown preview emoji
+ - Markdown preview code highlight
  - Heroku postbuild script
  - npm start script
  - Reordering sections in outline feature
@@ -23,6 +31,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Statusbar
 
 ### Changed
+ - Use markdown-it instead of marked
+ - Markdown mode seperated
  - Port is accepted from env
  - Scattered helper functions are in seperate file
  - Outline as component is in seperate file
@@ -33,9 +43,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Scrolling synchronization
 
 ### Removed
+ - marked dependency
  - Cursor position hiding in html
 
 ### Fixed
+ - Markdown lineSafeInsert
  - Demo initalProps SSR domain independent
  - Outline lookup with duplicate header source codes
  - Proportional font sizes

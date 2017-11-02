@@ -227,7 +227,6 @@ class Editor extends React.Component {
   handleCursorActivity() {
     if (this.cmr) {
       const { line, ch } = this.cmr.getCodeMirror().getCursor();
-      console.log(this.cmr.getCodeMirror().getCursor());
       this.setState({
         ...this.state,
         cursorLine: line + 1,

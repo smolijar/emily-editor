@@ -171,7 +171,11 @@ class Editor extends React.Component {
       lastScrolled: 'preview',
     });
   }
-  handleEditorScroll() {
+  handleEditorScroll(e) {
+    if (e.target.scrollTop === 0) {
+      // triggered by typing
+      return;
+    }
     if (this.state.lastScrolled === 'preview') {
       this.setState({
         ...this.state,

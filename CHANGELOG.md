@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+ - Codemirror
+ - HTML rendering timeout (not immidiate anymore)
  - Markdown preview GitHub style
  - Markdown preview abbr
  - Markdown preview deflist
@@ -31,6 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Statusbar
 
 ### Changed
+ - Scroll sync (effect stays same, rewritten due to cm auto height issue)
  - Use markdown-it instead of marked
  - Markdown mode seperated
  - Port is accepted from env
@@ -43,10 +46,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Scrolling synchronization
 
 ### Removed
+ - react-codemirror
  - marked dependency
  - Cursor position hiding in html
 
 ### Fixed
+ - Scroll event cb fired onChange performance issue
+ - Cursor activity performance issue
+ - CodeMirror auto size performance issue
  - Markdown lineSafeInsert
  - Demo initalProps SSR domain independent
  - Outline lookup with duplicate header source codes

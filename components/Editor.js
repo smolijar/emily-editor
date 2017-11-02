@@ -26,6 +26,7 @@ if (typeof navigator !== 'undefined') {
 }
 
 const SCROLL_TIMEOUT = 5;
+const STOPPED_TYPING_TIMEOUT = 300;
 
 class Editor extends React.Component {
   static propTypes = {
@@ -84,6 +85,7 @@ class Editor extends React.Component {
     this.toggleFullscreen = this.toggleFullscreen.bind(this);
     this.handleOutlineOrderChange = this.handleOutlineOrderChange.bind(this);
     this.generateOutline = this.generateOutline.bind(this);
+    this.handleStoppedTyping = this.handleStoppedTyping.bind(this);
     const html = this.generateHtml(props.content);
     const raw = props.content;
     this.state = {
@@ -94,6 +96,7 @@ class Editor extends React.Component {
       html,
       outline: this.generateOutline(),
       newScrollTimer: null,
+      stoppedTypingTimer: null,
       columns: {
         editor: true,
         preview: true,
@@ -196,7 +199,17 @@ class Editor extends React.Component {
     });
   }
   handleChange(value) {
-    this.updateStateValue(value);
+    if (this.state.stoppedTypingTimer) {
+      clearTimeout(this.state.stoppedTypingTimer);
+    }
+    this.setState({
+      ...this.state,
+      raw: value,
+      stoppedTypingTimer: setTimeout(this.handleStoppedTyping, STOPPED_TYPING_TIMEOUT),
+    });
+  }
+  handleStoppedTyping() {
+    this.updateStateValue(this.state.raw);
   }
   generateHtml(_raw) {
     const raw = _raw

@@ -47,6 +47,13 @@ const markdown = {
     return renderer;
   },
   lineSafeInsert: (line, content) => {
+    // If line does not contain words, it is
+    // most likely not going to render into
+    // anything. Prevent messing up table
+    // markup etc.
+    if (!line.match(/\w/)) {
+      return line;
+    }
     // Skip code block start / end (~~~,---)
     // Skip footnotes ([^...])
     // Skip abbreviations (*[...])

@@ -31,10 +31,12 @@ class Editor extends React.Component {
   static propTypes = {
     content: PropTypes.string,
     language: PropTypes.shape({
-      name: PropTypes.string,
-      getToHtml: PropTypes.func,
+      name: PropTypes.string.isRequired,
+      getToHtml: PropTypes.func.isRequired,
       lineSafeInsert: PropTypes.func,
       headerRegex: PropTypes.regex,
+      renderJsxStyle: PropTypes.func,
+      previewClassName: PropTypes.string,
     }),
     width: PropTypes.number,
     height: PropTypes.number,
@@ -44,6 +46,8 @@ class Editor extends React.Component {
     language: {
       name: 'markdown',
       lineSafeInsert: line => line,
+      renderJsxStyle: () => {},
+      previewClassName: '',
     },
     width: 500,
     height: 500,
@@ -455,7 +459,7 @@ class Editor extends React.Component {
             {this.state.columns.preview &&
             <div className="column" onScroll={this.handlePreviewScroll} ref={(el) => { this.previewColumn = el; }}>
               <div
-                className="preview markdown-body"
+                className={`preview ${this.props.language.previewClassName}`}
                 role="presentation"
                 spellCheck="false"
                 contentEditable
@@ -537,24 +541,9 @@ class Editor extends React.Component {
                       width: 0;
                       background: transparent;
                   }
-                  .markdown-body {
-                    box-sizing: border-box;
-                    min-width: 200px;
-                    max-width: 980px;
-                    margin: 0 auto;
-                    padding: 45px;
-                  }
-
-                  @media (max-width: 767px) {
-                    .markdown-body {
-                      padding: 15px;
-                    }
-                  }
-                  .emoji {
-                    height: 1.2em;
-                  }
                 `}
         </style>
+        {this.props.language.renderJsxStyle()}
         {this.renderProportianalStyles()}
       </div>
     );

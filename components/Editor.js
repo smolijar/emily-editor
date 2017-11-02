@@ -212,6 +212,7 @@ class Editor extends React.Component {
   }
   handleStoppedTyping() {
     this.updateStateValue(this.state.raw);
+    this.handleCursorActivity();
   }
   generateHtml(_raw) {
     const raw = _raw
@@ -464,7 +465,6 @@ class Editor extends React.Component {
             <div className="column" onScroll={this.handleEditorScroll} ref={(el) => { this.editorColumn = el; }}>
               <CodeMirror
                 ref={(el) => { this.cmr = el; }}
-                onCursorActivity={this.handleCursorActivity}
                 value={this.state.raw}
                 onChange={this.handleChange}
                 options={this.state.options}

@@ -1,8 +1,8 @@
 import React from 'react';
 import hljs from 'highlight.js';
 import MarkdownIt from 'markdown-it';
+// markdown-it plugins
 import emoji from 'markdown-it-emoji';
-
 import sub from 'markdown-it-sub';
 import sup from 'markdown-it-sup';
 import footnote from 'markdown-it-footnote';
@@ -28,15 +28,9 @@ const mdOptions = {
   },
 };
 
-const md = MarkdownIt(mdOptions);
-md.use(emoji);
-md.use(sub);
-md.use(sup);
-md.use(footnote);
-md.use(deflist);
-md.use(abbr);
-md.use(ins);
-md.use(mark);
+const plugins = [emoji, sub, sup, footnote, deflist, abbr, ins, mark];
+const md = plugins.reduce((_md, mode) => _md.use(mode), MarkdownIt(mdOptions));
+
 md.renderer.rules.emoji = (token, idx) => twemoji.parse(token[idx].content);
 
 const markdown = {

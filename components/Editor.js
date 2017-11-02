@@ -1,29 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
-import CodeMirror from 'react-codemirror';
 import screenfull from 'screenfull';
 import CommandPalette from './CommandPalette';
 import Outline from './Outline';
 import StatusBar from './StatusBar';
 import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline } from '../helpers/helpers';
-
-// Shame, SSR avoid hack
-if (typeof navigator !== 'undefined') {
-  /* eslint-disable global-require */
-  require('codemirror/mode/markdown/markdown');
-  require('codemirror/keymap/sublime');
-  require('codemirror/addon/dialog/dialog');
-  require('codemirror/addon/search/search');
-  require('codemirror/addon/search/searchcursor');
-  require('codemirror/addon/search/jump-to-line');
-  require('codemirror/addon/edit/matchbrackets');
-  require('codemirror/addon/edit/closebrackets');
-  require('codemirror/addon/fold/foldcode');
-  require('codemirror/addon/fold/foldgutter');
-  require('codemirror/addon/fold/markdown-fold');
-  /* eslint-enable global-require */
-}
 
 const STOPPED_TYPING_TIMEOUT = 300;
 
@@ -115,6 +97,26 @@ class Editor extends React.Component {
       cursorCol: 1,
     };
   }
+  componentDidMount() {
+    /* eslint-disable global-require */
+    const codemirror = require('codemirror');
+    require('codemirror/mode/markdown/markdown');
+    require('codemirror/keymap/sublime');
+    require('codemirror/addon/dialog/dialog');
+    require('codemirror/addon/search/search');
+    require('codemirror/addon/search/searchcursor');
+    require('codemirror/addon/search/jump-to-line');
+    require('codemirror/addon/edit/matchbrackets');
+    require('codemirror/addon/edit/closebrackets');
+    require('codemirror/addon/fold/foldcode');
+    require('codemirror/addon/fold/foldgutter');
+    require('codemirror/addon/fold/markdown-fold');
+    /* eslint-enable global-require */
+    this.cm = codemirror.fromTextArea(this.textarea, {
+      ...this.state.options,
+    });
+    this.cm.on('change', cm => this.handleChange(cm.getValue()));
+  }
   getVisibleLines(columnNode, lineSelector, numberSelector = null) {
     const editorScroll = columnNode.scrollTop;
     let firstVisibleLine = null;
@@ -137,12 +139,11 @@ class Editor extends React.Component {
   }
   handleOutlineClick(heading) {
     const inCode = heading.source;
-    const cm = this.cmr.getCodeMirror();
     const value = this.state.raw;
     const pos = nthIndexOf(value, inCode, heading.dupIndex);
     const line = value.substr(0, pos).split('\n').length - 1;
-    cm.setCursor(line);
-    this.cmr.focus();
+    this.cm.setCursor(line);
+    this.cm.focus();
   }
   scrollPreviewToLine(ln) {
     let lineNode = this.previewColumn.querySelector(`strong[data-line="${ln}"]`);
@@ -152,9 +153,8 @@ class Editor extends React.Component {
     this.previewColumn.scrollTop = findRelativeOffset(lineNode, this.previewColumn);
   }
   scrollEditorToLine(ln) {
-    const cm = this.cmr.getCodeMirror();
-    const to = cm.charCoords({ line: ln - 1, ch: 0 }, 'local').top;
-    cm.scrollTo(null, to);
+    const to = this.cm.charCoords({ line: ln - 1, ch: 0 }, 'local').top;
+    this.cm.scrollTo(null, to);
   }
   handlePreviewScroll() {
     if (this.state.lastScrolled === 'editor') {
@@ -183,8 +183,8 @@ class Editor extends React.Component {
       });
       return;
     }
-    const offset = this.cmr.getCodeMirror().getViewport().from;
-    const [firstVisibleLineRelative] = this.getVisibleLines(this.cmr.getCodeMirror().getScrollerElement(), '.CodeMirror-line');
+    const offset = this.cm.getViewport().from;
+    const [firstVisibleLineRelative] = this.getVisibleLines(this.cm.getScrollerElement(), '.CodeMirror-line');
     const firstVisibleLine = firstVisibleLineRelative + offset;
     this.scrollPreviewToLine(firstVisibleLine);
     this.setState({
@@ -227,8 +227,8 @@ class Editor extends React.Component {
     this.availableCommands()[command].execute();
   }
   handleCursorActivity() {
-    if (this.cmr) {
-      const { line, ch } = this.cmr.getCodeMirror().getCursor();
+    if (this.cm) {
+      const { line, ch } = this.cm.getCursor();
       this.setState({
         ...this.state,
         cursorLine: line + 1,
@@ -376,7 +376,7 @@ class Editor extends React.Component {
     const newValue = moveSubstring(value, cutStart, cutEnd, pasteIndex);
 
     this.updateStateValue(newValue);
-    this.cmr.getCodeMirror().setValue(newValue);
+    this.cm.setValue(newValue);
   }
   generateOutline() {
     return generateOutline(
@@ -449,7 +449,7 @@ class Editor extends React.Component {
             ref={(el) => { this.commandPalette = el; }}
             options={commandPaletteOptions}
             onSelected={this.handleCommand}
-            onExit={() => { this.cmr.focus(); }}
+            onExit={() => { this.cm.focus(); }}
           />
           <div className="workspace">
             {
@@ -464,12 +464,7 @@ class Editor extends React.Component {
             }
             {this.state.columns.editor &&
             <div className="column" onScroll={this.handleEditorScroll} ref={(el) => { this.editorColumn = el; }}>
-              <CodeMirror
-                ref={(el) => { this.cmr = el; }}
-                value={this.state.raw}
-                onChange={this.handleChange}
-                options={this.state.options}
-              />
+              <textarea ref={(el) => { this.textarea = el; }} defaultValue={this.state.raw} />
             </div>
             }
             {this.state.columns.preview &&

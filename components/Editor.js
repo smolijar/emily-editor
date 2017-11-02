@@ -70,6 +70,8 @@ class Editor extends React.Component {
         'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()); },
       },
       keyMap: 'sublime',
+      // TODO fix dynamic change
+      height: 500,
     };
     this.handleChange = this.handleChange.bind(this);
     this.updateStateValue = this.updateStateValue.bind(this);
@@ -499,7 +501,6 @@ class Editor extends React.Component {
                   }
                   .CodeMirror {
                       font-family: 'Roboto Mono', monospace;
-                      height: auto;
                   }
                   .markup-editor {
                       position: relative;

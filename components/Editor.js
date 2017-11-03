@@ -8,6 +8,7 @@ import StatusBar from './StatusBar';
 import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline } from '../helpers/helpers';
 
 const STOPPED_TYPING_TIMEOUT = 300;
+const STOPPED_CURSOR_ACTIVITY_TIMEOUT = 300;
 
 class Editor extends React.Component {
   static propTypes = {
@@ -71,6 +72,8 @@ class Editor extends React.Component {
     this.handleOutlineOrderChange = this.handleOutlineOrderChange.bind(this);
     this.generateOutline = this.generateOutline.bind(this);
     this.handleStoppedTyping = this.handleStoppedTyping.bind(this);
+    this.handleStoppedCursorActivity = this.handleStoppedCursorActivity.bind(this);
+    this.updateCursor = this.updateCursor.bind(this);
     const html = this.generateHtml(props.content);
     const raw = props.content;
     this.state = {
@@ -82,6 +85,7 @@ class Editor extends React.Component {
       outline: this.generateOutline(this.props.content),
       newScrollTimer: null,
       stoppedTypingTimer: null,
+      stoppedCursorActivityTimer: null,
       columns: {
         editor: true,
         preview: true,
@@ -116,6 +120,7 @@ class Editor extends React.Component {
       ...this.state.options,
     });
     this.cm.on('change', cm => this.handleChange(cm.getValue()));
+    this.cm.on('cursorActivity', () => this.handleCursorActivity());
   }
   getVisibleLines(columnNode, lineSelector, numberSelector = null) {
     const editorScroll = columnNode.scrollTop;
@@ -214,7 +219,19 @@ class Editor extends React.Component {
   }
   handleStoppedTyping() {
     this.updateStateValue(this.state.raw);
-    this.handleCursorActivity();
+  }
+  handleStoppedCursorActivity() {
+    this.updateCursor();
+  }
+  updateCursor() {
+    if (this.cm) {
+      const { line, ch } = this.cm.getCursor();
+      this.setState({
+        ...this.state,
+        cursorLine: line + 1,
+        cursorCol: ch + 1,
+      });
+    }
   }
   generateHtml(_raw) {
     const raw = _raw
@@ -227,14 +244,16 @@ class Editor extends React.Component {
     this.availableCommands()[command].execute();
   }
   handleCursorActivity() {
-    if (this.cm) {
-      const { line, ch } = this.cm.getCursor();
-      this.setState({
-        ...this.state,
-        cursorLine: line + 1,
-        cursorCol: ch + 1,
-      });
+    if (this.state.stoppedCursorActivityTimer) {
+      clearTimeout(this.state.stoppedCursorActivityTimer);
     }
+    this.setState({
+      ...this.state,
+      stoppedCursorActivityTimer: setTimeout(
+        this.handleStoppedCursorActivity,
+        STOPPED_CURSOR_ACTIVITY_TIMEOUT,
+      ),
+    });
   }
   availableCommands() {
     return {

@@ -79,7 +79,7 @@ class Editor extends React.Component {
       raw,
       proportionalSizes: true,
       html,
-      outline: this.generateOutline(),
+      outline: this.generateOutline(this.props.content),
       newScrollTimer: null,
       stoppedTypingTimer: null,
       columns: {
@@ -199,7 +199,7 @@ class Editor extends React.Component {
       raw,
       html,
       loc: raw.split('\n').length,
-      outline: this.generateOutline(),
+      outline: this.generateOutline(raw),
     });
   }
   handleChange(value) {
@@ -378,9 +378,9 @@ class Editor extends React.Component {
     this.updateStateValue(newValue);
     this.cm.setValue(newValue);
   }
-  generateOutline() {
+  generateOutline(raw) {
     return generateOutline(
-      this.props.content,
+      raw,
       this.props.language.getToHtml(),
       this.props.language.headerRegex,
     );

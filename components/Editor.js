@@ -242,6 +242,7 @@ class Editor extends React.Component {
         text: 'Toggle: Line numbers',
         execute: () => {
           const to = !this.state.options.lineNumbers;
+          this.cm.setOption('lineNumbers', to);
           this.setState({
             ...this.state,
             options: {
@@ -255,11 +256,13 @@ class Editor extends React.Component {
       'options.lineWrapping': {
         text: 'Toggle: Line wrapping',
         execute: () => {
+          const to = !this.state.options.lineWrapping;
+          this.cm.setOption('lineWrapping', to);
           this.setState({
             ...this.state,
             options: {
               ...this.state.options,
-              lineWrapping: !this.state.options.lineWrapping,
+              lineWrapping: to,
             },
           });
         },

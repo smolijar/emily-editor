@@ -51,6 +51,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Cursor position hiding in html
 
 ### Fixed
+ - Propagation of cm option changes
+ - Outline generation handling
+ - CursorActivity handling
  - Scroll event cb fired onChange performance issue
  - Cursor activity performance issue
  - CodeMirror auto size performance issue

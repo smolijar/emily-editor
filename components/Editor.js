@@ -122,8 +122,8 @@ class Editor extends React.Component {
     this.cm.on('change', cm => this.handleChange(cm.getValue()));
     this.cm.on('cursorActivity', () => this.handleCursorActivity());
   }
-  getVisibleLines(columnNode, lineSelector, numberSelector = null) {
-    const editorScroll = columnNode.scrollTop;
+  getVisibleLines(columnNode, nodeScrollTop, lineSelector, numberSelector = null) {
+    const editorScroll = nodeScrollTop;
     let firstVisibleLine = null;
     const visibleLines = [...columnNode.querySelectorAll(lineSelector)]
       .map((_, i) => [_, i])
@@ -169,7 +169,7 @@ class Editor extends React.Component {
       });
       return;
     }
-    const [firstVisibleLine] = this.getVisibleLines(this.previewColumn, 'strong[data-line]', node => Number(node.dataset.line));
+    const [firstVisibleLine] = this.getVisibleLines(this.previewColumn, this.previewColumn.scrollTop, 'strong[data-line]', node => Number(node.dataset.line));
     this.scrollEditorToLine(firstVisibleLine);
     this.setState({
       ...this.state,
@@ -189,7 +189,7 @@ class Editor extends React.Component {
       return;
     }
     const offset = this.cm.getViewport().from;
-    const [firstVisibleLineRelative] = this.getVisibleLines(this.cm.getScrollerElement(), '.CodeMirror-line');
+    const [firstVisibleLineRelative] = this.getVisibleLines(this.cm.getScrollerElement(), this.cm.getScrollerElement().scrollTop + this.editorColumn.scrollTop, '.CodeMirror-line');
     const firstVisibleLine = firstVisibleLineRelative + offset;
     this.scrollPreviewToLine(firstVisibleLine);
     this.setState({

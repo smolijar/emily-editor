@@ -51,6 +51,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Cursor position hiding in html
 
 ### Fixed
+ - LineNinja replication
  - Propagation of cm option changes
  - Outline generation handling
  - CursorActivity handling

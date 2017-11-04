@@ -1,32 +1,23 @@
+const toggleCmOption = (editor, option) => {
+  const to = !editor.state.options[option];
+  editor.cm.setOption(option, to);
+  editor.setState({
+    ...editor.state,
+    options: {
+      ...editor.state.options,
+      [option]: to,
+    },
+  });
+};
+
 const getCommands = editor => ({
   'options.lineNumbers': {
     text: 'Toggle: Line numbers',
-    execute: () => {
-      const to = !editor.state.options.lineNumbers;
-      editor.cm.setOption('lineNumbers', to);
-      editor.setState({
-        ...editor.state,
-        options: {
-          ...editor.state.options,
-          lineNumbers: to,
-          foldGutter: to,
-        },
-      });
-    },
+    execute: () => toggleCmOption(editor, 'lineNumbers'),
   },
   'options.lineWrapping': {
     text: 'Toggle: Line wrapping',
-    execute: () => {
-      const to = !editor.state.options.lineWrapping;
-      editor.cm.setOption('lineWrapping', to);
-      editor.setState({
-        ...editor.state,
-        options: {
-          ...editor.state.options,
-          lineWrapping: to,
-        },
-      });
-    },
+    execute: () => toggleCmOption(editor, 'lineWrapping'),
   },
   'columns.both': {
     text: 'View: Editor & Preview',

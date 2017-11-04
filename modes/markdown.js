@@ -12,14 +12,15 @@ import ins from 'markdown-it-ins';
 import mark from 'markdown-it-mark';
 
 import twemoji from 'twemoji';
+import { ninjaRegex } from '../components/editor/lineNinja';
 
 const mdOptions = {
   linkify: true,
   typographer: true,
   highlight: (code) => {
-    const matches = code.match(/@@@([0-9]+)@@@/g);
+    const matches = code.match(ninjaRegex);
     const highlighted = hljs
-      .highlightAuto(code.replace(/@@@([0-9]+)@@@/g, ''))
+      .highlightAuto(code.replace(ninjaRegex, ''))
       .value
       .split('\n')
       .map((line, i) => line + (matches[i] || ''))

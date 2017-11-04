@@ -5,6 +5,7 @@ import screenfull from 'screenfull';
 import CommandPalette from './CommandPalette';
 import Outline from './Outline';
 import StatusBar from './StatusBar';
+import { createNinja, ninjasToHtml } from './editor/lineNinja';
 import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline } from '../helpers/helpers';
 
 const STOPPED_TYPING_TIMEOUT = 300;
@@ -236,9 +237,9 @@ class Editor extends React.Component {
   generateHtml(_raw) {
     const raw = _raw
       .split('\n')
-      .map((line, i) => this.props.language.lineSafeInsert(line, `@@@${i + 1}@@@`))
+      .map((line, i) => this.props.language.lineSafeInsert(line, createNinja(i)))
       .join('\n');
-    return this.props.language.getToHtml()(raw).replace(/@@@([0-9]+)@@@/g, '<strong data-line="$1">($1)</strong>');
+    return ninjasToHtml(this.props.language.getToHtml()(raw));
   }
   handleCommand(command) {
     this.availableCommands()[command].execute();

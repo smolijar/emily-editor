@@ -6,6 +6,7 @@ import CommandPalette from './CommandPalette';
 import Outline from './Outline';
 import StatusBar from './StatusBar';
 import { createNinja, ninjasToHtml } from './editor/lineNinja';
+import getCommands from './editor/commands';
 import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline } from '../helpers/helpers';
 
 const STOPPED_TYPING_TIMEOUT = 300;
@@ -68,7 +69,6 @@ class Editor extends React.Component {
     this.scrollPreviewToLine = this.scrollPreviewToLine.bind(this);
     this.handleCursorActivity = this.handleCursorActivity.bind(this);
     this.getVisibleLines = this.getVisibleLines.bind(this);
-    this.availableCommands = this.availableCommands.bind(this);
     this.toggleFullscreen = this.toggleFullscreen.bind(this);
     this.handleOutlineOrderChange = this.handleOutlineOrderChange.bind(this);
     this.generateOutline = this.generateOutline.bind(this);
@@ -242,7 +242,7 @@ class Editor extends React.Component {
     return ninjasToHtml(this.props.language.getToHtml()(raw));
   }
   handleCommand(command) {
-    this.availableCommands()[command].execute();
+    getCommands(this)[command].execute();
   }
   handleCursorActivity() {
     if (this.state.stoppedCursorActivityTimer) {
@@ -255,103 +255,6 @@ class Editor extends React.Component {
         STOPPED_CURSOR_ACTIVITY_TIMEOUT,
       ),
     });
-  }
-  availableCommands() {
-    return {
-      'options.lineNumbers': {
-        text: 'Toggle: Line numbers',
-        execute: () => {
-          const to = !this.state.options.lineNumbers;
-          this.cm.setOption('lineNumbers', to);
-          this.setState({
-            ...this.state,
-            options: {
-              ...this.state.options,
-              lineNumbers: to,
-              foldGutter: to,
-            },
-          });
-        },
-      },
-      'options.lineWrapping': {
-        text: 'Toggle: Line wrapping',
-        execute: () => {
-          const to = !this.state.options.lineWrapping;
-          this.cm.setOption('lineWrapping', to);
-          this.setState({
-            ...this.state,
-            options: {
-              ...this.state.options,
-              lineWrapping: to,
-            },
-          });
-        },
-      },
-      'columns.both': {
-        text: 'View: Editor & Preview',
-        execute: () => {
-          this.setState({
-            ...this.state,
-            columns: {
-              ...this.state.columns,
-              preview: true,
-              editor: true,
-            },
-          });
-        },
-      },
-      'columns.editor': {
-        text: 'View: Editor',
-        execute: () => {
-          this.setState({
-            ...this.state,
-            columns: {
-              ...this.state.columns,
-              preview: false,
-              editor: true,
-            },
-          });
-        },
-      },
-      'columns.preview': {
-        text: 'View: Preview',
-        execute: () => {
-          this.setState({
-            ...this.state,
-            columns: {
-              ...this.state.columns,
-              preview: true,
-              editor: false,
-            },
-          });
-        },
-      },
-      'columns.outline': {
-        text: 'Column outline',
-        execute: () => {
-          this.setState({
-            ...this.state,
-            columns: {
-              ...this.state.columns,
-              outline: !this.state.columns.outline,
-            },
-          });
-        },
-      },
-      proportionalSizes: {
-        text: 'Proportional sizes',
-        execute: () => {
-          this.setState({
-            ...this.state,
-            proportionalSizes: !this.state.proportionalSizes,
-          });
-        },
-      },
-      fullscreen: {
-        text: 'Toggle: Fullscreen',
-        execute: this.toggleFullscreen,
-      },
-    };
   }
   toggleFullscreen() {
     screenfull.on('change', () => {
@@ -425,7 +328,7 @@ class Editor extends React.Component {
     return null;
   }
   render() {
-    const commandPaletteOptions = Object.entries(this.availableCommands())
+    const commandPaletteOptions = Object.entries(getCommands(this))
       .reduce((acc, [k, v]) => { acc[k] = v.text; return acc; }, {});
     let markupEditorStyles = {
       display: 'flex',

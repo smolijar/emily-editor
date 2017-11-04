@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Statusbar
 
 ### Changed
+ - Extracted commands from editor
  - Scroll sync (effect stays same, rewritten due to cm auto height issue)
  - Use markdown-it instead of marked
  - Markdown mode seperated

@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+ - Next 4
+ - React 16
  - Esling babel
  - Build npm script
  - Lint as npm script
@@ -51,6 +53,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Scrolling synchronization
 
 ### Removed
+ - React 15
+ - Next 3
  - Unused props and state attrs
  - Heroku-postbuild npm script
  - react-codemirror

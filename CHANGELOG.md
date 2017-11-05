@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+ - Esling babel
+ - Build npm script
+ - Lint as npm script
+ - Travis configuration
  - Codemirror
  - HTML rendering timeout (not immidiate anymore)
  - Markdown preview GitHub style
@@ -47,6 +51,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Scrolling synchronization
 
 ### Removed
+ - Heroku-postbuild npm script
  - react-codemirror
  - marked dependency
  - Cursor position hiding in html

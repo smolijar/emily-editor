@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "dev": "node index.js",
-    "heroku-postbuild": "npm run build",
     "build": "next build",
     "start": "node index.js",
     "lint": "./node_modules/eslint/bin/eslint.js .",

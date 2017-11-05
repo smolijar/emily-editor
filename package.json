@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "node index.js",
-    "heroku-postbuild": "next build",
+    "build": "next build",
     "start": "node index.js",
+    "lint": "./node_modules/eslint/bin/eslint.js .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jaroslav Šmolík",
@@ -35,6 +36,7 @@
     "twemoji": "^2.5.0"
   },
   "devDependencies": {
+    "babel-eslint": "^8.0.1",
     "eslint": "^4.9.0",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.8.0",

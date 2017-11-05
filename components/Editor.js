@@ -23,8 +23,6 @@ class Editor extends React.Component {
       renderJsxStyle: PropTypes.func,
       previewClassName: PropTypes.string,
     }),
-    width: PropTypes.number,
-    height: PropTypes.number,
   }
   static defaultProps = {
     content: '',
@@ -34,8 +32,6 @@ class Editor extends React.Component {
       renderJsxStyle: () => {},
       previewClassName: '',
     },
-    width: 500,
-    height: 500,
   }
   constructor(props) {
     super(props);
@@ -54,8 +50,6 @@ class Editor extends React.Component {
         'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()); },
       },
       keyMap: 'sublime',
-      // TODO fix dynamic change
-      height: 500,
     };
     this.handleChange = this.handleChange.bind(this);
     this.updateStateValue = this.updateStateValue.bind(this);
@@ -78,13 +72,10 @@ class Editor extends React.Component {
     const html = this.generateHtml(props.content);
     const raw = props.content;
     this.state = {
-      width: props.width,
-      height: props.height,
       raw,
-      proportionalSizes: true,
       html,
       outline: this.generateOutline(this.props.content),
-      newScrollTimer: null,
+      proportionalSizes: true,
       stoppedTypingTimer: null,
       stoppedCursorActivityTimer: null,
       columns: {
@@ -423,7 +414,6 @@ class Editor extends React.Component {
                   }
                   .CodeMirror {
                       font-family: 'Roboto Mono', monospace;
-                      // TODO anything higher than editor window
                       height: 2000px;
                       overflow: visible;
                   }

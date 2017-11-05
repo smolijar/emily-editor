@@ -236,12 +236,12 @@ class Editor extends React.Component {
       });
     }
   }
-  generateHtml(_raw) {
-    const raw = _raw
+  generateHtml(raw) {
+    const rawWithNinjas = raw
       .split('\n')
       .map((line, i) => this.props.language.lineSafeInsert(line, createNinja(i)))
       .join('\n');
-    return ninjasToHtml(this.props.language.getToHtml()(raw));
+    return ninjasToHtml(this.props.language.getToHtml()(rawWithNinjas));
   }
   handleCommand(command) {
     getCommands(this)[command].execute();

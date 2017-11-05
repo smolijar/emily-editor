@@ -51,24 +51,35 @@ class Editor extends React.Component {
       },
       keyMap: 'sublime',
     };
+
+    // handlers
     this.handleChange = this.handleChange.bind(this);
-    this.updateStateValue = this.updateStateValue.bind(this);
-    this.generateHtml = this.generateHtml.bind(this);
-    this.handleOutlineClick = this.handleOutlineClick.bind(this);
-    this.renderProportianalStyles = this.renderProportianalStyles.bind(this);
     this.handleCommand = this.handleCommand.bind(this);
     this.handleEditorScroll = this.handleEditorScroll.bind(this);
     this.handlePreviewScroll = this.handlePreviewScroll.bind(this);
-    this.scrollEditorToLine = this.scrollEditorToLine.bind(this);
-    this.scrollPreviewToLine = this.scrollPreviewToLine.bind(this);
     this.handleCursorActivity = this.handleCursorActivity.bind(this);
-    this.getVisibleLines = this.getVisibleLines.bind(this);
-    this.toggleFullscreen = this.toggleFullscreen.bind(this);
-    this.handleOutlineOrderChange = this.handleOutlineOrderChange.bind(this);
-    this.generateOutline = this.generateOutline.bind(this);
     this.handleStoppedTyping = this.handleStoppedTyping.bind(this);
     this.handleStoppedCursorActivity = this.handleStoppedCursorActivity.bind(this);
+    this.handleOutlineClick = this.handleOutlineClick.bind(this);
+    this.handleOutlineOrderChange = this.handleOutlineOrderChange.bind(this);
+
+    // updaters
+    this.updateStateValue = this.updateStateValue.bind(this);
     this.updateCursor = this.updateCursor.bind(this);
+
+    // generators
+    this.generateHtml = this.generateHtml.bind(this);
+    this.generateOutline = this.generateOutline.bind(this);
+    this.renderProportianalStyles = this.renderProportianalStyles.bind(this);
+
+    // scrolling
+    this.scrollEditorToLine = this.scrollEditorToLine.bind(this);
+    this.scrollPreviewToLine = this.scrollPreviewToLine.bind(this);
+
+    // other
+    this.getVisibleLines = this.getVisibleLines.bind(this);
+    this.toggleFullscreen = this.toggleFullscreen.bind(this);
+
     const html = this.generateHtml(props.content);
     const raw = props.content;
     this.state = {

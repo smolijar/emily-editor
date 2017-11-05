@@ -51,12 +51,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Scrolling synchronization
 
 ### Removed
+ - Unused props and state attrs
  - Heroku-postbuild npm script
  - react-codemirror
  - marked dependency
  - Cursor position hiding in html
 
 ### Fixed
+ - Messy binding order
  - LineNinja replication
  - Propagation of cm option changes
  - Outline generation handling

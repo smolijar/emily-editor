@@ -23,8 +23,6 @@ class Editor extends React.Component {
       renderJsxStyle: PropTypes.func,
       previewClassName: PropTypes.string,
     }),
-    width: PropTypes.number,
-    height: PropTypes.number,
   }
   static defaultProps = {
     content: '',
@@ -34,8 +32,6 @@ class Editor extends React.Component {
       renderJsxStyle: () => {},
       previewClassName: '',
     },
-    width: 500,
-    height: 500,
   }
   constructor(props) {
     super(props);
@@ -54,37 +50,43 @@ class Editor extends React.Component {
         'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()); },
       },
       keyMap: 'sublime',
-      // TODO fix dynamic change
-      height: 500,
     };
+
+    // handlers
     this.handleChange = this.handleChange.bind(this);
-    this.updateStateValue = this.updateStateValue.bind(this);
-    this.generateHtml = this.generateHtml.bind(this);
-    this.handleOutlineClick = this.handleOutlineClick.bind(this);
-    this.renderProportianalStyles = this.renderProportianalStyles.bind(this);
     this.handleCommand = this.handleCommand.bind(this);
     this.handleEditorScroll = this.handleEditorScroll.bind(this);
     this.handlePreviewScroll = this.handlePreviewScroll.bind(this);
-    this.scrollEditorToLine = this.scrollEditorToLine.bind(this);
-    this.scrollPreviewToLine = this.scrollPreviewToLine.bind(this);
     this.handleCursorActivity = this.handleCursorActivity.bind(this);
-    this.getVisibleLines = this.getVisibleLines.bind(this);
-    this.toggleFullscreen = this.toggleFullscreen.bind(this);
-    this.handleOutlineOrderChange = this.handleOutlineOrderChange.bind(this);
-    this.generateOutline = this.generateOutline.bind(this);
     this.handleStoppedTyping = this.handleStoppedTyping.bind(this);
     this.handleStoppedCursorActivity = this.handleStoppedCursorActivity.bind(this);
+    this.handleOutlineClick = this.handleOutlineClick.bind(this);
+    this.handleOutlineOrderChange = this.handleOutlineOrderChange.bind(this);
+
+    // updaters
+    this.updateStateValue = this.updateStateValue.bind(this);
     this.updateCursor = this.updateCursor.bind(this);
+
+    // generators
+    this.generateHtml = this.generateHtml.bind(this);
+    this.generateOutline = this.generateOutline.bind(this);
+    this.renderProportianalStyles = this.renderProportianalStyles.bind(this);
+
+    // scrolling
+    this.scrollEditorToLine = this.scrollEditorToLine.bind(this);
+    this.scrollPreviewToLine = this.scrollPreviewToLine.bind(this);
+
+    // other
+    this.getVisibleLines = this.getVisibleLines.bind(this);
+    this.toggleFullscreen = this.toggleFullscreen.bind(this);
+
     const html = this.generateHtml(props.content);
     const raw = props.content;
     this.state = {
-      width: props.width,
-      height: props.height,
       raw,
-      proportionalSizes: true,
       html,
       outline: this.generateOutline(this.props.content),
-      newScrollTimer: null,
+      proportionalSizes: true,
       stoppedTypingTimer: null,
       stoppedCursorActivityTimer: null,
       columns: {
@@ -234,12 +236,12 @@ class Editor extends React.Component {
       });
     }
   }
-  generateHtml(_raw) {
-    const raw = _raw
+  generateHtml(raw) {
+    const rawWithNinjas = raw
       .split('\n')
       .map((line, i) => this.props.language.lineSafeInsert(line, createNinja(i)))
       .join('\n');
-    return ninjasToHtml(this.props.language.getToHtml()(raw));
+    return ninjasToHtml(this.props.language.getToHtml()(rawWithNinjas));
   }
   handleCommand(command) {
     getCommands(this)[command].execute();
@@ -423,7 +425,6 @@ class Editor extends React.Component {
                   }
                   .CodeMirror {
                       font-family: 'Roboto Mono', monospace;
-                      // TODO anything higher than editor window
                       height: 2000px;
                       overflow: visible;
                   }

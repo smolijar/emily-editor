@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+ - Dummy test
+ - `jest` and `enzyme`
+ - babelrc
+ - Travis test task
  - Next 4
  - React 16
  - Esling babel

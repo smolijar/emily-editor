@@ -69,7 +69,7 @@ const markdown = {
   // must include newline after
   headerRegex: /(#+\s+\S.*\n)|(\S.*\n(===+|---+)\n)/g,
   renderJsxStyle: () => (
-    <style jsx>{`
+    <style jsx global>{`
       .markdown-body {
         box-sizing: border-box;
         min-width: 200px;

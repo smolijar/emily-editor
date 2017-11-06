@@ -21,6 +21,9 @@
     ],
     "testMatch": [
       "**/?(*.)(spec|test).js?(x)"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*"
     ]
   },
   "dependencies": {

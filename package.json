@@ -8,8 +8,12 @@
     "build": "next build",
     "start": "node index.js",
     "lint": "./node_modules/eslint/bin/eslint.js .",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
+  "author": "Jaroslav Šmolík",
+  "license": "ISC",
   "jest": {
     "setupTestFrameworkScriptFile": "./test/enzym.config.js",
     "setupFiles": [
@@ -19,8 +23,6 @@
       "**/?(*.)(spec|test).js?(x)"
     ]
   },
-  "author": "Jaroslav Šmolík",
-  "license": "ISC",
   "dependencies": {
     "codemirror": "^5.31.0",
     "express": "^4.16.1",

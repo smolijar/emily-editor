@@ -2,8 +2,8 @@ import React from 'react';
 import { expect } from 'chai';
 import { mount } from 'enzyme';
 
-import Editor from '../../components/Editor';
-import markdown from '../../modes/markdown';
+import Editor from '../../src/components/Editor';
+import markdown from '../../src/modes/markdown';
 
 describe('<Editor />', () => {
   it('foo test', () => {

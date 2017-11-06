@@ -8,7 +8,16 @@
     "build": "next build",
     "start": "node index.js",
     "lint": "./node_modules/eslint/bin/eslint.js .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
+  },
+  "jest": {
+    "setupTestFrameworkScriptFile": "./test/enzym.config.js",
+    "setupFiles": [
+      "./test/shim.js"
+    ],
+    "testMatch": [
+      "**/?(*.)(spec|test).js?(x)"
+    ]
   },
   "author": "Jaroslav Šmolík",
   "license": "ISC",

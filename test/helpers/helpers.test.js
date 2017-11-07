@@ -32,24 +32,31 @@ describe('moveSubstring', () => {
   });
 });
 
+const flattenOutline = (outline, reverse = false) => {
+  const next = item => (reverse ? item.prev : item.next);
+  let current = outline[0];
+  if (reverse) {
+    const flattened = flattenOutline(outline, false);
+    current = flattened[flattened.length - 1];
+  }
+  const flatten = [];
+  while (next(current)) {
+    flatten.push(current);
+    current = next(current);
+  }
+  flatten.push(current);
+  return flatten;
+};
 
 describe('generateOutline', () => {
-  const flattenOutline = (outline, reverse = false) => {
-    const next = item => (reverse ? item.prev : item.next);
-    let current = outline[0];
-    if (reverse) {
-      const flattened = flattenOutline(outline, false);
-      current = flattened[flattened.length - 1];
-    }
-    const flatten = [];
-    while (next(current)) {
-      flatten.push(current);
-      current = next(current);
-    }
-    flatten.push(current);
-    return flatten;
-  };
-
+  describe('Empty', () => {
+    it('Empty text', () => {
+      expect(helpers.generateOutline('', () => '<h1></h1>', /.+/)).toEqual([]);
+    });
+    it('No match regex', () => {
+      expect(helpers.generateOutline('abc', () => '<h1></h1>', /[0-9]/)).toEqual([]);
+    });
+  });
   const text = 'Break yo neck,\n yll interdum yll volutpat tellus.\nUt nizzle adipiscing lorem. Donizzle\ncool break yo neck, yall.';
   const regex = /y\w*/g;
   const toHtml = (yo) => {
@@ -93,5 +100,38 @@ describe('generateOutline', () => {
     it('Traverse and join back to string', () => {
       expect(traversed.join(' ')).toEqual(text2);
     });
+  });
+});
+
+describe('findNextSibling', () => {
+  const text = `
+  .a
+  ..b
+  ..c
+  ....d
+  ....e
+  .f
+  .....g
+  ....h
+  ..i
+  ..j
+  ..k
+  ...l
+  ....m
+  .n
+  `;
+  const toHtml = (heading) => {
+    // count dots
+    const level = heading.split('.').length - 1;
+    return `<h${level}>${heading}</h${level}>`;
+  };
+  const regex = /\.+\w+/g;
+  const flatOutline = flattenOutline(helpers.generateOutline(text, toHtml, regex));
+  const got = flatOutline.map(h => (
+    helpers.findNextSibling(h) ? helpers.findNextSibling(h).content : null
+  ));
+  const expected = ['.f', '..c', '.f', '....e', '.f', '.n', '....h', '..i', '..j', '..k', '.n', '.n', '.n', null];
+  it('Find correctly next sections', () => {
+    expect(got).toEqual(expected);
   });
 });

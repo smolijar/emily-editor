@@ -52,6 +52,9 @@ class Editor extends React.Component {
       // keyMap: 'sublime',
     };
 
+    // API
+    this.getValue = this.getValue.bind(this);
+
     // handlers
     this.handleChange = this.handleChange.bind(this);
     this.handleCommand = this.handleCommand.bind(this);
@@ -115,6 +118,9 @@ class Editor extends React.Component {
     } else {
       console.error('CodeMirror is not defined. Forgot to include script?');
     }
+  }
+  getValue() {
+    return this.state.raw;
   }
   getVisibleLines(columnNode, nodeScrollTop, lineSelector, numberSelector = null) {
     const editorScroll = nodeScrollTop;

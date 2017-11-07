@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Head from 'next/head';
 import screenfull from 'screenfull';
 import CommandPalette from './CommandPalette';
 import Outline from './Outline';
@@ -8,6 +7,7 @@ import StatusBar from './StatusBar';
 import { createNinja, ninjasToHtml } from './editor/lineNinja';
 import getCommands from './editor/commands';
 import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline } from '../helpers/helpers';
+
 
 const STOPPED_TYPING_TIMEOUT = 300;
 const STOPPED_CURSOR_ACTIVITY_TIMEOUT = 300;
@@ -49,8 +49,11 @@ class Editor extends React.Component {
         'Ctrl-Space': 'autocomplete',
         'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()); },
       },
-      keyMap: 'sublime',
+      // keyMap: 'sublime',
     };
+
+    // API
+    this.getValue = this.getValue.bind(this);
 
     // handlers
     this.handleChange = this.handleChange.bind(this);
@@ -105,25 +108,19 @@ class Editor extends React.Component {
     };
   }
   componentDidMount() {
-    /* eslint-disable global-require */
-    const codemirror = require('codemirror');
-    require('codemirror/mode/markdown/markdown');
-    require('codemirror/keymap/sublime');
-    require('codemirror/addon/dialog/dialog');
-    require('codemirror/addon/search/search');
-    require('codemirror/addon/search/searchcursor');
-    require('codemirror/addon/search/jump-to-line');
-    require('codemirror/addon/edit/matchbrackets');
-    require('codemirror/addon/edit/closebrackets');
-    require('codemirror/addon/fold/foldcode');
-    require('codemirror/addon/fold/foldgutter');
-    require('codemirror/addon/fold/markdown-fold');
-    /* eslint-enable global-require */
-    this.cm = codemirror.fromTextArea(this.textarea, {
-      ...this.state.options,
-    });
-    this.cm.on('change', cm => this.handleChange(cm.getValue()));
-    this.cm.on('cursorActivity', () => this.handleCursorActivity());
+    /* global CodeMirror */
+    if (CodeMirror) {
+      this.cm = CodeMirror.fromTextArea(this.textarea, {
+        ...this.state.options,
+      });
+      this.cm.on('change', cm => this.handleChange(cm.getValue()));
+      this.cm.on('cursorActivity', () => this.handleCursorActivity());
+    } else {
+      console.error('CodeMirror is not defined. Forgot to include script?');
+    }
+  }
+  getValue() {
+    return this.state.raw;
   }
   getVisibleLines(columnNode, nodeScrollTop, lineSelector, numberSelector = null) {
     const editorScroll = nodeScrollTop;
@@ -346,15 +343,6 @@ class Editor extends React.Component {
     }
     return (
       <div className="markup-editor-wrapper">
-        <Head>
-          <link rel="stylesheet" type="text/css" href="markup-editor/lib/codemirror.css" />
-          <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet" />
-          <link rel="stylesheet" type="text/css" href="markup-editor/theme/material.css" />
-          <link rel="stylesheet" type="text/css" href="markup-editor/addon/dialog/dialog.css" />
-          <link rel="stylesheet" type="text/css" href="markup-editor/addon/fold/foldgutter.css" />
-          <link rel="stylesheet" type="text/css" href="hljs/styles/github.css" />
-          <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.9.0/github-markdown.min.css" />
-        </Head>
         <div
           className="markup-editor"
           role="presentation"

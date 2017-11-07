@@ -1,12 +1,15 @@
 // Find nth occurance of needle in haystack
-module.exports.nthIndexOf = (haystack, needle, n) => haystack.split(needle, n).join(needle).length;
+module.exports.nthIndexOf = (haystack, needle, n = 1) => haystack
+  .split(needle, n)
+  .join(needle)
+  .length;
 
 // Find next sibling in LML heading hierarchy
-// That first successor with greater or equal level
+// That first next with greater or equal level
 module.exports.findNextSibling = (heading) => {
-  let currentNode = heading.successor;
+  let currentNode = heading.next;
   while (currentNode && currentNode.level > heading.level) {
-    currentNode = currentNode.successor;
+    currentNode = currentNode.next;
   }
   return currentNode;
 };
@@ -45,7 +48,7 @@ module.exports.moveSubstring = (string, cutStartIndex, cutEndIndex, _pasteIndex)
 // Find headers in source code using headerRegex
 const findHeaders = (source, toHtml, headerRegex) => {
   const dupIndexMap = {};
-  return source.match(headerRegex).map((headerSource, index) => {
+  return (source.match(headerRegex) || []).map((headerSource, index) => {
     dupIndexMap[headerSource] = (dupIndexMap[headerSource] || 0) + 1;
     const html = toHtml(headerSource);
     const [, level, content] = html.match(/<h([0-9])[^<>]*>(.*)<\/h[0-9]>/);
@@ -66,42 +69,50 @@ module.exports.generateOutline = (source, toHtml, headerRegex) => {
       ...heading,
       children: [],
       path: [],
+      parent: null,
     }));
   headers.forEach((heading, i) => {
-    const predecessor = headers[i - 1] || null;
-    const successor = headers[i + 1] || null;
-    headers[i].predecessor = predecessor;
-    headers[i].successor = successor;
+    const prev = headers[i - 1] || null;
+    const next = headers[i + 1] || null;
+    headers[i].prev = prev;
+    headers[i].next = next;
   });
   const outline = headers
-    .reduce((acc, _val) => {
-      const val = _val;
-      function insert(into, what, ac) {
+    .reduce((acc, val) => {
+      const last = arr => arr[arr.length - 1] || null;
+      const insert = (into, what) => {
         if (into.children.length === 0 || what.level - into.level === 1) {
-          what.path.push(into.children.length);
-          into.children.push(what);
+          if (what.level === into.level) {
+            into.parent.children.push(what);
+          } else {
+            // TODO DRY
+            into.children.push({
+              ...what,
+              parent: into,
+              path: [...what.path, into.children.length],
+            });
+          }
         } else if (into.level < what.level) {
-          what.path.push(into.children.length - 1);
-          insert(into.children[into.children.length - 1], what, ac);
-        } else {
-          let anotherInto = ac[what.path[0]];
-          what.path.slice(1, what.path.length - 1).forEach((i) => {
-            anotherInto = anotherInto.children[i];
+          insert(last(into.children), {
+            ...what,
+            parent: into,
+            path: [...what.path, into.children.length - 1],
           });
-          anotherInto.children.push(what);
-        }
-      }
-      if (acc.length === 0) {
-        acc.push({ ...val, path: [0] });
-      } else {
-        const lastHeading = acc[acc.length - 1];
-        const lastLevel = lastHeading.level;
-        if (val.level <= lastLevel) {
-          acc.push({ ...val, path: [acc.length - 1] });
         } else {
-          val.path = [acc.length - 1];
-          insert(acc[acc.length - 1], val, acc);
+          // TODO DRY
+          into.children.push({
+            ...what,
+            parent: into,
+            path: [...what.path, into.children.length],
+          });
         }
+      };
+      const lastHeading = last(acc);
+      const lastLevel = lastHeading ? lastHeading.level : 1;
+      if (acc.length === 0 || val.level <= lastLevel) {
+        acc.push({ ...val, path: [Math.max(acc.length, 1) - 1] });
+      } else {
+        insert(lastHeading, { ...val, path: [acc.length - 1] }, acc);
       }
       return acc;
     }, []);

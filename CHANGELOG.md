@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+ - Editor simple test
+ - Simplify outline generation
+ - Helpers test
  - Dummy test
  - `jest` and `enzyme`
  - babelrc
@@ -43,6 +46,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Statusbar
 
 ### Changed
+ - Created hub and test CSR (instead of just SSR)
+ - Editor moved to `src`
  - Extracted commands from editor
  - Scroll sync (effect stays same, rewritten due to cm auto height issue)
  - Use markdown-it instead of marked

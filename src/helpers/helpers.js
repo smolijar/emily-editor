@@ -82,11 +82,16 @@ module.exports.generateOutline = (source, toHtml, headerRegex) => {
       const last = arr => arr[arr.length - 1] || null;
       const insert = (into, what) => {
         if (into.children.length === 0 || what.level - into.level === 1) {
-          into.children.push({
-            ...what,
-            parent: into,
-            path: [...what.path, into.children.length],
-          });
+          if (what.level === into.level) {
+            into.parent.children.push(what);
+          } else {
+            // TODO DRY
+            into.children.push({
+              ...what,
+              parent: into,
+              path: [...what.path, into.children.length],
+            });
+          }
         } else if (into.level < what.level) {
           insert(last(into.children), {
             ...what,
@@ -94,7 +99,12 @@ module.exports.generateOutline = (source, toHtml, headerRegex) => {
             path: [...what.path, into.children.length - 1],
           });
         } else {
-          into.parent.children.push(what);
+          // TODO DRY
+          into.children.push({
+            ...what,
+            parent: into,
+            path: [...what.path, into.children.length],
+          });
         }
       };
       const lastHeading = last(acc);

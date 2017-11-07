@@ -77,8 +77,7 @@ module.exports.generateOutline = (source, toHtml, headerRegex) => {
     headers[i].successor = successor;
   });
   const outline = headers
-    .reduce((acc, _val) => {
-      const val = _val;
+    .reduce((acc, val) => {
       function insert(into, what, ac) {
         if (into.children.length === 0 || what.level - into.level === 1) {
           what.path.push(into.children.length);

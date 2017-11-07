@@ -1,5 +1,8 @@
 // Find nth occurance of needle in haystack
-module.exports.nthIndexOf = (haystack, needle, n) => haystack.split(needle, n).join(needle).length;
+module.exports.nthIndexOf = (haystack, needle, n = 1) => haystack
+  .split(needle, n)
+  .join(needle)
+  .length;
 
 // Find next sibling in LML heading hierarchy
 // That first successor with greater or equal level

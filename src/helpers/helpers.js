@@ -5,11 +5,11 @@ module.exports.nthIndexOf = (haystack, needle, n = 1) => haystack
   .length;
 
 // Find next sibling in LML heading hierarchy
-// That first successor with greater or equal level
+// That first next with greater or equal level
 module.exports.findNextSibling = (heading) => {
-  let currentNode = heading.successor;
+  let currentNode = heading.next;
   while (currentNode && currentNode.level > heading.level) {
-    currentNode = currentNode.successor;
+    currentNode = currentNode.next;
   }
   return currentNode;
 };
@@ -72,10 +72,10 @@ module.exports.generateOutline = (source, toHtml, headerRegex) => {
       parent: null,
     }));
   headers.forEach((heading, i) => {
-    const predecessor = headers[i - 1] || null;
-    const successor = headers[i + 1] || null;
-    headers[i].predecessor = predecessor;
-    headers[i].successor = successor;
+    const prev = headers[i - 1] || null;
+    const next = headers[i + 1] || null;
+    headers[i].prev = prev;
+    headers[i].next = next;
   });
   const outline = headers
     .reduce((acc, val) => {

@@ -35,7 +35,7 @@ describe('moveSubstring', () => {
 
 describe('generateOutline', () => {
   const flattenOutline = (outline, reverse = false) => {
-    const next = item => (reverse ? item.predecessor : item.successor);
+    const next = item => (reverse ? item.prev : item.next);
     let current = outline[0];
     if (reverse) {
       const flattened = flattenOutline(outline, false);
@@ -78,7 +78,7 @@ describe('generateOutline', () => {
     });
   });
 
-  describe('Successor and predecessor traversal', () => {
+  describe('next and prev traversal', () => {
     const path = flattenOutline(yoOutline)
       .concat(flattenOutline(yoOutline, true))
       .reduce((acc, val) => acc.concat(val.content), []);

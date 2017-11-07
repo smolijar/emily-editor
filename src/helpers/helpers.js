@@ -69,6 +69,7 @@ module.exports.generateOutline = (source, toHtml, headerRegex) => {
       ...heading,
       children: [],
       path: [],
+      parent: null,
     }));
   headers.forEach((heading, i) => {
     const predecessor = headers[i - 1] || null;
@@ -78,13 +79,18 @@ module.exports.generateOutline = (source, toHtml, headerRegex) => {
   });
   const outline = headers
     .reduce((acc, val) => {
-      function insert(into, what, ac) {
+      const last = arr => arr[arr.length - 1] || null;
+      const insert = (into, what, ac) => {
         if (into.children.length === 0 || what.level - into.level === 1) {
-          what.path.push(into.children.length);
-          into.children.push(what);
+          into.children.push({
+            ...what,
+            path: [...what.path, into.children.length],
+          });
         } else if (into.level < what.level) {
-          what.path.push(into.children.length - 1);
-          insert(into.children[into.children.length - 1], what, ac);
+          insert(last(into.children), {
+            ...what,
+            path: [...what.path, into.children.length - 1],
+          }, ac);
         } else {
           let anotherInto = ac[what.path[0]];
           what.path.slice(1, what.path.length - 1).forEach((i) => {
@@ -92,13 +98,13 @@ module.exports.generateOutline = (source, toHtml, headerRegex) => {
           });
           anotherInto.children.push(what);
         }
-      }
-      const lastHeading = acc[acc.length - 1];
+      };
+      const lastHeading = last(acc);
       const lastLevel = lastHeading ? lastHeading.level : 1;
       if (acc.length === 0 || val.level <= lastLevel) {
         acc.push({ ...val, path: [Math.max(acc.length, 1) - 1] });
       } else {
-        insert(acc[acc.length - 1], { ...val, path: [acc.length - 1] }, acc);
+        insert(lastHeading, { ...val, path: [acc.length - 1] }, acc);
       }
       return acc;
     }, []);

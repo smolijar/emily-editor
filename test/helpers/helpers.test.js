@@ -33,64 +33,64 @@ describe('moveSubstring', () => {
 });
 
 
-describe('findHeaders', () => {
+describe('generateOutline', () => {
+  const flattenOutline = (outline, reverse = false) => {
+    const next = item => (reverse ? item.predecessor : item.successor);
+    let current = outline[0];
+    if (reverse) {
+      const flattened = flattenOutline(outline, false);
+      current = flattened[flattened.length - 1];
+    }
+    const flatten = [];
+    while (next(current)) {
+      flatten.push(current);
+      current = next(current);
+    }
+    flatten.push(current);
+    return flatten;
+  };
+
   const text = 'Break yo neck,\n yll interdum yll volutpat tellus.\nUt nizzle adipiscing lorem. Donizzle\ncool break yo neck, yall.';
   const regex = /y\w*/g;
   const toHtml = (yo) => {
     const level = yo.length - 1;
     return `<h${level}>${yo}</h${level}>`;
   };
-  const outline = helpers.generateOutline(text, toHtml, regex);
+  const yoOutline = helpers.generateOutline(text, toHtml, regex);
 
   describe('Yo level1 2x', () => {
     it('2x', () => {
-      expect(outline.length).toBe(2);
+      expect(yoOutline.length).toBe(2);
     });
     it('level1', () => {
-      expect(outline.map(h => h.level)).toEqual([1, 1]);
+      expect(yoOutline.map(h => h.level)).toEqual([1, 1]);
     });
   });
   describe('Yall level2 2x in first', () => {
     it('2x', () => {
-      expect(outline[0].children.length).toBe(2);
+      expect(yoOutline[0].children.length).toBe(2);
     });
     it('level1', () => {
-      expect(outline[0].children.map(h => h.level)).toEqual([2, 2]);
+      expect(yoOutline[0].children.map(h => h.level)).toEqual([2, 2]);
     });
     it('valid path', () => {
-      expect(outline[0].path).toEqual([0]);
+      expect(yoOutline[0].path).toEqual([0]);
     });
   });
 
   describe('Successor and predecessor traversal', () => {
-    let current = outline[0];
-    const path = [];
-    while (current.successor) {
-      path.push(current.content);
-      current = current.successor;
-    }
-    path.push(current.content);
-    while (current.predecessor) {
-      path.push(current.content);
-      current = current.predecessor;
-    }
-    path.push(current.content);
+    const path = flattenOutline(yoOutline)
+      .concat(flattenOutline(yoOutline, true))
+      .reduce((acc, val) => acc.concat(val.content), []);
     it('Traverse back and forth', () => {
       expect(path).toEqual(text.match(regex).concat(text.match(regex).reverse()));
     });
   });
-  const text2 = 'y yy yy yyy yyy yyyy yyyy yyyyy y yyyyy yyyy yyyy yyy yyy yy yy y';
-  const outline2 = helpers.generateOutline(text2, toHtml, regex);
-  const traversed = [];
-  let cur = outline2[0];
-  while (cur.successor) {
-    traversed.push(cur.content);
-    cur = cur.successor;
-  }
-  traversed.push(cur.content);
-
-  describe('Test full hierarchy', () => {
-    it('Traverse', () => {
+  const text2 = 'y yyy yyy yyy yyy y yyyy yyyy yyyyy y yyyyy yyyy yyyy yyy yyy yy yy y';
+  const yOutline = helpers.generateOutline(text2, toHtml, regex);
+  const traversed = flattenOutline(yOutline).reduce((acc, val) => acc.concat(val.content), []);
+  describe('Test full hierarchy with skipping levels', () => {
+    it('Traverse and join back to string', () => {
       expect(traversed.join(' ')).toEqual(text2);
     });
   });

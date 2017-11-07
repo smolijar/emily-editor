@@ -4,6 +4,87 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.2.0] - 2017-11-07
+### Added
+ - Editor simple test
+ - Simplify outline generation
+ - Helpers test
+ - Dummy test
+ - `jest` and `enzyme`
+ - babelrc
+ - Travis test task
+ - Next 4
+ - React 16
+ - Esling babel
+ - Build npm script
+ - Lint as npm script
+ - Travis configuration
+ - Codemirror
+ - HTML rendering timeout (not immidiate anymore)
+ - Markdown preview GitHub style
+ - Markdown preview abbr
+ - Markdown preview deflist
+ - Markdown preview sub, sup, ins
+ - Markdown preview mark
+ - Markdown preview footnotes
+ - Markdown preview emoji
+ - Markdown preview code highlight
+ - Heroku postbuild script
+ - npm start script
+ - Reordering sections in outline feature
+ - Outline appearance
+ - Fullscreen mode
+ - Cursor postition statusbar
+ - Airbnb coding style
+ - Local demo markdown document
+ - Proportional font sizes option
+ - Enlarge editor demo size
+ - Multiple addons with more or less basic configuration
+ - Src line no hiding in html
+ - Scrolling synchronization for both columns
+ - Scrolling onScroll event
+ - Statusbar
+
+### Changed
+ - Created hub and test CSR (instead of just SSR)
+ - Editor moved to `src`
+ - Extracted commands from editor
+ - Scroll sync (effect stays same, rewritten due to cm auto height issue)
+ - Use markdown-it instead of marked
+ - Markdown mode seperated
+ - Port is accepted from env
+ - Scattered helper functions are in seperate file
+ - Outline as component is in seperate file
+ - Fixed editor size to fluid parent
+ - Language specific func. is provided as prop
+ - Make more scrolling breakpoints
+ - Scrolling sync. using lang. specific function
+ - Scrolling synchronization
+
+### Removed
+ - React 15
+ - Next 3
+ - Unused props and state attrs
+ - Heroku-postbuild npm script
+ - react-codemirror
+ - marked dependency
+ - Cursor position hiding in html
+
+### Fixed
+ - Messy binding order
+ - LineNinja replication
+ - Propagation of cm option changes
+ - Outline generation handling
+ - CursorActivity handling
+ - Scroll event cb fired onChange performance issue
+ - Cursor activity performance issue
+ - CodeMirror auto size performance issue
+ - Markdown lineSafeInsert
+ - Demo initalProps SSR domain independent
+ - Outline lookup with duplicate header source codes
+ - Proportional font sizes
+ - Scroll sync. in both columns
+
 ## [0.1.0] - 2017-10-16
 ### Added
  - Readme
@@ -19,4 +100,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Live html rendered preview column
  - CodeMirror editor
 
+[0.2.0]: https://github.com/grissius/markup-editor/compare/v0.1.0...v0.2.0
 [0.1.0]: v0.0.0..v0.1.0

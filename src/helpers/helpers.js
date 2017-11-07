@@ -94,17 +94,12 @@ module.exports.generateOutline = (source, toHtml, headerRegex) => {
           anotherInto.children.push(what);
         }
       }
-      if (acc.length === 0) {
-        acc.push({ ...val, path: [0] });
+      const lastHeading = acc[acc.length - 1];
+      const lastLevel = lastHeading ? lastHeading.level : 1;
+      if (acc.length === 0 || val.level <= lastLevel) {
+        acc.push({ ...val, path: [Math.max(acc.length, 1) - 1] });
       } else {
-        const lastHeading = acc[acc.length - 1];
-        const lastLevel = lastHeading.level;
-        if (val.level <= lastLevel) {
-          acc.push({ ...val, path: [acc.length - 1] });
-        } else {
-          val.path = [acc.length - 1];
-          insert(acc[acc.length - 1], val, acc);
-        }
+        insert(acc[acc.length - 1], { ...val, path: [acc.length - 1] }, acc);
       }
       return acc;
     }, []);

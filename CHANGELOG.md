@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [0.2.0] - 2017-11-07
 ### Added
  - Editor simple test
  - Simplify outline generation
@@ -100,5 +100,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Live html rendered preview column
  - CodeMirror editor
 
-[Unreleased]: https://github.com/grissius/markup-editor/compare/dev...master
+[0.2.0]: https://github.com/grissius/markup-editor/compare/v0.1.0...v0.2.0
 [0.1.0]: v0.0.0..v0.1.0

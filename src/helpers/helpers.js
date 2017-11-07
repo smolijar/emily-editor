@@ -80,23 +80,21 @@ module.exports.generateOutline = (source, toHtml, headerRegex) => {
   const outline = headers
     .reduce((acc, val) => {
       const last = arr => arr[arr.length - 1] || null;
-      const insert = (into, what, ac) => {
+      const insert = (into, what) => {
         if (into.children.length === 0 || what.level - into.level === 1) {
           into.children.push({
             ...what,
+            parent: into,
             path: [...what.path, into.children.length],
           });
         } else if (into.level < what.level) {
           insert(last(into.children), {
             ...what,
+            parent: into,
             path: [...what.path, into.children.length - 1],
-          }, ac);
-        } else {
-          let anotherInto = ac[what.path[0]];
-          what.path.slice(1, what.path.length - 1).forEach((i) => {
-            anotherInto = anotherInto.children[i];
           });
-          anotherInto.children.push(what);
+        } else {
+          into.parent.children.push(what);
         }
       };
       const lastHeading = last(acc);

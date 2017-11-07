@@ -10,7 +10,7 @@
     "lint": "./node_modules/eslint/bin/eslint.js .",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
+    "test:coverage": "jest --coverage",
     "test:ceveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "author": "Jaroslav Šmolík",

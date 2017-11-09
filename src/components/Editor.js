@@ -33,6 +33,7 @@ class Editor extends React.Component {
       previewClassName: '',
     },
   }
+  /* eslint-disable max-statements */
   constructor(props) {
     super(props);
     const defaultCmOptions = {
@@ -107,6 +108,7 @@ class Editor extends React.Component {
       cursorCol: 1,
     };
   }
+  /* eslint-enable max-statements */
   componentDidMount() {
     /* global CodeMirror */
     if (CodeMirror) {

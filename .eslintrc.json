@@ -13,6 +13,24 @@
     },
     "rules": {
         "no-console": 0,
-        "react/jsx-filename-extension": 0
+        "react/jsx-filename-extension": 0,
+        "complexity": [
+            "error",
+            {
+                "max": 5
+            }
+        ],
+        "max-depth": [
+            "error",
+            {
+                "max": 2
+            }
+        ],
+        "max-statements": [
+            "error",
+            {
+                "max": 10
+            }
+        ]
     }
 }

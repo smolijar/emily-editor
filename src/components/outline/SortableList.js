@@ -50,7 +50,6 @@ const SortableList = SortableContainer(({
         key={`item-${value.index}`}
         index={index}
         value={value}
-        pressDelay={200}
         hidden={hidden}
         onOrderChange={onOrderChange}
         onItemClick={onItemClick}

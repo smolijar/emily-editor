@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import screenfull from 'screenfull';
+import autoBind from 'react-autobind';
 import CommandPalette from './CommandPalette';
 import Outline from './Outline';
 import StatusBar from './StatusBar';
@@ -33,7 +34,6 @@ class Editor extends React.Component {
       previewClassName: '',
     },
   }
-  /* eslint-disable max-statements */
   constructor(props) {
     super(props);
     const defaultCmOptions = {
@@ -53,36 +53,7 @@ class Editor extends React.Component {
       // keyMap: 'sublime',
     };
 
-    // API
-    this.getValue = this.getValue.bind(this);
-
-    // handlers
-    this.handleChange = this.handleChange.bind(this);
-    this.handleCommand = this.handleCommand.bind(this);
-    this.handleEditorScroll = this.handleEditorScroll.bind(this);
-    this.handlePreviewScroll = this.handlePreviewScroll.bind(this);
-    this.handleCursorActivity = this.handleCursorActivity.bind(this);
-    this.handleStoppedTyping = this.handleStoppedTyping.bind(this);
-    this.handleStoppedCursorActivity = this.handleStoppedCursorActivity.bind(this);
-    this.handleOutlineClick = this.handleOutlineClick.bind(this);
-    this.handleOutlineOrderChange = this.handleOutlineOrderChange.bind(this);
-
-    // updaters
-    this.updateStateValue = this.updateStateValue.bind(this);
-    this.updateCursor = this.updateCursor.bind(this);
-
-    // generators
-    this.generateHtml = this.generateHtml.bind(this);
-    this.generateOutline = this.generateOutline.bind(this);
-    this.renderProportianalStyles = this.renderProportianalStyles.bind(this);
-
-    // scrolling
-    this.scrollEditorToLine = this.scrollEditorToLine.bind(this);
-    this.scrollPreviewToLine = this.scrollPreviewToLine.bind(this);
-
-    // other
-    this.getVisibleLines = this.getVisibleLines.bind(this);
-    this.toggleFullscreen = this.toggleFullscreen.bind(this);
+    autoBind(this);
 
     const html = this.generateHtml(props.content);
     const raw = props.content;
@@ -108,7 +79,6 @@ class Editor extends React.Component {
       cursorCol: 1,
     };
   }
-  /* eslint-enable max-statements */
   componentDidMount() {
     /* global CodeMirror */
     if (CodeMirror) {

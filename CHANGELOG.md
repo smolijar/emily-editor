@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Section reordering tests
  - Lightweight markup mock language _dot_ for testing
  - Simple markdown mode tests
+ - ESlint code quality settings
+ - `react-autobind`
 
 ### Changed
  - Outline styles to feel more spacey-ish
@@ -21,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
  - Section reordering for edge sections
+ - Code quality following new eslint rules
 
 ## [0.2.0] - 2017-11-07
 ### Added

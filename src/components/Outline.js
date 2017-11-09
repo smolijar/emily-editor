@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import autoBind from 'react-autobind';
 import SortableList from './outline/SortableList';
 
 class Outline extends React.Component {
@@ -17,7 +18,7 @@ class Outline extends React.Component {
   }
   constructor(props) {
     super(props);
-    this.onSectionToggle = this.onSectionToggle.bind(this);
+    autoBind(this);
     this.state = {
       hidden: {},
     };

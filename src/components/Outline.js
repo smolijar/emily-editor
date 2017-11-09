@@ -49,6 +49,7 @@ class Outline extends React.Component {
               background-color: #222;
               color: #ddd;
               min-height: 100%;
+              padding: 2px 5px 2px 0;
             }
             button:active, button:focus {
               outline: 0;
@@ -58,16 +59,6 @@ class Outline extends React.Component {
               padding-left: 15px;
               margin-bottom: 5px;
               position: relative;
-            }
-            .list:not(:first-child)::before {
-              content: '';
-              position: absolute;
-              top: 0;
-              left: 0.22em;
-              background-color: #444;
-              display: block;
-              width: 1px;
-              height: 100%;
             }
             .list:first-child {
               margin-top: 0;
@@ -86,6 +77,18 @@ class Outline extends React.Component {
             }
             .item {
               margin: 2px 0;
+            }
+            .item .item-wrapper {
+              background: rgba(255,255,255,.1);
+              display: block;
+              margin: 4px;
+              padding: 4px;
+              width: calc(100% - 5px);
+              padding-left: 10px;
+            }
+            .item .item-wrapper:hover {
+              opacity: 0.6;
+              border-right: 5px solid #bbb;
             }
             .item .dragHandle, .item .toggle {
               display: inline-block;
@@ -113,13 +116,12 @@ class Outline extends React.Component {
               padding: 0 0 0 0.21em;
             }
             .item button.outlineItem {
-              width: calc(100% - 42px);
+              width: calc(100% - 60px);
               position: absolute;
             }
             .item button {
               font-weight: bold;
               cursor: pointer;
-              display: inline-block;
               text-align: left;
               color: #ddd;
               background-color: transparent;
@@ -130,11 +132,17 @@ class Outline extends React.Component {
               border: 0;
             }
             .item.level-1, .item.level-1 button { font-size: 16px; }
+            .item.level-1 .item-wrapper { padding-top: 8px; padding-bottom: 8px; background: rgba(255,255,255,.1) }
             .item.level-2, .item.level-2 button { font-size: 14px; }
+            .item.level-2 .item-wrapper { padding-top: 5px; padding-bottom: 5px; background: rgba(255,255,255,.1) }
             .item.level-3, .item.level-3 button { font-size: 12px; }
+            .item.level-3 .item-wrapper { padding-top: 2px; padding-bottom: 2px; background: rgba(255,255,255,.05) }
             .item.level-4, .item.level-4 button { font-size: 12px; }
+            .item.level-4 .item-wrapper { padding-top: 2px; padding-bottom: 2px; background: rgba(255,255,255,.05) }
             .item.level-5, .item.level-5 button { font-size: 12px; }
+            .item.level-5 .item-wrapper { padding-top: 1px; padding-bottom: 1px; background: rgba(255,255,255,.025) }
             .item.level-6, .item.level-6 button { font-size: 12px; }
+            .item.level-6 .item-wrapper { padding-top: 0; padding-bottom: 0; background: rgba(255,255,255,.025) }
         `}
         </style>
       </div>

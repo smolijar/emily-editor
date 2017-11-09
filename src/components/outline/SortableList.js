@@ -12,13 +12,13 @@ const SortableItem = SortableElement(({
   const key = `${value.content}${value.index}`;
   return (
     <li className={`item level-${value.level}`}>
+      <button
+        className={`toggle ${value.children.length > 0 ? '' : 'invisible'} ${hidden[key] ? 'closed' : 'opened'}`}
+        onClick={() => onSectionToggle(key)}
+      />
       <button className="item-wrapper" onClick={() => onItemClick(value)}>
-        <button
-          className={`toggle ${value.children.length > 0 ? '' : 'invisible'} ${hidden[key] ? 'closed' : 'opened'}`}
-          onClick={() => onSectionToggle(key)}
-        />
         <DragHandle />
-        <button
+        <span
           className="outlineItem"
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: value.content.replace(/<[^>]*>/g, '') }}

@@ -115,7 +115,7 @@ class Editor extends React.Component {
       });
       this.cm.on('change', cm => this.handleChange(cm.getValue()));
       this.cm.on('cursorActivity', () => this.handleCursorActivity());
-    } else {
+    } else if (process.env.NODE_ENV !== 'test') {
       console.error('CodeMirror is not defined. Forgot to include script?');
     }
   }
@@ -293,15 +293,20 @@ class Editor extends React.Component {
 
     // Find indicies
     const value = this.state.raw;
-    const cutStart = nthIndexOf(value, movingItem.source, movingItem.dupIndex);
-    const cutEnd = nthIndexOf(value, nextSibling.source, nextSibling.dupIndex);
-    const pasteIndex = nthIndexOf(value, targetItem.source, targetItem.dupIndex);
+    const cutStart = movingItem ?
+      nthIndexOf(value, movingItem.source, movingItem.dupIndex) : value.length;
+    const cutEnd = nextSibling ?
+      nthIndexOf(value, nextSibling.source, nextSibling.dupIndex) : value.length;
+    const pasteIndex = targetItem ?
+      nthIndexOf(value, targetItem.source, targetItem.dupIndex) : value.length;
 
     // Move the section
     const newValue = moveSubstring(value, cutStart, cutEnd, pasteIndex);
 
     this.updateStateValue(newValue);
-    this.cm.setValue(newValue);
+    if (this.cm) {
+      this.cm.setValue(newValue);
+    }
   }
   generateOutline(raw) {
     return generateOutline(
@@ -471,7 +476,7 @@ class Editor extends React.Component {
                   }
                 `}
         </style>
-        {this.props.language.renderJsxStyle()}
+        {this.props.language.renderJsxStyle && this.props.language.renderJsxStyle()}
         {this.renderProportianalStyles()}
       </div>
     );

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Section reordering tests
  - Lightweight markup mock language _dot_ for testing
+ - Simple markdown mode tests
 
 ### Changed
  - Outline styles to feel more spacey-ish

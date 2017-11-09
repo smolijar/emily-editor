@@ -115,7 +115,7 @@ class Editor extends React.Component {
       });
       this.cm.on('change', cm => this.handleChange(cm.getValue()));
       this.cm.on('cursorActivity', () => this.handleCursorActivity());
-    } else {
+    } else if (process.env.NODE_ENV !== 'test') {
       console.error('CodeMirror is not defined. Forgot to include script?');
     }
   }
@@ -301,7 +301,9 @@ class Editor extends React.Component {
     const newValue = moveSubstring(value, cutStart, cutEnd, pasteIndex);
 
     this.updateStateValue(newValue);
-    this.cm.setValue(newValue);
+    if (this.cm) {
+      this.cm.setValue(newValue);
+    }
   }
   generateOutline(raw) {
     return generateOutline(

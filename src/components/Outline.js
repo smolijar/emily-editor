@@ -77,6 +77,7 @@ class Outline extends React.Component {
             }
             .item {
               margin: 2px 0;
+              position: relative;
             }
             .item .item-wrapper {
               background: rgba(255,255,255,.1);
@@ -85,6 +86,7 @@ class Outline extends React.Component {
               padding: 4px;
               width: calc(100% - 5px);
               padding-left: 10px;
+              padding-left: 23px;
             }
             .item .item-wrapper:hover {
               opacity: 0.6;
@@ -94,6 +96,12 @@ class Outline extends React.Component {
               display: inline-block;
               cursor: pointer;
               opacity: 0.5;
+            }
+            .item .toggle {
+              position: absolute;
+              left: 12px;
+              top: 0.12em;
+              z-index: 1;
             }
             .item .dragHandle {
               margin-right: 5px;

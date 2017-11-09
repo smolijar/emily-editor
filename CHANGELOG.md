@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Changed
+ - Outline styles to feel more spacey-ish
+ - Thinner editor border
+ - Broaden outline column
+
+### Removed
+ - Draggable delay in outline
+
 ## [0.2.0] - 2017-11-07
 ### Added
  - Editor simple test
@@ -101,4 +110,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - CodeMirror editor
 
 [0.2.0]: https://github.com/grissius/markup-editor/compare/v0.1.0...v0.2.0
-[0.1.0]: v0.0.0..v0.1.0
+[0.1.0]: https://github.com/grissius/markup-editor/compare/v0.0.0...v0.1.0

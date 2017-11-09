@@ -418,7 +418,7 @@ class Editor extends React.Component {
                   }
                   .markup-editor {
                       position: relative;
-                      border: 3px solid #222;
+                      border: 1px solid #222;
                       border-bottom: 0;
                       width: auto;
                       height: auto;
@@ -456,14 +456,14 @@ class Editor extends React.Component {
                       align-items: flex-start;
                   }
                   .markup-editor .workspace > .column {
-                      flex: 3;
+                      flex: 6;
                       position: relative; // important for scroll synchro!
                       overflow-y: scroll;
                       overflow-x: hidden;
                       height: inherit;
                   }
                   .markup-editor .workspace > .column.outline {
-                    flex: 1;
+                    flex: 2;
                   }
                   .markup-editor .workspace > .column::-webkit-scrollbar {
                       width: 0;

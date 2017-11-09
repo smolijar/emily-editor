@@ -283,25 +283,19 @@ class Editor extends React.Component {
     const container = header ? header.children : this.state.outline;
     // Header section to move
     const movingItem = container[oldIndex];
-    // Header section to paste before
-    let targetItem = container[newIndex];
-    if (newIndex > oldIndex) {
-      targetItem = findNextSibling(targetItem);
-    }
-    // Find header section which ends movingItem section
-    const nextSibling = findNextSibling(movingItem);
 
-    // Find indicies
-    const value = this.state.raw;
-    const cutStart = movingItem ?
-      nthIndexOf(value, movingItem.source, movingItem.dupIndex) : value.length;
-    const cutEnd = nextSibling ?
-      nthIndexOf(value, nextSibling.source, nextSibling.dupIndex) : value.length;
-    const pasteIndex = targetItem ?
-      nthIndexOf(value, targetItem.source, targetItem.dupIndex) : value.length;
+    // [cutStart, cutEnd, pasteStart, (pasteEnd)]
+    const indicies = [
+      movingItem,
+      findNextSibling(movingItem),
+      // Header section to paste before
+      newIndex > oldIndex ? findNextSibling(container[newIndex]) : container[newIndex],
+    ].map(item => (item ?
+      nthIndexOf(this.state.raw, item.source, item.dupIndex) : this.state.raw.length
+    ));
 
     // Move the section
-    const newValue = moveSubstring(value, cutStart, cutEnd, pasteIndex);
+    const newValue = moveSubstring(this.state.raw, ...indicies);
 
     this.updateStateValue(newValue);
     if (this.cm) {

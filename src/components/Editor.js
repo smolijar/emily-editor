@@ -473,7 +473,7 @@ class Editor extends React.Component {
                   }
                 `}
         </style>
-        {this.props.language.renderJsxStyle()}
+        {this.props.language.renderJsxStyle && this.props.language.renderJsxStyle()}
         {this.renderProportianalStyles()}
       </div>
     );

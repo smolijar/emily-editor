@@ -293,9 +293,12 @@ class Editor extends React.Component {
 
     // Find indicies
     const value = this.state.raw;
-    const cutStart = nthIndexOf(value, movingItem.source, movingItem.dupIndex);
-    const cutEnd = nthIndexOf(value, nextSibling.source, nextSibling.dupIndex);
-    const pasteIndex = nthIndexOf(value, targetItem.source, targetItem.dupIndex);
+    const cutStart = movingItem ?
+      nthIndexOf(value, movingItem.source, movingItem.dupIndex) : value.length;
+    const cutEnd = nextSibling ?
+      nthIndexOf(value, nextSibling.source, nextSibling.dupIndex) : value.length;
+    const pasteIndex = targetItem ?
+      nthIndexOf(value, targetItem.source, targetItem.dupIndex) : value.length;
 
     // Move the section
     const newValue = moveSubstring(value, cutStart, cutEnd, pasteIndex);

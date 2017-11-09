@@ -7,6 +7,9 @@ module.exports.nthIndexOf = (haystack, needle, n = 1) => haystack
 // Find next sibling in LML heading hierarchy
 // That first next with greater or equal level
 module.exports.findNextSibling = (heading) => {
+  if (!heading) {
+    return null;
+  }
   let currentNode = heading.next;
   while (currentNode && currentNode.level > heading.level) {
     currentNode = currentNode.next;

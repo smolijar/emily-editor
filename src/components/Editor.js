@@ -80,8 +80,8 @@ class Editor extends React.Component {
     };
   }
   componentDidMount() {
-    /* global CodeMirror */
-    if (CodeMirror) {
+    if (typeof CodeMirror !== 'undefined' && CodeMirror) {
+      /* global CodeMirror */
       this.cm = CodeMirror.fromTextArea(this.textarea, {
         ...this.state.options,
       });

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import autoBind from 'react-autobind';
 
 const ARROW_UP = 38;
 const ARROW_DOWN = 40;
@@ -20,11 +21,7 @@ class CommandPalette extends React.Component {
     }
     constructor(props) {
       super(props);
-      this.handleChange = this.handleChange.bind(this);
-      this.handleKeyDown = this.handleKeyDown.bind(this);
-      this.handleKeyPress = this.handleKeyPress.bind(this);
-      this.hide = this.hide.bind(this);
-      this.focus = this.focus.bind(this);
+      autoBind(this);
       this.state = {
         value: '',
         selected: 0,

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import screenfull from 'screenfull';
+import autoBind from 'react-autobind';
 import CommandPalette from './CommandPalette';
 import Outline from './Outline';
 import StatusBar from './StatusBar';
@@ -52,36 +53,7 @@ class Editor extends React.Component {
       // keyMap: 'sublime',
     };
 
-    // API
-    this.getValue = this.getValue.bind(this);
-
-    // handlers
-    this.handleChange = this.handleChange.bind(this);
-    this.handleCommand = this.handleCommand.bind(this);
-    this.handleEditorScroll = this.handleEditorScroll.bind(this);
-    this.handlePreviewScroll = this.handlePreviewScroll.bind(this);
-    this.handleCursorActivity = this.handleCursorActivity.bind(this);
-    this.handleStoppedTyping = this.handleStoppedTyping.bind(this);
-    this.handleStoppedCursorActivity = this.handleStoppedCursorActivity.bind(this);
-    this.handleOutlineClick = this.handleOutlineClick.bind(this);
-    this.handleOutlineOrderChange = this.handleOutlineOrderChange.bind(this);
-
-    // updaters
-    this.updateStateValue = this.updateStateValue.bind(this);
-    this.updateCursor = this.updateCursor.bind(this);
-
-    // generators
-    this.generateHtml = this.generateHtml.bind(this);
-    this.generateOutline = this.generateOutline.bind(this);
-    this.renderProportianalStyles = this.renderProportianalStyles.bind(this);
-
-    // scrolling
-    this.scrollEditorToLine = this.scrollEditorToLine.bind(this);
-    this.scrollPreviewToLine = this.scrollPreviewToLine.bind(this);
-
-    // other
-    this.getVisibleLines = this.getVisibleLines.bind(this);
-    this.toggleFullscreen = this.toggleFullscreen.bind(this);
+    autoBind(this);
 
     const html = this.generateHtml(props.content);
     const raw = props.content;
@@ -283,25 +255,19 @@ class Editor extends React.Component {
     const container = header ? header.children : this.state.outline;
     // Header section to move
     const movingItem = container[oldIndex];
-    // Header section to paste before
-    let targetItem = container[newIndex];
-    if (newIndex > oldIndex) {
-      targetItem = findNextSibling(targetItem);
-    }
-    // Find header section which ends movingItem section
-    const nextSibling = findNextSibling(movingItem);
 
-    // Find indicies
-    const value = this.state.raw;
-    const cutStart = movingItem ?
-      nthIndexOf(value, movingItem.source, movingItem.dupIndex) : value.length;
-    const cutEnd = nextSibling ?
-      nthIndexOf(value, nextSibling.source, nextSibling.dupIndex) : value.length;
-    const pasteIndex = targetItem ?
-      nthIndexOf(value, targetItem.source, targetItem.dupIndex) : value.length;
+    // [cutStart, cutEnd, pasteStart, (pasteEnd)]
+    const indicies = [
+      movingItem,
+      findNextSibling(movingItem),
+      // Header section to paste before
+      newIndex > oldIndex ? findNextSibling(container[newIndex]) : container[newIndex],
+    ].map(item => (item ?
+      nthIndexOf(this.state.raw, item.source, item.dupIndex) : this.state.raw.length
+    ));
 
     // Move the section
-    const newValue = moveSubstring(value, cutStart, cutEnd, pasteIndex);
+    const newValue = moveSubstring(this.state.raw, ...indicies);
 
     this.updateStateValue(newValue);
     if (this.cm) {

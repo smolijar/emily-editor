@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-class StatusBar extends React.Component {
+class StatusBar extends React.PureComponent {
     static propTypes = {
       loc: PropTypes.number,
       onCommandPalette: PropTypes.func,

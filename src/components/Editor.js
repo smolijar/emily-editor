@@ -80,8 +80,8 @@ class Editor extends React.Component {
     };
   }
   componentDidMount() {
-    /* global CodeMirror */
-    if (CodeMirror) {
+    if (typeof CodeMirror !== 'undefined' && CodeMirror) {
+      /* global CodeMirror */
       this.cm = CodeMirror.fromTextArea(this.textarea, {
         ...this.state.options,
       });
@@ -351,7 +351,11 @@ class Editor extends React.Component {
             }
             {this.state.columns.editor &&
             <div className="column" onScroll={this.handleEditorScroll} ref={(el) => { this.editorColumn = el; }}>
-              <textarea ref={(el) => { this.textarea = el; }} defaultValue={this.state.raw} />
+              <textarea
+                ref={(el) => { this.textarea = el; }}
+                onChange={e => this.handleChange(e.target.value)}
+                defaultValue={this.state.raw}
+              />
             </div>
             }
             {this.state.columns.preview &&

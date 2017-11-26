@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
 
-class Layout extends React.Component {
+class Layout extends React.PureComponent {
   static propTypes = {
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),

@@ -50,7 +50,7 @@
     "react-sortable-hoc": "^0.6.8",
     "screenfull": "^3.3.1",
     "twemoji": "^2.5.0",
-    "webpack": "^2.5.1"
+    "webpack": "^3.8.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

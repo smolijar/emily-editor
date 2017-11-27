@@ -30,4 +30,4 @@ If using Github CI, you must use Heroku WUI (at least I think).
 
 If you feel like it, do add feature requests, or bug report in https://github.com/grissius/markup-editor/issues[issue tracker].
 
-Much obliged!c
+Much obliged!

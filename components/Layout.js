@@ -31,6 +31,7 @@ class Layout extends React.PureComponent {
               'markup-editor/addon/fold/foldcode.js',
               'markup-editor/addon/fold/foldgutter.js',
               'markup-editor/addon/fold/markdown-fold.js',
+              'markup-editor/addon/mode/overlay.js',
             ]
               .map(path => (
                 <script src={path} />

@@ -8,7 +8,7 @@ import StatusBar from './StatusBar';
 import { createNinja, ninjasToHtml } from './editor/lineNinja';
 import getCommands from './editor/commands';
 import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline } from '../helpers/helpers';
-
+import { addSpellcheck } from '../spellcheck/spellcheck';
 
 const STOPPED_TYPING_TIMEOUT = 300;
 const STOPPED_CURSOR_ACTIVITY_TIMEOUT = 300;
@@ -72,7 +72,8 @@ class Editor extends React.Component {
       lastScrolled: null,
       loc: raw.split('\n').length,
       options: {
-        mode: props.language.name,
+        mode: 'spellcheck',
+        backdrop: props.language.name,
         ...defaultCmOptions,
       },
       cursorLine: 1,
@@ -82,6 +83,7 @@ class Editor extends React.Component {
   componentDidMount() {
     if (typeof CodeMirror !== 'undefined' && CodeMirror) {
       /* global CodeMirror */
+      addSpellcheck(CodeMirror);
       this.cm = CodeMirror.fromTextArea(this.textarea, {
         ...this.state.options,
       });
@@ -443,6 +445,9 @@ class Editor extends React.Component {
                   .markup-editor .workspace > .column::-webkit-scrollbar {
                       width: 0;
                       background: transparent;
+                  }
+                  .cm-spell-error {
+                    text-decoration: underline #FF6358 wavy;
                   }
                 `}
         </style>

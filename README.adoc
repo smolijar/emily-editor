@@ -2,6 +2,12 @@
 
 = {name}
 
+image:https://travis-ci.org/grissius/markup-editor.svg?branch=master[travis, link=https://travis-ci.org/grissius/markup-editor]
+image:https://david-dm.org/grissius/markup-editor/status.svg[dependencies, link=https://david-dm.org/grissius/markup-editor]
+image:https://david-dm.org/grissius/markup-editor/dev-status.svg[devDependencies, link=https://david-dm.org/grissius/markup-editor?type=dev]
+
+
+
 {name} is a React editor component for https://en.wikipedia.org/wiki/Lightweight_markup_language[LML]s, like Markup or Asciidoc.
 The focus of the project is to provide fluent efficient interface for advanced users, who are familliar with using IDE or coding text editors.
 
@@ -10,18 +16,21 @@ The focus of the project is to provide fluent efficient interface for advanced u
 The project is in early stage of development.
 It shall be beundled and published when I find it is ready for use.
 
+=== Try online
+
+https://lml-editor.herokuapp.com/
+
 === Running locally
 
 You can run it now in dev mode `npm run dev`.
 
-== Heroku
+== Heroku deploy
 
 Heroku seems not tu run `npm run build` when it builds.
 To do that, add link:https://github.com/romeovs/heroku-buildpack-npm-build[Heroku Buildpack npm build] as Heroku buildpack.
-If using Github CI, you must use Heroku WUI (at least I think).
 
 == Contributing
 
 If you feel like it, do add feature requests, or bug report in https://github.com/grissius/markup-editor/issues[issue tracker].
 
-Much obliged!c
+Much obliged!

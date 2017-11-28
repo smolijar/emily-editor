@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "node index.js",
+    "start": "NODE_ENV=production node index.js",
     "build": "next build",
-    "start": "node index.js",
     "lint": "./node_modules/eslint/bin/eslint.js .",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -33,6 +33,7 @@
     "highlight.js": "^9.12.0",
     "import": "0.0.6",
     "isomorphic-fetch": "^2.2.1",
+    "lodash": "^4.17.4",
     "markdown-it": "^8.4.0",
     "markdown-it-abbr": "^1.0.4",
     "markdown-it-deflist": "^2.0.3",
@@ -49,7 +50,9 @@
     "react-dom": "^16.0.0",
     "react-sortable-hoc": "^0.6.8",
     "screenfull": "^3.3.1",
+    "styled-jsx": "^2.2.0",
     "twemoji": "^2.5.0",
+    "typo-js": "^1.0.3",
     "webpack": "^3.8.1"
   },
   "devDependencies": {

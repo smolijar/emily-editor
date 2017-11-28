@@ -1,4 +1,6 @@
+import _ from 'lodash';
 import helpers from '../../src/helpers/helpers';
+
 
 describe('nthIndexOf', () => {
   const hexabeth = '0123456789ABCDEF';
@@ -134,5 +136,26 @@ describe('findNextSibling', () => {
   const expected = ['.f', '..c', '.f', '....e', '.f', '.n', '....h', '..i', '..j', '..k', '.n', '.n', '.n', null];
   it('Find correctly next sections', () => {
     expect(got).toEqual(expected);
+  });
+});
+
+
+describe('findWordBounds', () => {
+  const sentence = 'wubba  lubba dub dub';
+  const wubbaResults = _.uniqWith(
+    [0, 1, 2, 3, 4].map(i => helpers.findWordBounds(sentence, i)),
+    _.isEqual,
+  );
+  it('Wubba bounds match', () => {
+    expect(wubbaResults.length).toBe(1);
+  });
+  it('Wubba matches match wubba', () => {
+    expect(sentence.slice(...wubbaResults[0])).toBe('wubba');
+  });
+  it('Second dub matches second dup (duplicates)', () => {
+    expect(helpers.findWordBounds(sentence, 17)).toEqual([17, 20]);
+  });
+  it('Whitespace match matches only ws', () => {
+    expect(sentence.slice(...helpers.findWordBounds(sentence, 6)).trim()).toBe('');
   });
 });

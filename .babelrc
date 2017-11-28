@@ -7,6 +7,14 @@
       "presets": "next/babel"
     },
     "test": {
+      "plugins": [
+        [
+          "styled-jsx/babel",
+          {
+            "optimizeForSpeed": true
+          }
+        ]
+      ],
       "presets": [
         [
           "env",

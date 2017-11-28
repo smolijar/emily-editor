@@ -2,13 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import screenfull from 'screenfull';
 import autoBind from 'react-autobind';
+import Typo from 'typo-js';
 import CommandPalette from './CommandPalette';
 import Outline from './Outline';
 import StatusBar from './StatusBar';
 import { createNinja, ninjasToHtml } from './editor/lineNinja';
 import getCommands from './editor/commands';
-import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline } from '../helpers/helpers';
-
+import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline, findWordBounds } from '../helpers/helpers';
+import { addSpellcheck } from '../spellcheck/spellcheck';
 
 const STOPPED_TYPING_TIMEOUT = 300;
 const STOPPED_CURSOR_ACTIVITY_TIMEOUT = 300;
@@ -72,16 +73,32 @@ class Editor extends React.Component {
       lastScrolled: null,
       loc: raw.split('\n').length,
       options: {
-        mode: props.language.name,
+        mode: 'spellcheck',
+        backdrop: props.language.name,
         ...defaultCmOptions,
       },
       cursorLine: 1,
       cursorCol: 1,
     };
+    this.typo = new Typo('en_US', false, false, {
+      platform: 'any',
+      dictionaryPath: 'dictionaries',
+    });
   }
   componentDidMount() {
     if (typeof CodeMirror !== 'undefined' && CodeMirror) {
       /* global CodeMirror */
+      CodeMirror.registerHelper('hint', 'anyword', (cm) => {
+        const { line, ch } = cm.getCursor();
+        const str = cm.getLine(line);
+        const [start, end] = findWordBounds(str, ch);
+        return {
+          list: this.typo.suggest(str.slice(start, end)),
+          from: { line, ch: start },
+          to: { line, ch: end },
+        };
+      });
+      addSpellcheck(CodeMirror, this.typo);
       this.cm = CodeMirror.fromTextArea(this.textarea, {
         ...this.state.options,
       });
@@ -443,6 +460,9 @@ class Editor extends React.Component {
                   .markup-editor .workspace > .column::-webkit-scrollbar {
                       width: 0;
                       background: transparent;
+                  }
+                  .cm-spell-error {
+                    text-decoration: underline #FF6358 wavy;
                   }
                 `}
         </style>

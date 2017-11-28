@@ -10,6 +10,7 @@ nextapp.prepare()
   .then(() => {
     const app = express();
     app.use('/markup-editor', express.static(`${__dirname}/node_modules/codemirror`));
+    app.use('/dictionaries', express.static(`${__dirname}/node_modules/typo-js/dictionaries`));
     app.use('/hljs', express.static(`${__dirname}/node_modules/highlight.js`));
 
     app.get('*', (req, res) => handle(req, res));

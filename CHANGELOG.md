@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - ESlint code quality settings
  - `react-autobind`
  - autosave feature
+ - Typo.js
+ - lodash
+ - XHR mock in jest
+ - English spellcheck
+ - Autocorrect suggestions
 
 ### Changed
  - Outline styles to feel more spacey-ish

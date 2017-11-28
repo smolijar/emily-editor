@@ -7,7 +7,7 @@ class StatusBar extends React.PureComponent {
       onCommandPalette: PropTypes.func,
       line: PropTypes.number,
       col: PropTypes.number,
-      autosaved: PropTypes.string,
+      autosaved: PropTypes.instanceOf(Date),
     }
     static defaultProps = {
       loc: 0,

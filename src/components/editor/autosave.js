@@ -10,10 +10,11 @@ module.exports.autosaveStore = (value) => {
 };
 
 module.exports.autosaveRetrieve = () => {
-  const retrieved = localStorage.getItem(getKey());
+  let retrieved = localStorage.getItem(getKey());
   if (retrieved) {
-    console.log(retrieved);
-    return JSON.parse(retrieved);
+    retrieved = JSON.parse(retrieved);
+    retrieved.date = new Date(retrieved.date);
+    return retrieved;
   }
   return null;
 };

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import screenfull from 'screenfull';
 import autoBind from 'react-autobind';
+import Typo from 'typo-js';
 import CommandPalette from './CommandPalette';
 import Outline from './Outline';
 import StatusBar from './StatusBar';
@@ -79,6 +80,10 @@ class Editor extends React.Component {
       cursorLine: 1,
       cursorCol: 1,
     };
+    this.typo = new Typo('en_US', false, false, {
+      platform: 'any',
+      dictionaryPath: 'dictionaries',
+    });
   }
   componentDidMount() {
     if (typeof CodeMirror !== 'undefined' && CodeMirror) {
@@ -87,14 +92,13 @@ class Editor extends React.Component {
         const { line, ch } = cm.getCursor();
         const str = cm.getLine(line);
         const [start, end] = findWordBounds(str, ch);
-
         return {
-          list: ['foo', 'bar', 'baz'],
+          list: this.typo.suggest(str.slice(start, end)),
           from: { line, ch: start },
           to: { line, ch: end },
         };
       });
-      addSpellcheck(CodeMirror);
+      addSpellcheck(CodeMirror, this.typo);
       this.cm = CodeMirror.fromTextArea(this.textarea, {
         ...this.state.options,
       });

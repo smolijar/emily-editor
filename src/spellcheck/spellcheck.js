@@ -1,12 +1,4 @@
-import Typo from 'typo-js';
-
-const typo = new Typo('en_US', false, false, {
-  platform: 'any',
-  dictionaryPath: 'dictionaries',
-});
-
-
-const addSpellcheck = (CodeMirror) => {
+const addSpellcheck = (CodeMirror, typo) => {
   CodeMirror.defineMode('spellcheck', (config) => {
     const overlay = {
       token: (stream) => {

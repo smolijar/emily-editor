@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [0.3.0] - 2017-11-28
 ### Added
  - Section reordering tests
  - Lightweight markup mock language _dot_ for testing
@@ -127,5 +129,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Live html rendered preview column
  - CodeMirror editor
 
+[0.3.0]: https://github.com/grissius/markup-editor/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/grissius/markup-editor/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/grissius/markup-editor/compare/v0.0.0...v0.1.0

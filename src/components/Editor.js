@@ -6,6 +6,7 @@ import CommandPalette from './CommandPalette';
 import Outline from './Outline';
 import StatusBar from './StatusBar';
 import { createNinja, ninjasToHtml } from './editor/lineNinja';
+import { autosaveStore, autosaveRetrieve } from './editor/autosave';
 import getCommands from './editor/commands';
 import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline } from '../helpers/helpers';
 
@@ -195,29 +196,22 @@ class Editor extends React.Component {
     this.autosaveStore();
     this.updateStateValue(this.state.raw);
   }
-  /* eslint-disable class-methods-use-this */
-  autosaveKey() {
-    return 'content';
-  }
-  /* eslint-enable class-methods-use-this */
   autosaveStore() {
-    localStorage.setItem(`${this.autosaveKey()}_content`, this.state.raw);
-    const autosaved = new Date();
-    localStorage.setItem(`${this.autosaveKey()}_stamp`, autosaved);
+    const { date } = autosaveStore(this.state.raw);
     this.setState({
       ...this.state,
-      autosaved,
+      autosaved: date,
     });
   }
   autosaveRetrieve() {
-    const content = localStorage.getItem(`${this.autosaveKey()}_content`);
-    const autosaved = localStorage.getItem(`${this.autosaveKey()}_stamp`);
-    if (content) {
-      this.cm.setValue(content);
-      this.updateStateValue(content);
+    const retrieved = autosaveRetrieve();
+    if (retrieved) {
+      const { value, date } = retrieved;
+      this.cm.setValue(value);
+      this.updateStateValue(value);
       this.setState({
         ...this.state,
-        autosaved,
+        autosaved: date,
       });
     }
   }

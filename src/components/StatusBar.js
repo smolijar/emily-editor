@@ -25,7 +25,7 @@ class StatusBar extends React.PureComponent {
           </div>
           <div className="right">
             <span>
-              {this.props.autosaved && `Autosaved ${this.props.autosaved}, `}
+              {this.props.autosaved && `Autosaved ${this.props.autosaved.toLocaleDateString()} ${this.props.autosaved.toLocaleTimeString()}, `}
               Ln {this.props.line},
               Col {this.props.col}
             </span>

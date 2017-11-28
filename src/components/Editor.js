@@ -7,6 +7,7 @@ import CommandPalette from './CommandPalette';
 import Outline from './Outline';
 import StatusBar from './StatusBar';
 import { createNinja, ninjasToHtml } from './editor/lineNinja';
+import { autosaveStore, autosaveRetrieve } from './editor/autosave';
 import getCommands from './editor/commands';
 import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline, findWordBounds } from '../helpers/helpers';
 import { addSpellcheck } from '../spellcheck/spellcheck';
@@ -70,6 +71,7 @@ class Editor extends React.Component {
         preview: true,
         outline: true,
       },
+      autosaved: null,
       lastScrolled: null,
       loc: raw.split('\n').length,
       options: {
@@ -107,6 +109,7 @@ class Editor extends React.Component {
     } else if (process.env.NODE_ENV !== 'test') {
       console.error('CodeMirror is not defined. Forgot to include script?');
     }
+    this.autosaveRetrieve();
   }
   getValue() {
     return this.state.raw;
@@ -207,7 +210,27 @@ class Editor extends React.Component {
     });
   }
   handleStoppedTyping() {
+    this.autosaveStore();
     this.updateStateValue(this.state.raw);
+  }
+  autosaveStore() {
+    const { date } = autosaveStore(this.state.raw);
+    this.setState({
+      ...this.state,
+      autosaved: date,
+    });
+  }
+  autosaveRetrieve() {
+    const retrieved = autosaveRetrieve();
+    if (retrieved) {
+      const { value, date } = retrieved;
+      this.cm.setValue(value);
+      this.updateStateValue(value);
+      this.setState({
+        ...this.state,
+        autosaved: date,
+      });
+    }
   }
   handleStoppedCursorActivity() {
     this.updateCursor();
@@ -393,6 +416,7 @@ class Editor extends React.Component {
             loc={this.state.loc}
             col={this.state.cursorCol}
             line={this.state.cursorLine}
+            autosaved={this.state.autosaved}
             onCommandPalette={() => this.commandPalette.focus()}
           />
         </div>

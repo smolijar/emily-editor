@@ -69,6 +69,7 @@ class Editor extends React.Component {
         preview: true,
         outline: true,
       },
+      autosaved: null,
       lastScrolled: null,
       loc: raw.split('\n').length,
       options: {
@@ -200,13 +201,24 @@ class Editor extends React.Component {
   }
   /* eslint-enable class-methods-use-this */
   autosaveStore() {
-    localStorage.setItem(this.autosaveKey(), this.state.raw);
+    localStorage.setItem(`${this.autosaveKey()}_content`, this.state.raw);
+    const autosaved = new Date();
+    localStorage.setItem(`${this.autosaveKey()}_stamp`, autosaved);
+    this.setState({
+      ...this.state,
+      autosaved,
+    });
   }
   autosaveRetrieve() {
-    const content = localStorage.getItem(this.autosaveKey());
+    const content = localStorage.getItem(`${this.autosaveKey()}_content`);
+    const autosaved = localStorage.getItem(`${this.autosaveKey()}_stamp`);
     if (content) {
       this.cm.setValue(content);
       this.updateStateValue(content);
+      this.setState({
+        ...this.state,
+        autosaved,
+      });
     }
   }
   handleStoppedCursorActivity() {
@@ -393,6 +405,7 @@ class Editor extends React.Component {
             loc={this.state.loc}
             col={this.state.cursorCol}
             line={this.state.cursorLine}
+            autosaved={this.state.autosaved}
             onCommandPalette={() => this.commandPalette.focus()}
           />
         </div>

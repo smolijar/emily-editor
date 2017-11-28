@@ -7,12 +7,14 @@ class StatusBar extends React.PureComponent {
       onCommandPalette: PropTypes.func,
       line: PropTypes.number,
       col: PropTypes.number,
+      autosaved: PropTypes.string,
     }
     static defaultProps = {
       loc: 0,
       onCommandPalette: () => console.warn('StatusBar: no onCommandPalette handler set.'),
       line: 1,
       col: 1,
+      autosaved: null,
     }
     render() {
       return (
@@ -23,6 +25,7 @@ class StatusBar extends React.PureComponent {
           </div>
           <div className="right">
             <span>
+              {this.props.autosaved && `Autosaved ${this.props.autosaved}, `}
               Ln {this.props.line},
               Col {this.props.col}
             </span>

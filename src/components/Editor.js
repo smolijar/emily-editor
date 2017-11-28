@@ -103,7 +103,6 @@ class Editor extends React.Component {
         ...this.state.options,
       });
       this.cm.on('change', cm => this.handleChange(cm.getValue()));
-      this.cm.on('contextmenu', (cm, ev) => {cm.autocomplete()});
       this.cm.on('cursorActivity', () => this.handleCursorActivity());
     } else if (process.env.NODE_ENV !== 'test') {
       console.error('CodeMirror is not defined. Forgot to include script?');

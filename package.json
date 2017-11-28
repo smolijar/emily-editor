@@ -49,6 +49,7 @@
     "react-dom": "^16.0.0",
     "react-sortable-hoc": "^0.6.8",
     "screenfull": "^3.3.1",
+    "styled-jsx": "^2.2.0",
     "twemoji": "^2.5.0",
     "typo-js": "^1.0.3",
     "webpack": "^3.8.1"

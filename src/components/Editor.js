@@ -7,7 +7,7 @@ import Outline from './Outline';
 import StatusBar from './StatusBar';
 import { createNinja, ninjasToHtml } from './editor/lineNinja';
 import getCommands from './editor/commands';
-import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline } from '../helpers/helpers';
+import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline, findWordBounds } from '../helpers/helpers';
 import { addSpellcheck } from '../spellcheck/spellcheck';
 
 const STOPPED_TYPING_TIMEOUT = 300;
@@ -86,15 +86,7 @@ class Editor extends React.Component {
       CodeMirror.registerHelper('hint', 'anyword', (cm) => {
         const { line, ch } = cm.getCursor();
         const str = cm.getLine(line);
-        const expand = (string, ptr, forwards) => {
-          let i = ptr;
-          while (str[i] && str[i].match(/\w/)) {
-            i += (forwards ? 1 : -1);
-          }
-          return i;
-        };
-        const start = expand(str, ch, false) + 1;
-        const end = expand(str, ch, true);
+        const [start, end] = findWordBounds(str, ch);
 
         return {
           list: ['foo', 'bar', 'baz'],

@@ -121,3 +121,18 @@ module.exports.generateOutline = (source, toHtml, headerRegex) => {
     }, []);
   return outline;
 };
+
+
+module.exports.findWordBounds = (string, index) => {
+  const expand = (str, ptr, forwards) => {
+    let i = ptr;
+    while (str[i] && str[i].match(/\w/)) {
+      i += (forwards ? 1 : -1);
+    }
+    return i;
+  };
+  return [
+    expand(string, index, false) + 1,
+    expand(string, index, true),
+  ];
+};

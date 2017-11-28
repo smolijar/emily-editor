@@ -90,6 +90,7 @@ class Editor extends React.Component {
     } else if (process.env.NODE_ENV !== 'test') {
       console.error('CodeMirror is not defined. Forgot to include script?');
     }
+    this.autosaveRetrieve();
   }
   getValue() {
     return this.state.raw;
@@ -190,7 +191,23 @@ class Editor extends React.Component {
     });
   }
   handleStoppedTyping() {
+    this.autosaveStore();
     this.updateStateValue(this.state.raw);
+  }
+  /* eslint-disable class-methods-use-this */
+  autosaveKey() {
+    return 'content';
+  }
+  /* eslint-enable class-methods-use-this */
+  autosaveStore() {
+    localStorage.setItem(this.autosaveKey(), this.state.raw);
+  }
+  autosaveRetrieve() {
+    const content = localStorage.getItem(this.autosaveKey());
+    if (content) {
+      this.cm.setValue(content);
+      this.updateStateValue(content);
+    }
   }
   handleStoppedCursorActivity() {
     this.updateCursor();

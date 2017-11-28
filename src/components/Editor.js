@@ -52,7 +52,7 @@ class Editor extends React.Component {
         'Ctrl-Space': 'autocomplete',
         'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()); },
       },
-      // keyMap: 'sublime',
+      keyMap: 'sublime',
     };
 
     autoBind(this);

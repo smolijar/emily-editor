@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Simple markdown mode tests
  - ESlint code quality settings
  - `react-autobind`
+ - Typo.js
+ - lodash
+ - XHR mock in jest
+ - English spellcheck
+ - Autocorrect suggestions
 
 ### Changed
  - Outline styles to feel more spacey-ish

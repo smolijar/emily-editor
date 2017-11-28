@@ -83,11 +83,31 @@ class Editor extends React.Component {
   componentDidMount() {
     if (typeof CodeMirror !== 'undefined' && CodeMirror) {
       /* global CodeMirror */
+      CodeMirror.registerHelper('hint', 'anyword', (cm) => {
+        const { line, ch } = cm.getCursor();
+        const str = cm.getLine(line);
+        const expand = (string, ptr, forwards) => {
+          let i = ptr;
+          while (str[i] && str[i].match(/\w/)) {
+            i += (forwards ? 1 : -1);
+          }
+          return i;
+        };
+        const start = expand(str, ch, false) + 1;
+        const end = expand(str, ch, true);
+
+        return {
+          list: ['foo', 'bar', 'baz'],
+          from: { line, ch: start },
+          to: { line, ch: end },
+        };
+      });
       addSpellcheck(CodeMirror);
       this.cm = CodeMirror.fromTextArea(this.textarea, {
         ...this.state.options,
       });
       this.cm.on('change', cm => this.handleChange(cm.getValue()));
+      this.cm.on('contextmenu', (cm, ev) => {cm.autocomplete()});
       this.cm.on('cursorActivity', () => this.handleCursorActivity());
     } else if (process.env.NODE_ENV !== 'test') {
       console.error('CodeMirror is not defined. Forgot to include script?');

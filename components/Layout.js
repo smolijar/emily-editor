@@ -32,6 +32,7 @@ class Layout extends React.PureComponent {
               'markup-editor/addon/fold/foldgutter.js',
               'markup-editor/addon/fold/markdown-fold.js',
               'markup-editor/addon/mode/overlay.js',
+              'markup-editor/addon/hint/show-hint.js',
             ]
               .map(path => (
                 <script src={path} />
@@ -42,6 +43,7 @@ class Layout extends React.PureComponent {
           <link rel="stylesheet" type="text/css" href="markup-editor/theme/material.css" />
           <link rel="stylesheet" type="text/css" href="markup-editor/addon/dialog/dialog.css" />
           <link rel="stylesheet" type="text/css" href="markup-editor/addon/fold/foldgutter.css" />
+          <link rel="stylesheet" type="text/css" href="markup-editor/addon/hint/show-hint.css" />
           <link rel="stylesheet" type="text/css" href="hljs/styles/github.css" />
           <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.9.0/github-markdown.min.css" />
         </Head>

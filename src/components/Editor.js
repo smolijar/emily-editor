@@ -383,35 +383,41 @@ class Editor extends React.Component {
           <div className="workspace">
             {
                 this.state.columns.outline &&
-                <div className="column outline">
-                  <Outline
-                    outline={this.state.outline}
-                    onItemClick={this.handleOutlineClick}
-                    onOrderChange={this.handleOutlineOrderChange}
-                  />
+                <div className="columnWrapper">
+                  <div className="column outline">
+                    <Outline
+                      outline={this.state.outline}
+                      onItemClick={this.handleOutlineClick}
+                      onOrderChange={this.handleOutlineOrderChange}
+                    />
+                  </div>
                 </div>
             }
             {this.state.columns.editor &&
-            <div className="column" onScroll={this.handleEditorScroll} ref={(el) => { this.editorColumn = el; }}>
-              <textarea
-                ref={(el) => { this.textarea = el; }}
-                onChange={e => this.handleChange(e.target.value)}
-                defaultValue={this.state.raw}
-              />
-            </div>
+              <div className="columnWrapper">
+                <div className="column" onScroll={this.handleEditorScroll} ref={(el) => { this.editorColumn = el; }}>
+                  <textarea
+                    ref={(el) => { this.textarea = el; }}
+                    onChange={e => this.handleChange(e.target.value)}
+                    defaultValue={this.state.raw}
+                  />
+                </div>
+              </div>
             }
             {this.state.columns.preview &&
-            <div className="column" onScroll={this.handlePreviewScroll} ref={(el) => { this.previewColumn = el; }}>
-              <div
-                className={`preview ${this.props.language.previewClassName}`}
-                role="presentation"
-                spellCheck="false"
-                contentEditable
-                onKeyPress={(e) => { e.preventDefault(); }}
-                // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{ __html: this.state.html }}
-              />
-            </div>
+              <div className="columnWrapper">
+                <div className="column" onScroll={this.handlePreviewScroll} ref={(el) => { this.previewColumn = el; }}>
+                  <div
+                    className={`preview ${this.props.language.previewClassName}`}
+                    role="presentation"
+                    spellCheck="false"
+                    contentEditable
+                    onKeyPress={(e) => { e.preventDefault(); }}
+                    // eslint-disable-next-line react/no-danger
+                    dangerouslySetInnerHTML={{ __html: this.state.html }}
+                  />
+                </div>
+              </div>
             }
           </div>
           <StatusBar
@@ -473,19 +479,24 @@ class Editor extends React.Component {
                       width: inherit;
                       align-items: flex-start;
                   }
-                  .markup-editor .workspace > .column {
+                  .markup-editor .workspace > .columnWrapper {
                       flex: 6;
-                      position: relative; // important for scroll synchro!
+                      overflow: hidden;
+                      height: inherit;
+                  }
+                  .markup-editor .workspace > .columnWrapper > .column {
                       overflow-y: scroll;
                       overflow-x: hidden;
                       height: inherit;
+                      position: relative; // important for scroll synchro!
+                      margin-right: -16px;
                   }
                   .markup-editor .workspace > .column.outline {
                     flex: 2;
                   }
-                  .markup-editor .workspace > .column::-webkit-scrollbar {
-                      width: 0;
-                      background: transparent;
+                  .markup-editor .workspace {
+                    overflow: hidden;
+
                   }
                   .cm-spell-error {
                     text-decoration: underline #FF6358 wavy;

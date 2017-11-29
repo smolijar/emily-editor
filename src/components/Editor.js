@@ -210,11 +210,11 @@ class Editor extends React.Component {
     });
   }
   handleStoppedTyping(value) {
-    this.autosaveStore();
+    this.autosaveStore(value);
     this.updateStateValue(value);
   }
-  autosaveStore() {
-    const { date } = autosaveStore(this.state.raw);
+  autosaveStore(value) {
+    const { date } = autosaveStore(value);
     this.setState({
       ...this.state,
       autosaved: date,

@@ -206,12 +206,12 @@ class Editor extends React.Component {
     this.setState({
       ...this.state,
       raw: value,
-      stoppedTypingTimer: setTimeout(this.handleStoppedTyping, STOPPED_TYPING_TIMEOUT),
+      stoppedTypingTimer: setTimeout(() => this.handleStoppedTyping(value), STOPPED_TYPING_TIMEOUT),
     });
   }
-  handleStoppedTyping() {
+  handleStoppedTyping(value) {
     this.autosaveStore();
-    this.updateStateValue(this.state.raw);
+    this.updateStateValue(value);
   }
   autosaveStore() {
     const { date } = autosaveStore(this.state.raw);
@@ -224,7 +224,9 @@ class Editor extends React.Component {
     const retrieved = autosaveRetrieve();
     if (retrieved) {
       const { value, date } = retrieved;
-      this.cm.setValue(value);
+      if (this.cm) {
+        this.cm.setValue(value);
+      }
       this.updateStateValue(value);
       this.setState({
         ...this.state,

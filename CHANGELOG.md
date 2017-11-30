@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Fixed
  - autosave not retrieving properly
+ - Scrollbar hiding cross browser (fix #36, #32)
+ - Toggle column visibility via CSS, not conditional rendernig (fix #35)
 
 ## [0.3.0] - 2017-11-28
 ### Added

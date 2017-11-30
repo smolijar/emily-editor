@@ -429,17 +429,11 @@ class Editor extends React.Component {
           />
           <div className="workspace">
             {
-              [
-                'outline',
-                'editor',
-                'preview',
-              ].map((name) => {
-                const wrapperStyle = {};
-                if (!this.state.columns[name]) {
-                  wrapperStyle.display = 'none';
-                }
-                return this.renderColumn(name, wrapperStyle);
-              })
+              ['outline', 'editor', 'preview']
+                .map((name) => {
+                  const wrapperStyle = this.state.columns[name] ? {} : { display: 'none' };
+                  return this.renderColumn(name, wrapperStyle);
+                })
             }
           </div>
           <StatusBar

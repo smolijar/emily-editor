@@ -339,7 +339,7 @@ class Editor extends React.Component {
     }
     return null;
   }
-  renderColumn(colName) {
+  renderColumn(colName, wrapperStyle) {
     const getColumnInner = (name) => {
       switch (name) {
         case 'outline':
@@ -381,7 +381,7 @@ class Editor extends React.Component {
       }
     };
     return (
-      <div className="columnWrapper">
+      <div className="columnWrapper" style={wrapperStyle}>
         {getColumnInner(colName)}
       </div>
     );
@@ -434,10 +434,11 @@ class Editor extends React.Component {
                 'editor',
                 'preview',
               ].map((name) => {
-                if (this.state.columns[name]) {
-                  return this.renderColumn(name);
+                const wrapperStyle = {};
+                if (!this.state.columns[name]) {
+                  wrapperStyle.display = 'none';
                 }
-                return null;
+                return this.renderColumn(name, wrapperStyle);
               })
             }
           </div>

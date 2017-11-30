@@ -381,7 +381,7 @@ class Editor extends React.Component {
       }
     };
     return (
-      <div className="columnWrapper" style={wrapperStyle}>
+      <div className={`columnWrapper ${colName}`} style={wrapperStyle}>
         {getColumnInner(colName)}
       </div>
     );
@@ -466,17 +466,17 @@ class Editor extends React.Component {
                       align-items: flex-start;
                       padding-bottom: 20px;
                   }
-                  .preview {
+                  .column.preview {
                       font-family: 'Roboto', sans-serif;
                       padding: 10px 60px;
                   }
                   .preview:focus {
                       outline: 0px solid transparent;
                   }
-                  .preview > div {
+                  .column.preview > div {
                       padding: 0 50px 0 20px;
                   }
-                  .preview .cursor {
+                  .column.preview .cursor {
                       visibility: hidden;
                       display: inline-block;
                       width: 0;
@@ -507,7 +507,7 @@ class Editor extends React.Component {
                       position: relative; // important for scroll synchro!
                       margin-right: -16px;
                   }
-                  .markup-editor .workspace > .column.outline {
+                  .markup-editor .workspace > .columnWrapper.outline {
                     flex: 2;
                   }
                   .markup-editor .workspace {

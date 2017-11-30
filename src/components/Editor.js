@@ -339,11 +339,11 @@ class Editor extends React.Component {
     }
     return null;
   }
-  renderColumn(name) {
-    switch (name) {
-      case 'outline':
-        return (
-          <div className="columnWrapper">
+  renderColumn(colName) {
+    const getColumnInner = (name) => {
+      switch (name) {
+        case 'outline':
+          return (
             <div className="column outline">
               <Outline
                 outline={this.state.outline}
@@ -351,11 +351,9 @@ class Editor extends React.Component {
                 onOrderChange={this.handleOutlineOrderChange}
               />
             </div>
-          </div>
-        );
-      case 'editor':
-        return (
-          <div className="columnWrapper">
+          );
+        case 'editor':
+          return (
             <div className="column" onScroll={this.handleEditorScroll} ref={(el) => { this.editorColumn = el; }}>
               <textarea
                 ref={(el) => { this.textarea = el; }}
@@ -363,11 +361,9 @@ class Editor extends React.Component {
                 defaultValue={this.state.raw}
               />
             </div>
-          </div>
-        );
-      case 'preview':
-        return (
-          <div className="columnWrapper">
+          );
+        case 'preview':
+          return (
             <div className="column" onScroll={this.handlePreviewScroll} ref={(el) => { this.previewColumn = el; }}>
               <div
                 className={`preview ${this.props.language.previewClassName}`}
@@ -379,11 +375,16 @@ class Editor extends React.Component {
                 dangerouslySetInnerHTML={{ __html: this.state.html }}
               />
             </div>
-          </div>
-        );
-      default:
-        throw new Error(`Prompted to render unknown column ${name}`);
-    }
+          );
+        default:
+          throw new Error(`Prompted to render unknown column ${name}`);
+      }
+    };
+    return (
+      <div className="columnWrapper">
+        {getColumnInner(colName)}
+      </div>
+    );
   }
   render() {
     const commandPaletteOptions = Object.entries(getCommands(this))

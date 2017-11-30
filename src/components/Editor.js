@@ -339,6 +339,53 @@ class Editor extends React.Component {
     }
     return null;
   }
+  renderColumn(colName, wrapperStyle) {
+    const getColumnInner = (name) => {
+      switch (name) {
+        case 'outline':
+          return (
+            <div className="column outline">
+              <Outline
+                outline={this.state.outline}
+                onItemClick={this.handleOutlineClick}
+                onOrderChange={this.handleOutlineOrderChange}
+              />
+            </div>
+          );
+        case 'editor':
+          return (
+            <div className="column" onScroll={this.handleEditorScroll} ref={(el) => { this.editorColumn = el; }}>
+              <textarea
+                ref={(el) => { this.textarea = el; }}
+                onChange={e => this.handleChange(e.target.value)}
+                defaultValue={this.state.raw}
+              />
+            </div>
+          );
+        case 'preview':
+          return (
+            <div className="column" onScroll={this.handlePreviewScroll} ref={(el) => { this.previewColumn = el; }}>
+              <div
+                className={`preview ${this.props.language.previewClassName}`}
+                role="presentation"
+                spellCheck="false"
+                contentEditable
+                onKeyPress={(e) => { e.preventDefault(); }}
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{ __html: this.state.html }}
+              />
+            </div>
+          );
+        default:
+          throw new Error(`Prompted to render unknown column ${name}`);
+      }
+    };
+    return (
+      <div className={`columnWrapper ${colName}`} style={wrapperStyle}>
+        {getColumnInner(colName)}
+      </div>
+    );
+  }
   render() {
     const commandPaletteOptions = Object.entries(getCommands(this))
       .reduce((acc, [k, v]) => { acc[k] = v.text; return acc; }, {});
@@ -382,36 +429,11 @@ class Editor extends React.Component {
           />
           <div className="workspace">
             {
-                this.state.columns.outline &&
-                <div className="column outline">
-                  <Outline
-                    outline={this.state.outline}
-                    onItemClick={this.handleOutlineClick}
-                    onOrderChange={this.handleOutlineOrderChange}
-                  />
-                </div>
-            }
-            {this.state.columns.editor &&
-            <div className="column" onScroll={this.handleEditorScroll} ref={(el) => { this.editorColumn = el; }}>
-              <textarea
-                ref={(el) => { this.textarea = el; }}
-                onChange={e => this.handleChange(e.target.value)}
-                defaultValue={this.state.raw}
-              />
-            </div>
-            }
-            {this.state.columns.preview &&
-            <div className="column" onScroll={this.handlePreviewScroll} ref={(el) => { this.previewColumn = el; }}>
-              <div
-                className={`preview ${this.props.language.previewClassName}`}
-                role="presentation"
-                spellCheck="false"
-                contentEditable
-                onKeyPress={(e) => { e.preventDefault(); }}
-                // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{ __html: this.state.html }}
-              />
-            </div>
+              ['outline', 'editor', 'preview']
+                .map((name) => {
+                  const wrapperStyle = this.state.columns[name] ? {} : { display: 'none' };
+                  return this.renderColumn(name, wrapperStyle);
+                })
             }
           </div>
           <StatusBar
@@ -444,17 +466,17 @@ class Editor extends React.Component {
                       align-items: flex-start;
                       padding-bottom: 20px;
                   }
-                  .preview {
+                  .column.preview {
                       font-family: 'Roboto', sans-serif;
                       padding: 10px 60px;
                   }
                   .preview:focus {
                       outline: 0px solid transparent;
                   }
-                  .preview > div {
+                  .column.preview > div {
                       padding: 0 50px 0 20px;
                   }
-                  .preview .cursor {
+                  .column.preview .cursor {
                       visibility: hidden;
                       display: inline-block;
                       width: 0;
@@ -473,19 +495,24 @@ class Editor extends React.Component {
                       width: inherit;
                       align-items: flex-start;
                   }
-                  .markup-editor .workspace > .column {
+                  .markup-editor .workspace > .columnWrapper {
                       flex: 6;
-                      position: relative; // important for scroll synchro!
+                      overflow: hidden;
+                      height: inherit;
+                  }
+                  .markup-editor .workspace > .columnWrapper > .column {
                       overflow-y: scroll;
                       overflow-x: hidden;
                       height: inherit;
+                      position: relative; // important for scroll synchro!
+                      margin-right: -16px;
                   }
-                  .markup-editor .workspace > .column.outline {
+                  .markup-editor .workspace > .columnWrapper.outline {
                     flex: 2;
                   }
-                  .markup-editor .workspace > .column::-webkit-scrollbar {
-                      width: 0;
-                      background: transparent;
+                  .markup-editor .workspace {
+                    overflow: hidden;
+
                   }
                   .cm-spell-error {
                     text-decoration: underline #FF6358 wavy;

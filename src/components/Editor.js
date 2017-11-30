@@ -339,6 +339,52 @@ class Editor extends React.Component {
     }
     return null;
   }
+  renderColumn(name) {
+    switch (name) {
+      case 'outline':
+        return (
+          <div className="columnWrapper">
+            <div className="column outline">
+              <Outline
+                outline={this.state.outline}
+                onItemClick={this.handleOutlineClick}
+                onOrderChange={this.handleOutlineOrderChange}
+              />
+            </div>
+          </div>
+        );
+      case 'editor':
+        return (
+          <div className="columnWrapper">
+            <div className="column" onScroll={this.handleEditorScroll} ref={(el) => { this.editorColumn = el; }}>
+              <textarea
+                ref={(el) => { this.textarea = el; }}
+                onChange={e => this.handleChange(e.target.value)}
+                defaultValue={this.state.raw}
+              />
+            </div>
+          </div>
+        );
+      case 'preview':
+        return (
+          <div className="columnWrapper">
+            <div className="column" onScroll={this.handlePreviewScroll} ref={(el) => { this.previewColumn = el; }}>
+              <div
+                className={`preview ${this.props.language.previewClassName}`}
+                role="presentation"
+                spellCheck="false"
+                contentEditable
+                onKeyPress={(e) => { e.preventDefault(); }}
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{ __html: this.state.html }}
+              />
+            </div>
+          </div>
+        );
+      default:
+        throw new Error(`Prompted to render unknown column ${name}`);
+    }
+  }
   render() {
     const commandPaletteOptions = Object.entries(getCommands(this))
       .reduce((acc, [k, v]) => { acc[k] = v.text; return acc; }, {});
@@ -382,42 +428,16 @@ class Editor extends React.Component {
           />
           <div className="workspace">
             {
-                this.state.columns.outline &&
-                <div className="columnWrapper">
-                  <div className="column outline">
-                    <Outline
-                      outline={this.state.outline}
-                      onItemClick={this.handleOutlineClick}
-                      onOrderChange={this.handleOutlineOrderChange}
-                    />
-                  </div>
-                </div>
-            }
-            {this.state.columns.editor &&
-              <div className="columnWrapper">
-                <div className="column" onScroll={this.handleEditorScroll} ref={(el) => { this.editorColumn = el; }}>
-                  <textarea
-                    ref={(el) => { this.textarea = el; }}
-                    onChange={e => this.handleChange(e.target.value)}
-                    defaultValue={this.state.raw}
-                  />
-                </div>
-              </div>
-            }
-            {this.state.columns.preview &&
-              <div className="columnWrapper">
-                <div className="column" onScroll={this.handlePreviewScroll} ref={(el) => { this.previewColumn = el; }}>
-                  <div
-                    className={`preview ${this.props.language.previewClassName}`}
-                    role="presentation"
-                    spellCheck="false"
-                    contentEditable
-                    onKeyPress={(e) => { e.preventDefault(); }}
-                    // eslint-disable-next-line react/no-danger
-                    dangerouslySetInnerHTML={{ __html: this.state.html }}
-                  />
-                </div>
-              </div>
+              [
+                'outline',
+                'editor',
+                'preview',
+              ].map((name) => {
+                if (this.state.columns[name]) {
+                  return this.renderColumn(name);
+                }
+                return null;
+              })
             }
           </div>
           <StatusBar

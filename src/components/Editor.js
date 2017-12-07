@@ -120,8 +120,7 @@ class Editor extends React.Component {
     this.previewColumn.scrollTop = findRelativeOffset(lineNode, this.previewColumn);
   }
   scrollEditorToLine(ln) {
-    const to = this.cm.charCoords({ line: ln - 1, ch: 0 }, 'local').top;
-    this.cm.scrollTo(null, to);
+    this.ace.scrollToLine(ln - 1);
   }
   handlePreviewScroll() {
     if (this.state.lastScrolled === 'editor') {
@@ -150,9 +149,7 @@ class Editor extends React.Component {
       });
       return;
     }
-    const offset = this.cm.getViewport().from;
-    const [firstVisibleLineRelative] = this.getVisibleLines(this.cm.getScrollerElement(), this.cm.getScrollerElement().scrollTop + this.editorColumn.scrollTop, '.CodeMirror-line');
-    const firstVisibleLine = firstVisibleLineRelative + offset;
+    const firstVisibleLine = Math.ceil(Math.max(0, this.ace.renderer.getScrollTopRow()));
     this.scrollPreviewToLine(firstVisibleLine);
     this.setState({
       ...this.state,

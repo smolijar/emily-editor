@@ -83,25 +83,22 @@ class Editor extends React.Component {
   getValue() {
     return this.state.raw;
   }
-  getVisibleLines(columnNode, nodeScrollTop, lineSelector, numberSelector = null) {
-    const editorScroll = nodeScrollTop;
-    let firstVisibleLine = null;
-    const visibleLines = [...columnNode.querySelectorAll(lineSelector)]
-      .map((_, i) => [_, i])
-      .filter(([lineNode, i]) => {
-        const lineOffsetTop = findRelativeOffset(lineNode, columnNode);
+  getPreviewFirstVisibleLine() {
+    const editorScroll = this.previewColumn.scrollTop;
+    let haveSomething = false;
+    const firstLineNode = [...this.previewColumn.querySelectorAll('strong[data-line]')]
+      .find((lineNode) => {
+        const lineOffsetTop = findRelativeOffset(lineNode, this.previewColumn);
         if (lineOffsetTop >= editorScroll) {
-          if (firstVisibleLine === null) {
-            firstVisibleLine = i;
+          if (!haveSomething) {
+            haveSomething = true;
             return true;
           }
           return lineOffsetTop <= editorScroll + this.state.height;
         }
         return false;
-      })
-      // if numberSelector null, use index
-      .map(([lineNode, i]) => (numberSelector ? numberSelector(lineNode) : i));
-    return visibleLines;
+      });
+    return Number(firstLineNode.dataset.line);
   }
   handleOutlineClick(heading) {
     const inCode = heading.source;
@@ -130,7 +127,7 @@ class Editor extends React.Component {
       });
       return;
     }
-    const [firstVisibleLine] = this.getVisibleLines(this.previewColumn, this.previewColumn.scrollTop, 'strong[data-line]', node => Number(node.dataset.line));
+    const firstVisibleLine = this.getPreviewFirstVisibleLine();
     this.scrollEditorToLine(firstVisibleLine);
     this.setState({
       ...this.state,

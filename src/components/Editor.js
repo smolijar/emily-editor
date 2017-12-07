@@ -76,6 +76,12 @@ class Editor extends React.Component {
         this.handleChange(this.ace.getValue());
       });
       this.ace.getSession().selection.on('changeCursor', this.handleCursorActivity);
+      this.ace.commands.addCommand({
+        name: 'command-pallette',
+        bindKey: { win: 'Ctrl-Shift-P', mac: 'Command-Shift-P' },
+        exec: this.commandPalette.focus,
+      });
+      this.ace.focus();
     } else if (process.env.NODE_ENV !== 'test') {
       console.error('Ace is not defined. Forgot to include script?');
     }
@@ -371,18 +377,6 @@ class Editor extends React.Component {
         <div
           className="markup-editor"
           role="presentation"
-          onKeyDown={(e) => {
-                        if (e.shiftKey && e.ctrlKey) {
-                          switch (e.key) {
-                              case 'p':
-                              case 'P':
-                                  e.preventDefault();
-                                  this.commandPalette.focus();
-                                  break;
-                              default:
-                          }
-                        }
-                    }}
           style={markupEditorStyles}
           ref={(el) => { this.editor = el; }}
         >

@@ -146,7 +146,7 @@ class Editor extends React.Component {
       });
       return;
     }
-    const firstVisibleLine = Math.ceil(Math.max(0, this.ace.renderer.getScrollTopRow()));
+    const firstVisibleLine = Math.floor(Math.max(0, this.ace.renderer.getScrollTopRow())) + 1;
     this.scrollPreviewToLine(firstVisibleLine);
     this.setState({
       ...this.state,

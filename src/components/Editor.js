@@ -196,7 +196,7 @@ class Editor extends React.Component {
     if (retrieved) {
       const { value, date } = retrieved;
       if (this.ace) {
-        this.ace.setValue(value);
+        this.ace.setValue(value, -1);
       }
       this.updateStateValue(value);
       this.setState({
@@ -284,7 +284,7 @@ class Editor extends React.Component {
 
     this.updateStateValue(newValue);
     if (this.ace) {
-      this.ace.setValue(newValue);
+      this.ace.setValue(newValue, -1);
     }
   }
   generateOutline(raw) {

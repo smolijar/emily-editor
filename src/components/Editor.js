@@ -39,6 +39,11 @@ class Editor extends React.Component {
 
     autoBind(this);
 
+    const defaultAceOptions = {
+      showGutter: true,
+      wrap: false,
+    };
+
     const html = this.generateHtml(props.content);
     const raw = props.content;
     this.state = {
@@ -53,6 +58,7 @@ class Editor extends React.Component {
         preview: true,
         outline: true,
       },
+      aceOptions: defaultAceOptions,
       autosaved: null,
       lastScrolled: null,
       loc: raw.split('\n').length,

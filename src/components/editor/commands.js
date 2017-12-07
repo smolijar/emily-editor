@@ -1,23 +1,29 @@
-const toggleCmOption = (editor, option) => {
-  const to = !editor.state.options[option];
-  editor.cm.setOption(option, to);
-  editor.setState({
-    ...editor.state,
-    options: {
-      ...editor.state.options,
-      [option]: to,
-    },
-  });
-};
+import _ from 'lodash';
 
 const getCommands = editor => ({
   'options.lineNumbers': {
     text: 'Toggle: Line numbers',
-    execute: () => toggleCmOption(editor, 'lineNumbers'),
+    execute: () => {
+      const to = !editor.state.aceOptions.showGutter;
+      editor.ace.renderer.setOption('showGutter', to);
+      editor.setState(_.set(
+        { ...editor.state },
+        'aceOptions.showGutter',
+        to,
+      ));
+    },
   },
   'options.lineWrapping': {
     text: 'Toggle: Line wrapping',
-    execute: () => toggleCmOption(editor, 'lineWrapping'),
+    execute: () => {
+      const to = !editor.state.aceOptions.wrap;
+      editor.ace.session.setOption('wrap', to);
+      editor.setState(_.set(
+        { ...editor.state },
+        'aceOptions.wrap',
+        to,
+      ));
+    },
   },
   'columns.both': {
     text: 'View: Editor & Preview',

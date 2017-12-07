@@ -67,9 +67,9 @@ class Editor extends React.Component {
       this.ace.setTheme('ace/theme/tomorrow');
       this.ace.getSession().setMode(`ace/mode/${this.props.language.name}`);
       this.ace.getSession().on('change', () => {
-        console.log(this.ace.getValue());
         this.handleChange(this.ace.getValue());
       });
+      this.ace.getSession().selection.on('changeCursor', this.handleCursorActivity);
     } else if (process.env.NODE_ENV !== 'test') {
       console.error('Ace is not defined. Forgot to include script?');
     }
@@ -197,12 +197,12 @@ class Editor extends React.Component {
     this.updateCursor();
   }
   updateCursor() {
-    if (this.cm) {
-      const { line, ch } = this.cm.getCursor();
+    if (this.ace) {
+      const { row, column } = this.ace.selection.getCursor();
       this.setState({
         ...this.state,
-        cursorLine: line + 1,
-        cursorCol: ch + 1,
+        cursorLine: row + 1,
+        cursorCol: column + 1,
       });
     }
   }

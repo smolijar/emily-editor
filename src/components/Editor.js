@@ -188,8 +188,8 @@ class Editor extends React.Component {
     const retrieved = autosaveRetrieve();
     if (retrieved) {
       const { value, date } = retrieved;
-      if (this.cm) {
-        this.cm.setValue(value);
+      if (this.ace) {
+        this.ace.setValue(value);
       }
       this.updateStateValue(value);
       this.setState({
@@ -276,8 +276,8 @@ class Editor extends React.Component {
     const newValue = moveSubstring(this.state.raw, ...indicies);
 
     this.updateStateValue(newValue);
-    if (this.cm) {
-      this.cm.setValue(newValue);
+    if (this.ace) {
+      this.ace.setValue(newValue);
     }
   }
   generateOutline(raw) {

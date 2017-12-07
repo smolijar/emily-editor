@@ -352,7 +352,7 @@ class Editor extends React.Component {
       }
     };
     return (
-      <div className={`columnWrapper ${colName}`} style={wrapperStyle}>
+      <div key={colName} className={`columnWrapper ${colName}`} style={wrapperStyle}>
         {getColumnInner(colName)}
       </div>
     );

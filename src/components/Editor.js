@@ -9,8 +9,7 @@ import StatusBar from './StatusBar';
 import { createNinja, ninjasToHtml } from './editor/lineNinja';
 import { autosaveStore, autosaveRetrieve } from './editor/autosave';
 import getCommands from './editor/commands';
-import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline, findWordBounds } from '../helpers/helpers';
-import { addSpellcheck } from '../spellcheck/spellcheck';
+import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline } from '../helpers/helpers';
 
 const STOPPED_TYPING_TIMEOUT = 300;
 const STOPPED_CURSOR_ACTIVITY_TIMEOUT = 300;
@@ -38,22 +37,6 @@ class Editor extends React.Component {
   }
   constructor(props) {
     super(props);
-    const defaultCmOptions = {
-      scrollbarStyle: null,
-      lineWrapping: true,
-      lineNumbers: false,
-      matchBrackets: true,
-      autoCloseBrackets: true,
-      foldGutter: true,
-      theme: 'material',
-      gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-      extraKeys: {
-        'Ctrl-P': 'jumpToLine',
-        'Ctrl-Space': 'autocomplete',
-        'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()); },
-      },
-      keyMap: 'sublime',
-    };
 
     autoBind(this);
 
@@ -74,11 +57,6 @@ class Editor extends React.Component {
       autosaved: null,
       lastScrolled: null,
       loc: raw.split('\n').length,
-      options: {
-        mode: 'spellcheck',
-        backdrop: props.language.name,
-        ...defaultCmOptions,
-      },
       cursorLine: 1,
       cursorCol: 1,
     };
@@ -88,26 +66,17 @@ class Editor extends React.Component {
     });
   }
   componentDidMount() {
-    if (typeof CodeMirror !== 'undefined' && CodeMirror) {
-      /* global CodeMirror */
-      CodeMirror.registerHelper('hint', 'anyword', (cm) => {
-        const { line, ch } = cm.getCursor();
-        const str = cm.getLine(line);
-        const [start, end] = findWordBounds(str, ch);
-        return {
-          list: this.typo.suggest(str.slice(start, end)),
-          from: { line, ch: start },
-          to: { line, ch: end },
-        };
+    if (typeof ace !== 'undefined' && ace) {
+      /* global ace */
+      this.ace = ace.edit(this.textarea);
+      this.ace.setTheme('ace/theme/tomorrow');
+      this.ace.getSession().setMode(`ace/mode/${this.props.language.name}`);
+      this.ace.getSession().on('change', () => {
+        console.log(this.ace.getValue());
+        this.handleChange(this.ace.getValue());
       });
-      addSpellcheck(CodeMirror, this.typo);
-      this.cm = CodeMirror.fromTextArea(this.textarea, {
-        ...this.state.options,
-      });
-      this.cm.on('change', cm => this.handleChange(cm.getValue()));
-      this.cm.on('cursorActivity', () => this.handleCursorActivity());
     } else if (process.env.NODE_ENV !== 'test') {
-      console.error('CodeMirror is not defined. Forgot to include script?');
+      console.error('Ace is not defined. Forgot to include script?');
     }
     this.autosaveRetrieve();
   }
@@ -138,9 +107,10 @@ class Editor extends React.Component {
     const inCode = heading.source;
     const value = this.state.raw;
     const pos = nthIndexOf(value, inCode, heading.dupIndex);
-    const line = value.substr(0, pos).split('\n').length - 1;
-    this.cm.setCursor(line);
-    this.cm.focus();
+    const line = value.substr(0, pos).split('\n').length;
+    this.ace.gotoLine(line);
+    this.ace.scrollToLine(line - 1);
+    this.ace.focus();
   }
   scrollPreviewToLine(ln) {
     let lineNode = this.previewColumn.querySelector(`strong[data-line="${ln}"]`);
@@ -516,6 +486,15 @@ class Editor extends React.Component {
                   }
                   .cm-spell-error {
                     text-decoration: underline #FF6358 wavy;
+                  }
+                  .ace_editor {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    left: 0;
+                    font-size: 18px;
+                    margin: 0;
                   }
                 `}
         </style>

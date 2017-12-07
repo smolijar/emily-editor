@@ -9,7 +9,7 @@ const port = process.env.PORT || 3000;
 nextapp.prepare()
   .then(() => {
     const app = express();
-    app.use('/markup-editor', express.static(`${__dirname}/node_modules/codemirror`));
+    app.use('/ace', express.static(`${__dirname}/node_modules/ace-builds`));
     app.use('/dictionaries', express.static(`${__dirname}/node_modules/typo-js/dictionaries`));
     app.use('/hljs', express.static(`${__dirname}/node_modules/highlight.js`));
 

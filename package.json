@@ -28,7 +28,7 @@
     ]
   },
   "dependencies": {
-    "codemirror": "^5.31.0",
+    "ace-builds": "^1.2.9",
     "express": "^4.16.1",
     "highlight.js": "^9.12.0",
     "import": "0.0.6",

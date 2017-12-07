@@ -389,7 +389,7 @@ class Editor extends React.Component {
             ref={(el) => { this.commandPalette = el; }}
             options={commandPaletteOptions}
             onSelected={this.handleCommand}
-            onExit={() => { this.cm.focus(); }}
+            onExit={() => { this.ace.focus(); }}
           />
           <div className="workspace">
             {

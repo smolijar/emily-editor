@@ -415,11 +415,6 @@ class Editor extends React.Component {
                     width: inherit;
                     align-items: flex-start;
                   }
-                  .CodeMirror {
-                      font-family: 'Roboto Mono', monospace;
-                      height: 2000px;
-                      overflow: visible;
-                  }
                   .markup-editor {
                       position: relative;
                       border: 1px solid #222;

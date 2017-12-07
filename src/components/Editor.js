@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import screenfull from 'screenfull';
 import autoBind from 'react-autobind';
-import Typo from 'typo-js';
 import CommandPalette from './CommandPalette';
 import Outline from './Outline';
 import StatusBar from './StatusBar';
@@ -60,10 +59,6 @@ class Editor extends React.Component {
       cursorLine: 1,
       cursorCol: 1,
     };
-    this.typo = new Typo('en_US', false, false, {
-      platform: 'any',
-      dictionaryPath: 'dictionaries',
-    });
   }
   componentDidMount() {
     if (typeof ace !== 'undefined' && ace) {

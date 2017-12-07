@@ -473,9 +473,6 @@ class Editor extends React.Component {
                     overflow: hidden;
 
                   }
-                  .cm-spell-error {
-                    text-decoration: underline #FF6358 wavy;
-                  }
                   .ace_editor {
                     position: absolute;
                     top: 0;

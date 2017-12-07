@@ -325,7 +325,7 @@ class Editor extends React.Component {
           );
         case 'editor':
           return (
-            <div className="column" onScroll={this.handleEditorScroll} ref={(el) => { this.editorColumn = el; }}>
+            <div className="column editor" onScroll={this.handleEditorScroll} ref={(el) => { this.editorColumn = el; }}>
               <textarea
                 ref={(el) => { this.textarea = el; }}
                 onChange={e => this.handleChange(e.target.value)}
@@ -459,7 +459,10 @@ class Editor extends React.Component {
                       overflow-x: hidden;
                       height: inherit;
                       position: relative; // important for scroll synchro!
-                      margin-right: -16px;
+                      margin-right: -16px; // togle for scrollbar hiding
+                  }
+                  .markup-editor .workspace > .columnWrapper > .column.editor {
+                      overflow: hidden;
                   }
                   .markup-editor .workspace > .columnWrapper.outline {
                     flex: 2;

@@ -151,7 +151,7 @@ class Editor extends React.Component {
     // When scolling fast on top, current scroll is not fully propagated into Ace just yet.
     // Hackishly wait a tad
     setTimeout(() => {
-      const firstVisibleLine = Math.floor(Math.max(0, this.ace.renderer.getScrollTopRow())) + 1;
+      const firstVisibleLine = this.ace.renderer.getFirstVisibleRow() + 1;
       this.scrollPreviewToLine(firstVisibleLine);
       this.setState({
         ...this.state,

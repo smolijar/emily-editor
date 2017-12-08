@@ -333,10 +333,6 @@ class Editor extends React.Component {
             <div className="column" onScroll={this.handlePreviewScroll} ref={(el) => { this.previewColumn = el; }}>
               <div
                 className={`preview ${this.props.language.previewClassName}`}
-                role="presentation"
-                spellCheck="false"
-                contentEditable
-                onKeyPress={(e) => { e.preventDefault(); }}
                 // eslint-disable-next-line react/no-danger
                 dangerouslySetInnerHTML={{ __html: this.state.html }}
               />

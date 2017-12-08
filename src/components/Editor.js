@@ -2,15 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import screenfull from 'screenfull';
 import autoBind from 'react-autobind';
-import Typo from 'typo-js';
 import CommandPalette from './CommandPalette';
 import Outline from './Outline';
 import StatusBar from './StatusBar';
 import { createNinja, ninjasToHtml } from './editor/lineNinja';
 import { autosaveStore, autosaveRetrieve } from './editor/autosave';
 import getCommands from './editor/commands';
-import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline, findWordBounds } from '../helpers/helpers';
-import { addSpellcheck } from '../spellcheck/spellcheck';
+import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline } from '../helpers/helpers';
+import { initializeAce } from './editor/ace';
 
 const STOPPED_TYPING_TIMEOUT = 300;
 const STOPPED_CURSOR_ACTIVITY_TIMEOUT = 300;
@@ -38,24 +37,18 @@ class Editor extends React.Component {
   }
   constructor(props) {
     super(props);
-    const defaultCmOptions = {
-      scrollbarStyle: null,
-      lineWrapping: true,
-      lineNumbers: false,
-      matchBrackets: true,
-      autoCloseBrackets: true,
-      foldGutter: true,
-      theme: 'material',
-      gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-      extraKeys: {
-        'Ctrl-P': 'jumpToLine',
-        'Ctrl-Space': 'autocomplete',
-        'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()); },
-      },
-      keyMap: 'sublime',
-    };
 
     autoBind(this);
+
+    const defaultAceOptions = {
+      renderer: {
+        showGutter: false,
+        showInvisibles: false,
+      },
+      session: {
+        wrap: true,
+      },
+    };
 
     const html = this.generateHtml(props.content);
     const raw = props.content;
@@ -71,76 +64,52 @@ class Editor extends React.Component {
         preview: true,
         outline: true,
       },
+      aceOptions: defaultAceOptions,
       autosaved: null,
       lastScrolled: null,
       loc: raw.split('\n').length,
-      options: {
-        mode: 'spellcheck',
-        backdrop: props.language.name,
-        ...defaultCmOptions,
-      },
       cursorLine: 1,
       cursorCol: 1,
     };
-    this.typo = new Typo('en_US', false, false, {
-      platform: 'any',
-      dictionaryPath: 'dictionaries',
-    });
   }
   componentDidMount() {
-    if (typeof CodeMirror !== 'undefined' && CodeMirror) {
-      /* global CodeMirror */
-      CodeMirror.registerHelper('hint', 'anyword', (cm) => {
-        const { line, ch } = cm.getCursor();
-        const str = cm.getLine(line);
-        const [start, end] = findWordBounds(str, ch);
-        return {
-          list: this.typo.suggest(str.slice(start, end)),
-          from: { line, ch: start },
-          to: { line, ch: end },
-        };
-      });
-      addSpellcheck(CodeMirror, this.typo);
-      this.cm = CodeMirror.fromTextArea(this.textarea, {
-        ...this.state.options,
-      });
-      this.cm.on('change', cm => this.handleChange(cm.getValue()));
-      this.cm.on('cursorActivity', () => this.handleCursorActivity());
+    if (typeof ace !== 'undefined' && ace) {
+      /* global ace */
+      this.ace = ace.edit(this.textarea);
+      initializeAce(this.ace, this);
     } else if (process.env.NODE_ENV !== 'test') {
-      console.error('CodeMirror is not defined. Forgot to include script?');
+      console.error('Ace is not defined. Forgot to include script?');
     }
     this.autosaveRetrieve();
   }
   getValue() {
     return this.state.raw;
   }
-  getVisibleLines(columnNode, nodeScrollTop, lineSelector, numberSelector = null) {
-    const editorScroll = nodeScrollTop;
-    let firstVisibleLine = null;
-    const visibleLines = [...columnNode.querySelectorAll(lineSelector)]
-      .map((_, i) => [_, i])
-      .filter(([lineNode, i]) => {
-        const lineOffsetTop = findRelativeOffset(lineNode, columnNode);
+  getPreviewFirstVisibleLine() {
+    const editorScroll = this.previewColumn.scrollTop;
+    let haveSomething = false;
+    const firstLineNode = [...this.previewColumn.querySelectorAll('strong[data-line]')]
+      .find((lineNode) => {
+        const lineOffsetTop = findRelativeOffset(lineNode, this.previewColumn);
         if (lineOffsetTop >= editorScroll) {
-          if (firstVisibleLine === null) {
-            firstVisibleLine = i;
+          if (!haveSomething) {
+            haveSomething = true;
             return true;
           }
           return lineOffsetTop <= editorScroll + this.state.height;
         }
         return false;
-      })
-      // if numberSelector null, use index
-      .map(([lineNode, i]) => (numberSelector ? numberSelector(lineNode) : i));
-    return visibleLines;
+      });
+    return Number(firstLineNode.dataset.line);
   }
   handleOutlineClick(heading) {
     const inCode = heading.source;
     const value = this.state.raw;
     const pos = nthIndexOf(value, inCode, heading.dupIndex);
-    const line = value.substr(0, pos).split('\n').length - 1;
-    this.cm.setCursor(line);
-    this.cm.focus();
+    const line = value.substr(0, pos).split('\n').length;
+    this.ace.gotoLine(line);
+    this.ace.scrollToLine(line - 1);
+    this.ace.focus();
   }
   scrollPreviewToLine(ln) {
     let lineNode = this.previewColumn.querySelector(`strong[data-line="${ln}"]`);
@@ -150,8 +119,7 @@ class Editor extends React.Component {
     this.previewColumn.scrollTop = findRelativeOffset(lineNode, this.previewColumn);
   }
   scrollEditorToLine(ln) {
-    const to = this.cm.charCoords({ line: ln - 1, ch: 0 }, 'local').top;
-    this.cm.scrollTo(null, to);
+    this.ace.scrollToLine(ln - 1);
   }
   handlePreviewScroll() {
     if (this.state.lastScrolled === 'editor') {
@@ -161,7 +129,7 @@ class Editor extends React.Component {
       });
       return;
     }
-    const [firstVisibleLine] = this.getVisibleLines(this.previewColumn, this.previewColumn.scrollTop, 'strong[data-line]', node => Number(node.dataset.line));
+    const firstVisibleLine = this.getPreviewFirstVisibleLine();
     this.scrollEditorToLine(firstVisibleLine);
     this.setState({
       ...this.state,
@@ -180,9 +148,7 @@ class Editor extends React.Component {
       });
       return;
     }
-    const offset = this.cm.getViewport().from;
-    const [firstVisibleLineRelative] = this.getVisibleLines(this.cm.getScrollerElement(), this.cm.getScrollerElement().scrollTop + this.editorColumn.scrollTop, '.CodeMirror-line');
-    const firstVisibleLine = firstVisibleLineRelative + offset;
+    const firstVisibleLine = Math.floor(Math.max(0, this.ace.renderer.getScrollTopRow())) + 1;
     this.scrollPreviewToLine(firstVisibleLine);
     this.setState({
       ...this.state,
@@ -224,8 +190,8 @@ class Editor extends React.Component {
     const retrieved = autosaveRetrieve();
     if (retrieved) {
       const { value, date } = retrieved;
-      if (this.cm) {
-        this.cm.setValue(value);
+      if (this.ace) {
+        this.ace.setValue(value, -1);
       }
       this.updateStateValue(value);
       this.setState({
@@ -238,12 +204,12 @@ class Editor extends React.Component {
     this.updateCursor();
   }
   updateCursor() {
-    if (this.cm) {
-      const { line, ch } = this.cm.getCursor();
+    if (this.ace) {
+      const { row, column } = this.ace.selection.getCursor();
       this.setState({
         ...this.state,
-        cursorLine: line + 1,
-        cursorCol: ch + 1,
+        cursorLine: row + 1,
+        cursorCol: column + 1,
       });
     }
   }
@@ -312,8 +278,8 @@ class Editor extends React.Component {
     const newValue = moveSubstring(this.state.raw, ...indicies);
 
     this.updateStateValue(newValue);
-    if (this.cm) {
-      this.cm.setValue(newValue);
+    if (this.ace) {
+      this.ace.setValue(newValue, -1);
     }
   }
   generateOutline(raw) {
@@ -354,7 +320,7 @@ class Editor extends React.Component {
           );
         case 'editor':
           return (
-            <div className="column" onScroll={this.handleEditorScroll} ref={(el) => { this.editorColumn = el; }}>
+            <div className="column editor" onScroll={this.handleEditorScroll} ref={(el) => { this.editorColumn = el; }}>
               <textarea
                 ref={(el) => { this.textarea = el; }}
                 onChange={e => this.handleChange(e.target.value)}
@@ -381,7 +347,7 @@ class Editor extends React.Component {
       }
     };
     return (
-      <div className={`columnWrapper ${colName}`} style={wrapperStyle}>
+      <div key={colName} className={`columnWrapper ${colName}`} style={wrapperStyle}>
         {getColumnInner(colName)}
       </div>
     );
@@ -406,18 +372,6 @@ class Editor extends React.Component {
         <div
           className="markup-editor"
           role="presentation"
-          onKeyDown={(e) => {
-                        if (e.shiftKey && e.ctrlKey) {
-                          switch (e.key) {
-                              case 'p':
-                              case 'P':
-                                  e.preventDefault();
-                                  this.commandPalette.focus();
-                                  break;
-                              default:
-                          }
-                        }
-                    }}
           style={markupEditorStyles}
           ref={(el) => { this.editor = el; }}
         >
@@ -425,7 +379,7 @@ class Editor extends React.Component {
             ref={(el) => { this.commandPalette = el; }}
             options={commandPaletteOptions}
             onSelected={this.handleCommand}
-            onExit={() => { this.cm.focus(); }}
+            onExit={() => { this.ace.focus(); }}
           />
           <div className="workspace">
             {
@@ -450,11 +404,6 @@ class Editor extends React.Component {
                     height: inherit;
                     width: inherit;
                     align-items: flex-start;
-                  }
-                  .CodeMirror {
-                      font-family: 'Roboto Mono', monospace;
-                      height: 2000px;
-                      overflow: visible;
                   }
                   .markup-editor {
                       position: relative;
@@ -505,7 +454,10 @@ class Editor extends React.Component {
                       overflow-x: hidden;
                       height: inherit;
                       position: relative; // important for scroll synchro!
-                      margin-right: -16px;
+                      margin-right: -16px; // togle for scrollbar hiding
+                  }
+                  .markup-editor .workspace > .columnWrapper > .column.editor {
+                      overflow: hidden;
                   }
                   .markup-editor .workspace > .columnWrapper.outline {
                     flex: 2;
@@ -514,8 +466,14 @@ class Editor extends React.Component {
                     overflow: hidden;
 
                   }
-                  .cm-spell-error {
-                    text-decoration: underline #FF6358 wavy;
+                  .ace_editor {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    left: 0;
+                    font-size: 20px;
+                    margin: 0;
                   }
                 `}
         </style>

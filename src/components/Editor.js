@@ -9,6 +9,7 @@ import { createNinja, ninjasToHtml } from './editor/lineNinja';
 import { autosaveStore, autosaveRetrieve } from './editor/autosave';
 import getCommands from './editor/commands';
 import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline } from '../helpers/helpers';
+import { initializeAce } from './editor/ace';
 
 const STOPPED_TYPING_TIMEOUT = 300;
 const STOPPED_CURSOR_ACTIVITY_TIMEOUT = 300;
@@ -74,18 +75,7 @@ class Editor extends React.Component {
     if (typeof ace !== 'undefined' && ace) {
       /* global ace */
       this.ace = ace.edit(this.textarea);
-      this.ace.setTheme('ace/theme/tomorrow');
-      this.ace.getSession().setMode(`ace/mode/${this.props.language.name}`);
-      this.ace.getSession().on('change', () => {
-        this.handleChange(this.ace.getValue());
-      });
-      this.ace.getSession().selection.on('changeCursor', this.handleCursorActivity);
-      this.ace.commands.addCommand({
-        name: 'command-pallette',
-        bindKey: { win: 'Ctrl-Shift-P', mac: 'Command-Shift-P' },
-        exec: this.commandPalette.focus,
-      });
-      this.ace.focus();
+      initializeAce(this.ace, this);
     } else if (process.env.NODE_ENV !== 'test') {
       console.error('Ace is not defined. Forgot to include script?');
     }

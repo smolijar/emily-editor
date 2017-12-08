@@ -1,12 +1,5 @@
 import _ from 'lodash';
-
-const setAceOptions = (ace, options) => {
-  _.toPairs(options).forEach(([component, settings]) => {
-    _.toPairs(settings).forEach(([option, value]) => {
-      ace[component].setOption(option, value);
-    });
-  });
-};
+import { setAceOptions } from './ace';
 
 const setOption = (editor, component, option, value) => {
   editor.setState(_.set(

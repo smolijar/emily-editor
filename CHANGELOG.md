@@ -5,6 +5,23 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+ - Ace editor
+ - Toggle whitespace display
+
+### Changed
+ - Simplify line lookup (limit to preview only)
+ - Extract editor initialization
+
+### Removed
+ - CodeMirror
+ - Spellchecking
+ - Proportional font sizes
+
+### Fixed
+ - Add keys to generated columns
+ - Scrolling issues (#32)
+ - Outline lookup scroll on top (#20)
 
 ## [0.3.1] - 2017-11-30
 ### Fixed

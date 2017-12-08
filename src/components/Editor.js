@@ -481,7 +481,7 @@ class Editor extends React.Component {
                     right: 0;
                     bottom: 0;
                     left: 0;
-                    font-size: 18px;
+                    font-size: 20px;
                     margin: 0;
                   }
                 `}

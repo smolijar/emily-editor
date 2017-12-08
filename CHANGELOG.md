@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-
+### Fixed
+ - Fixed synchronized scrolling with wrapped text
 
 ## [0.4.0] - 2017-12-08
 ### Added

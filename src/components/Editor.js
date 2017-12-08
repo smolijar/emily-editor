@@ -148,12 +148,16 @@ class Editor extends React.Component {
       });
       return;
     }
-    const firstVisibleLine = Math.floor(Math.max(0, this.ace.renderer.getScrollTopRow())) + 1;
-    this.scrollPreviewToLine(firstVisibleLine);
-    this.setState({
-      ...this.state,
-      lastScrolled: 'editor',
-    });
+    // When scolling fast on top, current scroll is not fully propagated into Ace just yet.
+    // Hackishly wait a tad
+    setTimeout(() => {
+      const firstVisibleLine = Math.floor(Math.max(0, this.ace.renderer.getScrollTopRow())) + 1;
+      this.scrollPreviewToLine(firstVisibleLine);
+      this.setState({
+        ...this.state,
+        lastScrolled: 'editor',
+      });
+    }, 10);
   }
   updateStateValue(value) {
     const html = this.generateHtml(value);

@@ -222,7 +222,14 @@ class Editor extends React.Component {
       .split('\n')
       .map((line, i) => this.props.language.lineSafeInsert(line, createNinja(i)))
       .join('\n');
-    return ninjasToHtml(this.props.language.getToHtml()(rawWithNinjas));
+    const htmlWithNinjas = ninjasToHtml(this.props.language.getToHtml()(rawWithNinjas));
+    if (typeof document !== 'undefined') {
+      const htmlDom = document.createElement('div');
+      htmlDom.innerHTML = htmlWithNinjas;
+      htmlDom.querySelectorAll('a').forEach(node => node.setAttribute('target', '_blank'));
+      return htmlDom.innerHTML;
+    }
+    return htmlWithNinjas;
   }
   handleCommand(command) {
     getCommands(this)[command].execute();
@@ -337,10 +344,6 @@ class Editor extends React.Component {
             <div className="column" onScroll={this.handlePreviewScroll} ref={(el) => { this.previewColumn = el; }}>
               <div
                 className={`preview ${this.props.language.previewClassName}`}
-                role="presentation"
-                spellCheck="false"
-                contentEditable
-                onKeyPress={(e) => { e.preventDefault(); }}
                 // eslint-disable-next-line react/no-danger
                 dangerouslySetInnerHTML={{ __html: this.state.html }}
               />

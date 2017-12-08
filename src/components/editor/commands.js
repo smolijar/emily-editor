@@ -10,19 +10,28 @@ const setOption = (editor, component, option, value) => {
   setAceOptions(editor.ace, editor.state.aceOptions);
 };
 
+const toggleOption = (editor, component, option) => {
+  const to = !editor.state.aceOptions[component][option];
+  setOption(editor, component, option, to);
+};
+
 const getCommands = editor => ({
-  'options.lineNumbers': {
+  'options.gutter': {
     text: 'Toggle: Line numbers',
     execute: () => {
-      const to = !editor.state.aceOptions.renderer.showGutter;
-      setOption(editor, 'renderer', 'showGutter', to);
+      toggleOption(editor, 'renderer', 'showGutter');
     },
   },
-  'options.lineWrapping': {
+  'options.wrap': {
     text: 'Toggle: Line wrapping',
     execute: () => {
-      const to = !editor.state.aceOptions.session.wrap;
-      setOption(editor, 'session', 'wrap', to);
+      toggleOption(editor, 'session', 'wrap');
+    },
+  },
+  'options.whitespace': {
+    text: 'Toggle: Whitespace characters',
+    execute: () => {
+      toggleOption(editor, 'renderer', 'showInvisibles');
     },
   },
   'columns.both': {

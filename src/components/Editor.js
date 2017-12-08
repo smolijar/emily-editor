@@ -157,7 +157,7 @@ class Editor extends React.Component {
         ...this.state,
         lastScrolled: 'editor',
       });
-    }, 10);
+    }, 4);
   }
   updateStateValue(value) {
     const html = this.generateHtml(value);

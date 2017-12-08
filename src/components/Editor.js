@@ -42,10 +42,10 @@ class Editor extends React.Component {
 
     const defaultAceOptions = {
       renderer: {
-        showGutter: true,
+        showGutter: false,
       },
       session: {
-        wrap: false,
+        wrap: true,
       },
     };
 

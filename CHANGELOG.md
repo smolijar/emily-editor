@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+ - Fixed synchronized scrolling with wrapped text
+
+## [0.4.0] - 2017-12-08
 ### Added
  - Ace editor
  - Toggle whitespace display
@@ -152,6 +156,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Live html rendered preview column
  - CodeMirror editor
 
+[0.4.0]: https://github.com/grissius/markup-editor/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/grissius/markup-editor/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/grissius/markup-editor/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/grissius/markup-editor/compare/v0.1.0...v0.2.0

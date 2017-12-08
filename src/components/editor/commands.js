@@ -1,28 +1,27 @@
 import _ from 'lodash';
 
+const setAceOption = (editor, component, option, value) => {
+  editor.ace[component].setOption(option, value);
+  editor.setState(_.set(
+    { ...editor.state },
+    `aceOptions.${component}.${option}`,
+    value,
+  ));
+};
+
 const getCommands = editor => ({
   'options.lineNumbers': {
     text: 'Toggle: Line numbers',
     execute: () => {
-      const to = !editor.state.aceOptions.showGutter;
-      editor.ace.renderer.setOption('showGutter', to);
-      editor.setState(_.set(
-        { ...editor.state },
-        'aceOptions.showGutter',
-        to,
-      ));
+      const to = !editor.state.aceOptions.renderer.showGutter;
+      setAceOption(editor, 'renderer', 'showGutter', to);
     },
   },
   'options.lineWrapping': {
     text: 'Toggle: Line wrapping',
     execute: () => {
-      const to = !editor.state.aceOptions.wrap;
-      editor.ace.session.setOption('wrap', to);
-      editor.setState(_.set(
-        { ...editor.state },
-        'aceOptions.wrap',
-        to,
-      ));
+      const to = !editor.state.aceOptions.session.wrap;
+      setAceOption(editor, 'session', 'wrap', to);
     },
   },
   'columns.both': {

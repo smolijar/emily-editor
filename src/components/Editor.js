@@ -40,8 +40,12 @@ class Editor extends React.Component {
     autoBind(this);
 
     const defaultAceOptions = {
-      showGutter: true,
-      wrap: false,
+      renderer: {
+        showGutter: true,
+      },
+      session: {
+        wrap: false,
+      },
     };
 
     const html = this.generateHtml(props.content);

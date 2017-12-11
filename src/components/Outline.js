@@ -70,7 +70,6 @@ class Outline extends React.Component {
               margin-top: 0;
               margin-bottom: 0;
               padding-left: 0px;
-              border-top: 0;
             }
             .list:last-child {
               margin-bottom: 0;
@@ -84,6 +83,12 @@ class Outline extends React.Component {
             .item {
               margin: 2px 0;
               position: relative;
+            }
+            .root .list:first-child .item-wrapper {
+              margin-top: 0;
+            }
+            .root .list:last-child .item-wrapper {
+              margin-bottom: 0;
             }
             .item .item-wrapper {
               color: #555;

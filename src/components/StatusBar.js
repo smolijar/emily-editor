@@ -34,8 +34,8 @@ class StatusBar extends React.PureComponent {
           <style jsx>{`
                     .statusBar {
                         height: 20px;
-                        background: #222;
-                        color: #bbb;
+                        background: #eee;
+                        color: #aaa;
                         font-size: 13px;
                         line-height: 20px;
                         font-family: inherit;
@@ -46,6 +46,7 @@ class StatusBar extends React.PureComponent {
                     }
                     .statusBar span {
                       margin: 0 10px;
+                      cursor: default;
                     }
                     .statusBar button,
                     .statusBar button:focus {
@@ -64,12 +65,13 @@ class StatusBar extends React.PureComponent {
                         font-family: inherit;
                         border: none;
                         background: none;
-                        color: #bbb;
+                        color: #555;
                         cursor: pointer;
                         height: 20px;
+                        position: relative;
                     }
                     .statusBar button:hover {
-                        background: rgba(0,0,0,0.5);
+                        background: rgba(0,0,0,0.05);
                     }
                     .statusBar .left {
                         float: left;

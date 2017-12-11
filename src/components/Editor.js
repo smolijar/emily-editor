@@ -414,7 +414,7 @@ class Editor extends React.Component {
                   }
                   .markup-editor {
                       position: relative;
-                      border: 1px solid #222;
+                      border: 1px solid #eee;
                       border-bottom: 0;
                       width: auto;
                       height: auto;

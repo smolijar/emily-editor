@@ -37,8 +37,6 @@ export default class extends React.Component {
           <Editor
             content={this.props.markdownExample}
             language={markdown}
-            width={1800}
-            height={850}
           />
         </div>
       </Layout>

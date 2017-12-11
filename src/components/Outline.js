@@ -119,6 +119,7 @@ class Outline extends React.Component {
               opacity: 1;
             }
             .item .dragHandle {
+              color: #bbb;
               opacity: 0;
               position: absolute;
               right: 20px;

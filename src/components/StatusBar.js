@@ -51,6 +51,15 @@ class StatusBar extends React.PureComponent {
                     .statusBar button:focus {
                         outline: none;
                     }
+                    button.command {
+                      padding-left: 15px;
+                    }
+                    button.command::before {
+                      content: '$';
+                      position: absolute;
+                      left: 4px;
+                      bottom: 3px;
+                    }
                     .statusBar button {
                         font-family: 'Roboto', sans-serif;
                         border: none;

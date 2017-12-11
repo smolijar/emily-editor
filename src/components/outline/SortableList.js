@@ -17,12 +17,12 @@ const SortableItem = SortableElement(({
         onClick={() => onSectionToggle(key)}
       />
       <button className="item-wrapper" onClick={() => onItemClick(value)}>
-        <DragHandle />
         <span
           className="outlineItem"
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: value.content.replace(/<[^>]*>/g, '') }}
         />
+        <DragHandle />
       </button>
       {!hidden[key] &&
         <SortableList
@@ -32,6 +32,7 @@ const SortableItem = SortableElement(({
           onOrderChange={onOrderChange}
           onItemClick={onItemClick}
           onSectionToggle={onSectionToggle}
+          useDragHandle
         />
       }
     </li>

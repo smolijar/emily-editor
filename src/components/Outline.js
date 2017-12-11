@@ -43,6 +43,7 @@ class Outline extends React.Component {
           onItemClick={this.props.onItemClick}
           hidden={this.state.hidden}
           onSectionToggle={this.onSectionToggle}
+          useDragHandle
         />
         <style jsx global>{`
             .root {

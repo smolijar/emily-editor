@@ -160,17 +160,17 @@ class Outline extends React.Component {
               border: 0;
             }
             .item.level-1, .item.level-1 button { font-size: 16px; }
-            .item.level-1 .item-wrapper { padding-top: 8px; padding-bottom: 8px; }
-            .item.level-2, .item.level-2 button { font-size: 14px; }
-            .item.level-2 .item-wrapper { padding-top: 5px; padding-bottom: 5px; }
-            .item.level-3, .item.level-3 button { font-size: 12px; font-weight: normal; }
-            .item.level-3 .item-wrapper { padding-top: 2px; padding-bottom: 2px; }
-            .item.level-4, .item.level-4 button { font-size: 12px; font-weight: normal; }
-            .item.level-4 .item-wrapper { padding-top: 2px; padding-bottom: 2px; }
-            .item.level-5, .item.level-5 button { font-size: 12px; font-weight: normal; }
-            .item.level-5 .item-wrapper { padding-top: 1px; padding-bottom: 1px; }
-            .item.level-6, .item.level-6 button { font-size: 12px; font-weight: normal; }
-            .item.level-6 .item-wrapper { padding-top: 0; padding-bottom: 0; }
+            .item.level-1 .item-wrapper { padding-top: 12px; padding-bottom: 12px; }
+            .item.level-2, .item.level-2 button { font-size: 16px; font-weight: normal; }
+            .item.level-2 .item-wrapper { padding-top: 8px; padding-bottom: 8px; }
+            .item.level-3, .item.level-3 button { font-size: 14px; font-weight: normal; color: #888; }
+            .item.level-3 .item-wrapper { padding-top: 5px; padding-bottom: 5px; }
+            .item.level-4, .item.level-4 button { font-size: 12px; font-weight: normal; color: #888; }
+            .item.level-4 .item-wrapper { padding-top: 5px; padding-bottom: 5px; }
+            .item.level-5, .item.level-5 button { font-size: 12px; font-weight: normal; color: #888; }
+            .item.level-5 .item-wrapper { padding-top: 3px; padding-bottom: 3px; }
+            .item.level-6, .item.level-6 button { font-size: 12px; font-weight: normal; color: #888; }
+            .item.level-6 .item-wrapper { padding-top: 3px; padding-bottom: 3px; }
         `}
         </style>
       </div>

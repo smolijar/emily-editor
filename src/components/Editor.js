@@ -462,7 +462,7 @@ class Editor extends React.Component {
                       overflow-x: hidden;
                       height: inherit;
                       position: relative; // important for scroll synchro!
-                      margin-right: -16px; // togle for scrollbar hiding
+                      // margin-right: -16px; // togle for scrollbar hiding
                   }
                   .markup-editor .workspace > .columnWrapper > .column.editor {
                       overflow: hidden;

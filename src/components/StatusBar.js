@@ -20,14 +20,15 @@ class StatusBar extends React.PureComponent {
       return (
         <div className="statusBar">
           <div className="left">
-            <button onClick={this.props.onCommandPalette}>Command Palette</button>
+            <button className="command" onClick={this.props.onCommandPalette}>Command</button>
             <span>{this.props.loc} Lines</span>
           </div>
           <div className="right">
             <span>
-              {this.props.autosaved && `Autosaved ${this.props.autosaved.toLocaleDateString()} ${this.props.autosaved.toLocaleTimeString()}, `}
-              Ln {this.props.line},
-              Col {this.props.col}
+              {this.props.autosaved && `Autosaved ${this.props.autosaved.toLocaleTimeString()}`}
+            </span>
+            <span>
+              {this.props.line}:{this.props.col}
             </span>
           </div>
           <style jsx>{`

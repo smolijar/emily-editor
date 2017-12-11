@@ -38,7 +38,7 @@ class StatusBar extends React.PureComponent {
                         color: #bbb;
                         font-size: 13px;
                         line-height: 20px;
-                        font-family: 'Roboto', sans-serif;
+                        font-family: inherit;
                         position: absolute;
                         bottom: 0;
                         z-index: 100;
@@ -61,7 +61,7 @@ class StatusBar extends React.PureComponent {
                       bottom: 3px;
                     }
                     .statusBar button {
-                        font-family: 'Roboto', sans-serif;
+                        font-family: inherit;
                         border: none;
                         background: none;
                         color: #bbb;

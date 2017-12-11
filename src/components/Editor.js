@@ -421,6 +421,7 @@ class Editor extends React.Component {
                       display: flex;
                       align-items: flex-start;
                       padding-bottom: 20px;
+                      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
                   }
                   .column.preview {
                       font-family: 'Roboto', sans-serif;

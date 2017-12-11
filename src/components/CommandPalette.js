@@ -6,8 +6,6 @@ const ARROW_UP = 38;
 const ARROW_DOWN = 40;
 const ESCAPE = 27;
 
-const COLOR = '#d3e2f2';
-
 class CommandPalette extends React.Component {
     static propTypes = {
       options: PropTypes.objectOf(PropTypes.string),
@@ -115,8 +113,8 @@ class CommandPalette extends React.Component {
           <style jsx>{`
                   .command-palette {
                       background-color: #e9e9e9;
-                      color: #444;
-                      font-family: 'Roboto', sans-serif;
+                      color: #aaa;
+                      font-family: inherit;
                       padding: 10px 0 5px 0;
                       display: block;
                       position: absolute;
@@ -134,8 +132,9 @@ class CommandPalette extends React.Component {
                       padding: 10px 10px 5px 10px;
                   }
                   input {
+                      font-family: inherit
                       width: 100%;
-                      border: 1px solid ${COLOR};
+                      border: 1px solid #ccc;
                       padding: 7px 23px;
                       background: #f5f5f5;
                       color: #444;
@@ -145,9 +144,9 @@ class CommandPalette extends React.Component {
                   }
                   .command-palette::before {
                       display: block;
-                      content: ">";
+                      content: '>';
                       position: absolute;
-                      top: 25px;
+                      top: 28px;
                       left: 20px;
                       opacity: 0.5;
                   }
@@ -165,13 +164,14 @@ class CommandPalette extends React.Component {
                   }
                   ul li {
                       box-sizing: border-box;
-                      {/* background-color: orange; */}
                       margin: 3px 0;
                       padding: 0 8px;
                       font-size: 12px;
+                      cursor: pointer:
                   }
                   ul li.selected {
-                      background-color: ${COLOR};
+                      background-color: #ddd;
+                      color: #444;
                   }
               `}
           </style>

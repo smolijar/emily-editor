@@ -414,13 +414,14 @@ class Editor extends React.Component {
                   }
                   .markup-editor {
                       position: relative;
-                      border: 1px solid #222;
+                      border: 1px solid #eee;
                       border-bottom: 0;
                       width: auto;
                       height: auto;
                       display: flex;
                       align-items: flex-start;
                       padding-bottom: 20px;
+                      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
                   }
                   .column.preview {
                       font-family: 'Roboto', sans-serif;
@@ -461,7 +462,7 @@ class Editor extends React.Component {
                       overflow-x: hidden;
                       height: inherit;
                       position: relative; // important for scroll synchro!
-                      margin-right: -16px; // togle for scrollbar hiding
+                      // margin-right: -16px; // togle for scrollbar hiding
                   }
                   .markup-editor .workspace > .columnWrapper > .column.editor {
                       overflow: hidden;

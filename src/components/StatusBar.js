@@ -20,24 +20,25 @@ class StatusBar extends React.PureComponent {
       return (
         <div className="statusBar">
           <div className="left">
-            <button onClick={this.props.onCommandPalette}>Command Palette</button>
+            <button className="command" onClick={this.props.onCommandPalette}>Command</button>
             <span>{this.props.loc} Lines</span>
           </div>
           <div className="right">
             <span>
-              {this.props.autosaved && `Autosaved ${this.props.autosaved.toLocaleDateString()} ${this.props.autosaved.toLocaleTimeString()}, `}
-              Ln {this.props.line},
-              Col {this.props.col}
+              {this.props.autosaved && `Autosaved ${this.props.autosaved.toLocaleTimeString()}`}
+            </span>
+            <span>
+              {this.props.line}:{this.props.col}
             </span>
           </div>
           <style jsx>{`
                     .statusBar {
                         height: 20px;
-                        background: #222;
-                        color: #bbb;
+                        background: #eee;
+                        color: #aaa;
                         font-size: 13px;
                         line-height: 20px;
-                        font-family: 'Roboto', sans-serif;
+                        font-family: inherit;
                         position: absolute;
                         bottom: 0;
                         z-index: 100;
@@ -45,21 +46,32 @@ class StatusBar extends React.PureComponent {
                     }
                     .statusBar span {
                       margin: 0 10px;
+                      cursor: default;
                     }
                     .statusBar button,
                     .statusBar button:focus {
                         outline: none;
                     }
+                    button.command {
+                      padding-left: 15px;
+                    }
+                    button.command::before {
+                      content: '$';
+                      position: absolute;
+                      left: 4px;
+                      bottom: 3px;
+                    }
                     .statusBar button {
-                        font-family: 'Roboto', sans-serif;
+                        font-family: inherit;
                         border: none;
                         background: none;
-                        color: #bbb;
+                        color: #555;
                         cursor: pointer;
                         height: 20px;
+                        position: relative;
                     }
                     .statusBar button:hover {
-                        background: rgba(0,0,0,0.5);
+                        background: rgba(0,0,0,0.05);
                     }
                     .statusBar .left {
                         float: left;

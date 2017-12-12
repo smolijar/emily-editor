@@ -5,8 +5,25 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Removed
+ - CDN Roboto
+ - Old editor props
+ - Unecessary document quries in command palette component
+
+
+### Changed
+ - Simplify statusbar content
+ - Accent command palette button
+ - Use same fonts in editor components
+ - Hybrid ugly-ass dark theme to light
+ - Show scrollbars
+ - Make drag handles visible only on hover
+ - Make oultine visually cleaner and sections more distinguishable
+
 ### Fixed
  - Fixed synchronized scrolling with wrapped text
+ - Text dragging to work on handle only
+ - Command palette mouse interaction
 
 ## [0.4.0] - 2017-12-08
 ### Added

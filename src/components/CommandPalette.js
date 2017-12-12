@@ -6,8 +6,6 @@ const ARROW_UP = 38;
 const ARROW_DOWN = 40;
 const ESCAPE = 27;
 
-const COLOR = '#d3e2f2';
-
 class CommandPalette extends React.Component {
     static propTypes = {
       options: PropTypes.objectOf(PropTypes.string),
@@ -27,6 +25,7 @@ class CommandPalette extends React.Component {
         selected: 0,
         show: Object.keys(this.props.options),
         visible: false,
+        mouseover: false,
       };
     }
     hide() {
@@ -56,8 +55,7 @@ class CommandPalette extends React.Component {
         show,
         selected: 0,
       }, () => {
-        const ul = document.querySelector('.command-palette ul');
-        ul.scrollTop = 0;
+        this.nav.scrollTop = 0;
       });
     }
     handleKeyPress(e) {
@@ -80,10 +78,8 @@ class CommandPalette extends React.Component {
           ...this.state,
           selected,
         }, () => {
-          console.log(this.state.show[selected]);
-          const ul = document.querySelector('.command-palette ul');
-          const li = document.querySelector('.command-palette li.selected');
-          ul.scrollTop = li.offsetTop - (118 * 2);
+          const button = this.nav.querySelector('.command-palette button.selected');
+          this.nav.scrollTop = button.offsetTop - (118 * 2);
         });
       }
       if (e.keyCode === ESCAPE) {
@@ -92,31 +88,56 @@ class CommandPalette extends React.Component {
     }
     render() {
       return (
-        <div style={{ display: this.state.visible ? 'block' : 'none' }} className="command-palette">
+        <div
+          style={{ display: this.state.visible ? 'block' : 'none' }}
+          className="command-palette"
+          onMouseOver={() => this.setState({
+            mouseover: true,
+          })}
+          onFocus={() => this.setState({
+            mouseover: true,
+          })}
+          onMouseOut={() => this.setState({
+            mouseover: false,
+          })}
+          onBlur={() => this.setState({
+            mouseover: false,
+          })}
+        >
           <div className="inputWrapper">
             <input
               ref={(el) => { this.input = el; }}
               onChange={this.handleChange}
               onKeyDown={this.handleKeyDown}
               onKeyPress={this.handleKeyPress}
-              onBlur={this.hide}
+              onBlur={() => {
+                if (!this.state.mouseover) {
+                  this.hide();
+                }
+              }}
               value={this.state.value}
             />
           </div>
-          <ul>
+          <nav ref={(el) => { this.nav = el; }}>
             {this.state.show
                 .map((optionKey, index) => (
-                  <li className={index === this.state.selected ? 'selected' : ''} key={optionKey}>
+                  <button
+                    className={index === this.state.selected ? 'selected' : ''}
+                    key={optionKey}
+                    onClick={() => {
+                      this.props.onSelected(optionKey);
+                      this.hide();
+                    }}
+                  >
                     {this.props.options[optionKey]}
-                  </li>
+                  </button>
                 ))
             }
-          </ul>
+          </nav>
           <style jsx>{`
                   .command-palette {
                       background-color: #e9e9e9;
-                      color: #444;
-                      font-family: 'Roboto', sans-serif;
+                      font-family: inherit;
                       padding: 10px 0 5px 0;
                       display: block;
                       position: absolute;
@@ -134,8 +155,9 @@ class CommandPalette extends React.Component {
                       padding: 10px 10px 5px 10px;
                   }
                   input {
+                      font-family: inherit
                       width: 100%;
-                      border: 1px solid ${COLOR};
+                      border: 1px solid #ccc;
                       padding: 7px 23px;
                       background: #f5f5f5;
                       color: #444;
@@ -145,13 +167,13 @@ class CommandPalette extends React.Component {
                   }
                   .command-palette::before {
                       display: block;
-                      content: ">";
+                      content: '>';
                       position: absolute;
-                      top: 25px;
+                      top: 28px;
                       left: 20px;
                       opacity: 0.5;
                   }
-                  ul {
+                  nav {
                       list-style-type: none;
                       padding-left: 0;
                       max-height: 300px;
@@ -163,15 +185,24 @@ class CommandPalette extends React.Component {
                       line-height: 20px;
                       box-sizing: border-box;
                   }
-                  ul li {
+                  nav button {
                       box-sizing: border-box;
-                      {/* background-color: orange; */}
                       margin: 3px 0;
                       padding: 0 8px;
                       font-size: 12px;
+                      cursor: pointer;
+                      display: block;
+                      width: 100%;
+                      background: transparent;
+                      border: 0;
+                      font-family: inherit;
+                      padding: 5px 10px;
+                      text-align: left;
+                      color: #aaa;
                   }
-                  ul li.selected {
-                      background-color: ${COLOR};
+                  nav button.selected, nav button:hover {
+                      background-color: #ddd;
+                      color: #444;
                   }
               `}
           </style>

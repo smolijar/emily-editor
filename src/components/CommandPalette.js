@@ -55,8 +55,7 @@ class CommandPalette extends React.Component {
         show,
         selected: 0,
       }, () => {
-        const nav = document.querySelector('.command-palette nav');
-        nav.scrollTop = 0;
+        this.nav.scrollTop = 0;
       });
     }
     handleKeyPress(e) {
@@ -79,9 +78,8 @@ class CommandPalette extends React.Component {
           ...this.state,
           selected,
         }, () => {
-          const nav = document.querySelector('.command-palette nav');
-          const button = document.querySelector('.command-palette button.selected');
-          nav.scrollTop = button.offsetTop - (118 * 2);
+          const button = this.nav.querySelector('.command-palette button.selected');
+          this.nav.scrollTop = button.offsetTop - (118 * 2);
         });
       }
       if (e.keyCode === ESCAPE) {
@@ -120,7 +118,7 @@ class CommandPalette extends React.Component {
               value={this.state.value}
             />
           </div>
-          <nav>
+          <nav ref={(el) => { this.nav = el; }}>
             {this.state.show
                 .map((optionKey, index) => (
                   <button

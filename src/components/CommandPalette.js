@@ -25,6 +25,7 @@ class CommandPalette extends React.Component {
         selected: 0,
         show: Object.keys(this.props.options),
         visible: false,
+        mouseover: false,
       };
     }
     hide() {
@@ -54,8 +55,8 @@ class CommandPalette extends React.Component {
         show,
         selected: 0,
       }, () => {
-        const ul = document.querySelector('.command-palette ul');
-        ul.scrollTop = 0;
+        const nav = document.querySelector('.command-palette nav');
+        nav.scrollTop = 0;
       });
     }
     handleKeyPress(e) {
@@ -78,10 +79,9 @@ class CommandPalette extends React.Component {
           ...this.state,
           selected,
         }, () => {
-          console.log(this.state.show[selected]);
-          const ul = document.querySelector('.command-palette ul');
-          const li = document.querySelector('.command-palette li.selected');
-          ul.scrollTop = li.offsetTop - (118 * 2);
+          const nav = document.querySelector('.command-palette nav');
+          const button = document.querySelector('.command-palette button.selected');
+          nav.scrollTop = button.offsetTop - (118 * 2);
         });
       }
       if (e.keyCode === ESCAPE) {
@@ -90,30 +90,55 @@ class CommandPalette extends React.Component {
     }
     render() {
       return (
-        <div style={{ display: this.state.visible ? 'block' : 'none' }} className="command-palette">
+        <div
+          style={{ display: this.state.visible ? 'block' : 'none' }}
+          className="command-palette"
+          onMouseOver={() => this.setState({
+            mouseover: true,
+          })}
+          onFocus={() => this.setState({
+            mouseover: true,
+          })}
+          onMouseOut={() => this.setState({
+            mouseover: false,
+          })}
+          onBlur={() => this.setState({
+            mouseover: false,
+          })}
+        >
           <div className="inputWrapper">
             <input
               ref={(el) => { this.input = el; }}
               onChange={this.handleChange}
               onKeyDown={this.handleKeyDown}
               onKeyPress={this.handleKeyPress}
-              onBlur={this.hide}
+              onBlur={() => {
+                if (!this.state.mouseover) {
+                  this.hide();
+                }
+              }}
               value={this.state.value}
             />
           </div>
-          <ul>
+          <nav>
             {this.state.show
                 .map((optionKey, index) => (
-                  <li className={index === this.state.selected ? 'selected' : ''} key={optionKey}>
+                  <button
+                    className={index === this.state.selected ? 'selected' : ''}
+                    key={optionKey}
+                    onClick={() => {
+                      this.props.onSelected(optionKey);
+                      this.hide();
+                    }}
+                  >
                     {this.props.options[optionKey]}
-                  </li>
+                  </button>
                 ))
             }
-          </ul>
+          </nav>
           <style jsx>{`
                   .command-palette {
                       background-color: #e9e9e9;
-                      color: #aaa;
                       font-family: inherit;
                       padding: 10px 0 5px 0;
                       display: block;
@@ -150,7 +175,7 @@ class CommandPalette extends React.Component {
                       left: 20px;
                       opacity: 0.5;
                   }
-                  ul {
+                  nav {
                       list-style-type: none;
                       padding-left: 0;
                       max-height: 300px;
@@ -162,14 +187,22 @@ class CommandPalette extends React.Component {
                       line-height: 20px;
                       box-sizing: border-box;
                   }
-                  ul li {
+                  nav button {
                       box-sizing: border-box;
                       margin: 3px 0;
                       padding: 0 8px;
                       font-size: 12px;
-                      cursor: pointer:
+                      cursor: pointer;
+                      display: block;
+                      width: 100%;
+                      background: transparent;
+                      border: 0;
+                      font-family: inherit;
+                      padding: 5px 10px;
+                      text-align: left;
+                      color: #aaa;
                   }
-                  ul li.selected {
+                  nav button.selected, nav button:hover {
                       background-color: #ddd;
                       color: #444;
                   }

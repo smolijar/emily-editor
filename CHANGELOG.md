@@ -5,7 +5,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+ - Refactor command palette props
 
+### Fixed
+ - Unable to close Command palette through editor focus
+ - #59 (Command palette selected keyboard and mouse)
 
 ## [0.5.0] - 2017-12-12
 ### Removed

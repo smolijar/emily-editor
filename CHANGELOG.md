@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Unable to close Command palette through editor focus
  - #59 (Command palette selected keyboard and mouse)
+ - #57 (Missing CSS while draggin in outline)
 
 ## [0.5.0] - 2017-12-12
 ### Removed

@@ -98,7 +98,7 @@ class CommandPalette extends React.Component {
           style={{ display: this.state.visible ? 'block' : 'none' }}
           className="command-palette"
           onMouseOver={mouseOn}
-          onFocus={mouseOn}
+          onFocus
           onMouseOut={mouseOff}
           onBlur={mouseOff}
         >

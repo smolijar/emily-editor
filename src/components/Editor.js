@@ -270,7 +270,17 @@ class Editor extends React.Component {
     if (oldIndex === newIndex) {
       return;
     }
-    const scroll = this.ace.renderer.getScrollTop();
+
+    const setAceValueKeepSession = (ace, value) => {
+      const scroll = ace.renderer.getScrollTop();
+      const selection = ace.selection.toJSON();
+      if (ace) {
+        ace.setValue(value, -1);
+        ace.renderer.scrollToY(scroll);
+        ace.selection.fromJSON(selection);
+        ace.focus();
+      }
+    };
 
     const newValue = (() => {
       // Container in which headers are swapped
@@ -293,10 +303,7 @@ class Editor extends React.Component {
     })();
 
     this.updateStateValue(newValue);
-    if (this.ace) {
-      this.ace.setValue(newValue, -1);
-      this.ace.renderer.scrollToY(scroll);
-    }
+    setAceValueKeepSession(this.ace, newValue);
   }
   generateOutline(raw) {
     return generateOutline(

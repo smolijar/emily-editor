@@ -270,27 +270,32 @@ class Editor extends React.Component {
     if (oldIndex === newIndex) {
       return;
     }
-    // Container in which headers are swapped
-    const container = header ? header.children : this.state.outline;
-    // Header section to move
-    const movingItem = container[oldIndex];
+    const scroll = this.ace.renderer.getScrollTop();
 
-    // [cutStart, cutEnd, pasteStart, (pasteEnd)]
-    const indicies = [
-      movingItem,
-      findNextSibling(movingItem),
-      // Header section to paste before
-      newIndex > oldIndex ? findNextSibling(container[newIndex]) : container[newIndex],
-    ].map(item => (item ?
-      nthIndexOf(this.state.raw, item.source, item.dupIndex) : this.state.raw.length
-    ));
+    const newValue = (() => {
+      // Container in which headers are swapped
+      const container = header ? header.children : this.state.outline;
+      // Header section to move
+      const movingItem = container[oldIndex];
 
-    // Move the section
-    const newValue = moveSubstring(this.state.raw, ...indicies);
+      // [cutStart, cutEnd, pasteStart, (pasteEnd)]
+      const indicies = [
+        movingItem,
+        findNextSibling(movingItem),
+        // Header section to paste before
+        newIndex > oldIndex ? findNextSibling(container[newIndex]) : container[newIndex],
+      ].map(item => (item ?
+        nthIndexOf(this.state.raw, item.source, item.dupIndex) : this.state.raw.length
+      ));
+
+      // Move the section
+      return moveSubstring(this.state.raw, ...indicies);
+    })();
 
     this.updateStateValue(newValue);
     if (this.ace) {
       this.ace.setValue(newValue, -1);
+      this.ace.renderer.scrollToY(scroll);
     }
   }
   generateOutline(raw) {

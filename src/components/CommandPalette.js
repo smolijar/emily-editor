@@ -8,14 +8,9 @@ const ESCAPE = 27;
 
 class CommandPalette extends React.Component {
     static propTypes = {
-      options: PropTypes.objectOf(PropTypes.string),
-      onSelected: PropTypes.func,
-      onExit: PropTypes.func,
-    }
-    static defaultProps = {
-      options: {},
-      onSelected: () => console.warn('No listener function for Command Palette'),
-      onExit: () => {},
+      options: PropTypes.objectOf(PropTypes.string).isRequired,
+      onSelected: PropTypes.func.isRequired,
+      onExit: PropTypes.func.isRequired,
     }
     constructor(props) {
       super(props);
@@ -30,7 +25,6 @@ class CommandPalette extends React.Component {
     }
     hide() {
       this.setState({
-        ...this.state,
         visible: false,
         value: '',
         selected: 0,
@@ -39,7 +33,6 @@ class CommandPalette extends React.Component {
     }
     focus() {
       this.setState({
-        ...this.state,
         visible: true,
       }, () => this.input.focus());
     }
@@ -50,7 +43,6 @@ class CommandPalette extends React.Component {
           .toLowerCase()
           .includes(value.toLowerCase()));
       this.setState({
-        ...this.state,
         value,
         show,
         selected: 0,
@@ -75,7 +67,6 @@ class CommandPalette extends React.Component {
         }
         selected = (selected + this.state.show.length) % this.state.show.length;
         this.setState({
-          ...this.state,
           selected,
         }, () => {
           const button = this.nav.querySelector('.command-palette button.selected');
@@ -87,22 +78,20 @@ class CommandPalette extends React.Component {
       }
     }
     render() {
+      const mouseOn = () => this.setState({
+        mouseover: true,
+      });
+      const mouseOff = () => this.setState({
+        mouseover: false,
+      });
       return (
         <div
           style={{ display: this.state.visible ? 'block' : 'none' }}
           className="command-palette"
-          onMouseOver={() => this.setState({
-            mouseover: true,
-          })}
-          onFocus={() => this.setState({
-            mouseover: true,
-          })}
-          onMouseOut={() => this.setState({
-            mouseover: false,
-          })}
-          onBlur={() => this.setState({
-            mouseover: false,
-          })}
+          onMouseOver={mouseOn}
+          onFocus
+          onMouseOut={mouseOff}
+          onBlur={mouseOff}
         >
           <div className="inputWrapper">
             <input
@@ -128,6 +117,7 @@ class CommandPalette extends React.Component {
                       this.props.onSelected(optionKey);
                       this.hide();
                     }}
+                    onMouseEnter={() => this.setState({ selected: index })}
                   >
                     {this.props.options[optionKey]}
                   </button>
@@ -200,7 +190,7 @@ class CommandPalette extends React.Component {
                       text-align: left;
                       color: #aaa;
                   }
-                  nav button.selected, nav button:hover {
+                  nav button.selected {
                       background-color: #ddd;
                       color: #444;
                   }

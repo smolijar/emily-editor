@@ -117,6 +117,7 @@ class CommandPalette extends React.Component {
                       this.props.onSelected(optionKey);
                       this.hide();
                     }}
+                    onMouseEnter={() => this.setState({ selected: index })}
                   >
                     {this.props.options[optionKey]}
                   </button>
@@ -189,7 +190,7 @@ class CommandPalette extends React.Component {
                       text-align: left;
                       color: #aaa;
                   }
-                  nav button.selected, nav button:hover {
+                  nav button.selected {
                       background-color: #ddd;
                       color: #444;
                   }

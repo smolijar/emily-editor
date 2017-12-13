@@ -87,22 +87,20 @@ class CommandPalette extends React.Component {
       }
     }
     render() {
+      const mouseOn = () => this.setState({
+        mouseover: true,
+      });
+      const mouseOff = () => this.setState({
+        mouseover: false,
+      });
       return (
         <div
           style={{ display: this.state.visible ? 'block' : 'none' }}
           className="command-palette"
-          onMouseOver={() => this.setState({
-            mouseover: true,
-          })}
-          onFocus={() => this.setState({
-            mouseover: true,
-          })}
-          onMouseOut={() => this.setState({
-            mouseover: false,
-          })}
-          onBlur={() => this.setState({
-            mouseover: false,
-          })}
+          onMouseOver={mouseOn}
+          onFocus={mouseOn}
+          onMouseOut={mouseOff}
+          onBlur={mouseOff}
         >
           <div className="inputWrapper">
             <input

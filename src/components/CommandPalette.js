@@ -25,7 +25,6 @@ class CommandPalette extends React.Component {
     }
     hide() {
       this.setState({
-        ...this.state,
         visible: false,
         value: '',
         selected: 0,
@@ -34,7 +33,6 @@ class CommandPalette extends React.Component {
     }
     focus() {
       this.setState({
-        ...this.state,
         visible: true,
       }, () => this.input.focus());
     }
@@ -45,7 +43,6 @@ class CommandPalette extends React.Component {
           .toLowerCase()
           .includes(value.toLowerCase()));
       this.setState({
-        ...this.state,
         value,
         show,
         selected: 0,
@@ -70,7 +67,6 @@ class CommandPalette extends React.Component {
         }
         selected = (selected + this.state.show.length) % this.state.show.length;
         this.setState({
-          ...this.state,
           selected,
         }, () => {
           const button = this.nav.querySelector('.command-palette button.selected');

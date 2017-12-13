@@ -270,27 +270,42 @@ class Editor extends React.Component {
     if (oldIndex === newIndex) {
       return;
     }
-    // Container in which headers are swapped
-    const container = header ? header.children : this.state.outline;
-    // Header section to move
-    const movingItem = container[oldIndex];
 
-    // [cutStart, cutEnd, pasteStart, (pasteEnd)]
-    const indicies = [
-      movingItem,
-      findNextSibling(movingItem),
-      // Header section to paste before
-      newIndex > oldIndex ? findNextSibling(container[newIndex]) : container[newIndex],
-    ].map(item => (item ?
-      nthIndexOf(this.state.raw, item.source, item.dupIndex) : this.state.raw.length
-    ));
+    const setAceValueKeepSession = (ace, value) => {
+      const scroll = ace.renderer.getScrollTop();
+      const selection = ace.selection.toJSON();
+      if (ace) {
+        ace.setValue(value, -1);
+        ace.renderer.scrollToY(scroll);
+        ace.selection.fromJSON(selection);
+        ace.focus();
+      }
+    };
 
-    // Move the section
-    const newValue = moveSubstring(this.state.raw, ...indicies);
+    const newValue = (() => {
+      // Container in which headers are swapped
+      const container = header ? header.children : this.state.outline;
+      // Header section to move
+      const movingItem = container[oldIndex];
+
+      // [cutStart, cutEnd, pasteStart, (pasteEnd)]
+      const indicies = [
+        movingItem,
+        findNextSibling(movingItem),
+        // Header section to paste before
+        newIndex > oldIndex ? findNextSibling(container[newIndex]) : container[newIndex],
+      ].map(item => (item ?
+        nthIndexOf(this.state.raw, item.source, item.dupIndex) : this.state.raw.length
+      ));
+
+      // Move the section
+      return moveSubstring(this.state.raw, ...indicies);
+    })();
 
     this.updateStateValue(newValue);
+
     if (this.ace) {
-      this.ace.setValue(newValue, -1);
+      setAceValueKeepSession(this.ace, newValue);
     }
   }
   generateOutline(raw) {

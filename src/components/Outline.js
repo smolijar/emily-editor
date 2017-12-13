@@ -38,7 +38,6 @@ class Outline extends React.Component {
         <SortableList
           items={this.props.outline}
           onSortEnd={indicies => this.props.onOrderChange(null, indicies)}
-          pressDelay={200}
           onOrderChange={this.props.onOrderChange}
           onItemClick={this.props.onItemClick}
           hidden={this.state.hidden}

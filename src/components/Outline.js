@@ -47,23 +47,21 @@ class Outline extends React.Component {
         />
         <style jsx global>{`
             .root {
-              font-family: inherit;
               background-color: #eee;
               color: #555;
               min-height: 100%;
             }
             .root button {
-              font-family: inherit;
               font-weight: 300;
             }
             button:active, button:focus {
               outline: 0;
             }
             .list {
-              list-style-type: none;
+              margin: 0;
+              padding: 0;
               padding-left: 15px;
               margin-bottom: 5px;
-              position: relative;
             }
             .list:first-child {
               margin-top: 0;
@@ -73,15 +71,15 @@ class Outline extends React.Component {
             .list:last-child {
               margin-bottom: 0;
             }
-            .item:last-child {
+            .outline-item:last-child {
               margin-bottom: 0;
             }
-            .item:first-child {
+            .outline-item:first-child {
               margin-top: 0;
             }
-            .item {
+            .outline-item {
               margin: 2px 0;
-              position: relative;
+              list-style-type: none;
             }
             .root .list:first-child .item-wrapper {
               margin-top: 0;
@@ -89,36 +87,36 @@ class Outline extends React.Component {
             .root .list:last-child .item-wrapper {
               margin-bottom: 0;
             }
-            .item .item-wrapper {
+            .outline-item .item-wrapper {
               color: #555;
               display: block;
-              margin: 4px 0;
+              margin: 0;
               padding: 4px;
               width: 100%;
               padding-left: 23px;
               padding-right: 20px;
               position: relative;
             }
-            .item .item-wrapper:hover {
+            .outline-item .item-wrapper:hover {
               background: rgba(0,0,0,.05);
               padding-right: 40px;
             }
-            .item .dragHandle, .item .toggle {
+            .outline-item .dragHandle, .outline-item .toggle {
               display: inline-block;
               cursor: pointer;
               opacity: 0.5;
             }
-            .item .toggle {
+            .outline-item .toggle {
               color: #555;
               position: absolute;
               left: 9px;
               top: 0.12em;
               z-index: 1;
             }
-            .item .item-wrapper:hover .dragHandle {
+            .outline-item .item-wrapper:hover .dragHandle {
               opacity: 1;
             }
-            .item .dragHandle {
+            .outline-item .dragHandle {
               color: #bbb;
               opacity: 0;
               position: absolute;
@@ -141,11 +139,11 @@ class Outline extends React.Component {
               left: -5px;
               margin-top: 0.2em;
             }
-            .item button.outlineItem {
+            .outline-item button.text {
               width: calc(100% - 60px);
               position: absolute;
             }
-            .item button {
+            .outline-item button {
               font-weight: bold;
               cursor: pointer;
               text-align: left;
@@ -157,24 +155,25 @@ class Outline extends React.Component {
               overflow: hidden;
               border: 0;
             }
-            .item.level-1, .item.level-1 button { font-size: 16px; }
-            .item.level-1 .toggle::before { }
-            .item.level-1 .item-wrapper { padding-top: 12px; padding-bottom: 12px; }
-            .item.level-2, .item.level-2 button { font-size: 16px; font-weight: normal; }
-            .item.level-2 .toggle::before { top: -3px; }
-            .item.level-2 .item-wrapper { padding-top: 8px; padding-bottom: 8px; }
-            .item.level-3, .item.level-3 button { font-size: 14px; font-weight: normal; color: #888; }
-            .item.level-3 .toggle::before { top: -3px; }
-            .item.level-3 .item-wrapper { padding-top: 8px; padding-bottom: 8px; }
-            .item.level-4, .item.level-4 button { font-size: 12px; font-weight: normal; color: #888; }
-            .item.level-4 .toggle::before { top: -1px; }
-            .item.level-4 .item-wrapper { padding-top: 8px; padding-bottom: 8px; }
-            .item.level-5, .item.level-5 button { font-size: 12px; font-weight: normal; color: #888; }
-            .item.level-5 .toggle::before { top: -2px; }
-            .item.level-5 .item-wrapper { padding-top: 5px; padding-bottom: 5px; }
-            .item.level-6, .item.level-6 button { font-size: 12px; font-weight: normal; color: #888; }
-            .item.level-6 .toggle::before { top: -2px; }
-            .item.level-6 .item-wrapper { padding-top: 5px; padding-bottom: 5px; }
+
+            .outline-item.level-1, .outline-item.level-1 button { font-size: 16px; }
+            .outline-item.level-1 .toggle::before { }
+            .outline-item.level-1 .item-wrapper { padding-top: 12px; padding-bottom: 12px; }
+            .outline-item.level-2, .outline-item.level-2 button { font-size: 16px; font-weight: normal; }
+            .outline-item.level-2 .toggle::before { top: -3px; }
+            .outline-item.level-2 .item-wrapper { padding-top: 8px; padding-bottom: 8px; }
+            .outline-item.level-3, .outline-item.level-3 button { font-size: 14px; font-weight: normal; color: #888; }
+            .outline-item.level-3 .toggle::before { top: -3px; }
+            .outline-item.level-3 .item-wrapper { padding-top: 8px; padding-bottom: 8px; }
+            .outline-item.level-4, .outline-item.level-4 button { font-size: 12px; font-weight: normal; color: #888; }
+            .outline-item.level-4 .toggle::before { top: -1px; }
+            .outline-item.level-4 .item-wrapper { padding-top: 8px; padding-bottom: 8px; }
+            .outline-item.level-5, .outline-item.level-5 button { font-size: 12px; font-weight: normal; color: #888; }
+            .outline-item.level-5 .toggle::before { top: -2px; }
+            .outline-item.level-5 .item-wrapper { padding-top: 5px; padding-bottom: 5px; }
+            .outline-item.level-6, .outline-item.level-6 button { font-size: 12px; font-weight: normal; color: #888; }
+            .outline-item.level-6 .toggle::before { top: -2px; }
+            .outline-item.level-6 .item-wrapper { padding-top: 5px; padding-bottom: 5px; }
         `}
         </style>
       </div>

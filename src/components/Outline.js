@@ -156,6 +156,17 @@ class Outline extends React.Component {
               border: 0;
             }
 
+            body > .outline-item > .item-wrapper {
+              background: rgba(0,0,0,.05);
+            }
+            body > .outline-item {
+              z-index: 10;
+              pointer-events: auto !important;
+              cursor: grabbing !important;
+              cursor: -moz-grabbing !important;
+              cursor: -webkit-grabbing !important;
+            }
+
             .outline-item.level-1, .outline-item.level-1 button { font-size: 16px; }
             .outline-item.level-1 .toggle::before { }
             .outline-item.level-1 .item-wrapper { padding-top: 12px; padding-bottom: 12px; }

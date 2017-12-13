@@ -8,14 +8,9 @@ const ESCAPE = 27;
 
 class CommandPalette extends React.Component {
     static propTypes = {
-      options: PropTypes.objectOf(PropTypes.string),
-      onSelected: PropTypes.func,
-      onExit: PropTypes.func,
-    }
-    static defaultProps = {
-      options: {},
-      onSelected: () => console.warn('No listener function for Command Palette'),
-      onExit: () => {},
+      options: PropTypes.objectOf(PropTypes.string).isRequired,
+      onSelected: PropTypes.func.isRequired,
+      onExit: PropTypes.func.isRequired,
     }
     constructor(props) {
       super(props);

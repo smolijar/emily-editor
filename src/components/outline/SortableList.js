@@ -11,14 +11,14 @@ const SortableItem = SortableElement(({
 }) => {
   const key = `${value.content}${value.index}`;
   return (
-    <li className={`item level-${value.level}`}>
+    <li className={`outline-item level-${value.level}`}>
       <button className="item-wrapper" onClick={() => onItemClick(value)}>
         <button
           className={`toggle ${value.children.length > 0 ? '' : 'invisible'} ${hidden[key] ? 'closed' : 'opened'}`}
           onClick={() => onSectionToggle(key)}
         />
         <span
-          className="outlineItem"
+          className="text"
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: value.content.replace(/<[^>]*>/g, '') }}
         />

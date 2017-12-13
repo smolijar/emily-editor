@@ -303,7 +303,10 @@ class Editor extends React.Component {
     })();
 
     this.updateStateValue(newValue);
-    setAceValueKeepSession(this.ace, newValue);
+
+    if (this.ace) {
+      setAceValueKeepSession(this.ace, newValue);
+    }
   }
   generateOutline(raw) {
     return generateOutline(

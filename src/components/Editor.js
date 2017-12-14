@@ -123,37 +123,23 @@ class Editor extends React.Component {
   }
   handlePreviewScroll() {
     if (this.state.lastScrolled === 'editor') {
-      this.setState({
-        lastScrolled: null,
-      });
+      this.setState({ lastScrolled: null });
       return;
     }
-    const firstVisibleLine = this.getPreviewFirstVisibleLine();
-    this.scrollEditorToLine(firstVisibleLine);
-    this.setState({
-      lastScrolled: 'preview',
+    this.setState({ lastScrolled: 'preview' }, () => {
+      const firstVisibleLine = this.getPreviewFirstVisibleLine();
+      this.scrollEditorToLine(firstVisibleLine);
     });
   }
-  handleEditorScroll(e) {
-    if (e.target.scrollTop === 0) {
-      // triggered by typing
-      return;
-    }
+  handleEditorScroll() {
     if (this.state.lastScrolled === 'preview') {
-      this.setState({
-        lastScrolled: null,
-      });
+      this.setState({ lastScrolled: null });
       return;
     }
-    // When scolling fast on top, current scroll is not fully propagated into Ace just yet.
-    // Hackishly wait a tad
-    setTimeout(() => {
+    this.setState({ lastScrolled: 'editor' }, () => {
       const firstVisibleLine = this.ace.renderer.getFirstVisibleRow() + 1;
       this.scrollPreviewToLine(firstVisibleLine);
-      this.setState({
-        lastScrolled: 'editor',
-      });
-    }, 4);
+    });
   }
   updateStateValue(value) {
     const html = this.generateHtml(value);
@@ -320,7 +306,7 @@ class Editor extends React.Component {
           );
         case 'editor':
           return (
-            <div className="column editor" onScroll={this.handleEditorScroll} ref={(el) => { this.editorColumn = el; }}>
+            <div className="column editor" ref={(el) => { this.editorColumn = el; }}>
               <textarea
                 ref={(el) => { this.textarea = el; }}
                 onChange={e => this.handleChange(e.target.value)}

@@ -15,6 +15,7 @@ module.exports.initializeAce = (ace, editor, options) => {
   ace.getSession().on('change', () => {
     editor.handleChange(ace.getValue());
   });
+  ace.session.on('changeScrollTop', editor.handleEditorScroll);
   ace.getSession().selection.on('changeCursor', editor.handleCursorActivity);
   ace.commands.addCommand({
     name: 'command-pallette',

@@ -126,10 +126,15 @@ class Editor extends React.Component {
       this.setState({ lastScrolled: null });
       return;
     }
-    this.setState({ lastScrolled: 'preview' }, () => {
-      const firstVisibleLine = this.getPreviewFirstVisibleLine();
-      this.scrollEditorToLine(firstVisibleLine);
-    });
+    const firstVisibleLine = this.getPreviewFirstVisibleLine();
+    const deltaPositive = firstVisibleLine > this.ace.renderer.getFirstVisibleRow() + 1;
+
+    // dont scroll editor if preview scroll "out of source" (e.g. footnotes)
+    if (this.ace.renderer.isScrollableBy(null, deltaPositive ? 1 : -1)) {
+      this.setState({ lastScrolled: 'preview' }, () => {
+        this.scrollEditorToLine(firstVisibleLine);
+      });
+    }
   }
   handleEditorScroll() {
     if (this.state.lastScrolled === 'preview') {

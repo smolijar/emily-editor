@@ -9,7 +9,7 @@ module.exports.setAceOptions = (ace, options) => {
 };
 
 
-module.exports.initializeAce = (ace, editor) => {
+module.exports.initializeAce = (ace, editor, options) => {
   ace.setTheme('ace/theme/tomorrow');
   ace.getSession().setMode(`ace/mode/${editor.props.language.name}`);
   ace.getSession().on('change', () => {
@@ -21,6 +21,6 @@ module.exports.initializeAce = (ace, editor) => {
     bindKey: { win: 'Ctrl-Shift-P', mac: 'Command-Shift-P' },
     exec: editor.commandPalette.focus,
   });
-  module.exports.setAceOptions(ace, editor.state.aceOptions);
+  module.exports.setAceOptions(ace, options);
   ace.focus();
 };

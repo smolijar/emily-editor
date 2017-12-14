@@ -76,7 +76,7 @@ class Editor extends React.Component {
     if (typeof ace !== 'undefined' && ace) {
       /* global ace */
       this.ace = ace.edit(this.textarea);
-      initializeAce(this.ace, this);
+      initializeAce(this.ace, this, this.state.aceOptions);
     } else if (process.env.NODE_ENV !== 'test') {
       console.error('Ace is not defined. Forgot to include script?');
     }
@@ -124,7 +124,6 @@ class Editor extends React.Component {
   handlePreviewScroll() {
     if (this.state.lastScrolled === 'editor') {
       this.setState({
-        ...this.state,
         lastScrolled: null,
       });
       return;
@@ -132,7 +131,6 @@ class Editor extends React.Component {
     const firstVisibleLine = this.getPreviewFirstVisibleLine();
     this.scrollEditorToLine(firstVisibleLine);
     this.setState({
-      ...this.state,
       lastScrolled: 'preview',
     });
   }
@@ -143,7 +141,6 @@ class Editor extends React.Component {
     }
     if (this.state.lastScrolled === 'preview') {
       this.setState({
-        ...this.state,
         lastScrolled: null,
       });
       return;
@@ -154,7 +151,6 @@ class Editor extends React.Component {
       const firstVisibleLine = this.ace.renderer.getFirstVisibleRow() + 1;
       this.scrollPreviewToLine(firstVisibleLine);
       this.setState({
-        ...this.state,
         lastScrolled: 'editor',
       });
     }, 4);
@@ -174,7 +170,6 @@ class Editor extends React.Component {
       clearTimeout(this.state.stoppedTypingTimer);
     }
     this.setState({
-      ...this.state,
       raw: value,
       stoppedTypingTimer: setTimeout(() => this.handleStoppedTyping(value), STOPPED_TYPING_TIMEOUT),
     });
@@ -186,7 +181,6 @@ class Editor extends React.Component {
   autosaveStore(value) {
     const { date } = autosaveStore(value);
     this.setState({
-      ...this.state,
       autosaved: date,
     });
   }
@@ -199,7 +193,6 @@ class Editor extends React.Component {
       }
       this.updateStateValue(value);
       this.setState({
-        ...this.state,
         autosaved: date,
       });
     }
@@ -211,7 +204,6 @@ class Editor extends React.Component {
     if (this.ace) {
       const { row, column } = this.ace.selection.getCursor();
       this.setState({
-        ...this.state,
         cursorLine: row + 1,
         cursorCol: column + 1,
       });
@@ -239,7 +231,6 @@ class Editor extends React.Component {
       clearTimeout(this.state.stoppedCursorActivityTimer);
     }
     this.setState({
-      ...this.state,
       stoppedCursorActivityTimer: setTimeout(
         this.handleStoppedCursorActivity,
         STOPPED_CURSOR_ACTIVITY_TIMEOUT,
@@ -250,7 +241,6 @@ class Editor extends React.Component {
     screenfull.on('change', () => {
       if (!screenfull.isFullscreen && this.state.fullscreen) {
         this.setState({
-          ...this.state,
           fullscreen: false,
         });
       }
@@ -261,7 +251,6 @@ class Editor extends React.Component {
       screenfull.request(this.editor);
     }
     this.setState({
-      ...this.state,
       fullscreen: !this.state.fullscreen,
     });
   }

@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - #59 (Command palette selected keyboard and mouse)
  - #57 (Missing CSS while draggin in outline)
  - Dragging delay (not needed when using handles)
+ - Markdown heading pattern
 
 ## [0.5.0] - 2017-12-12
 ### Removed

@@ -1,3 +1,5 @@
+import React from 'react';
+
 // Find nth occurance of needle in haystack
 module.exports.nthIndexOf = (haystack, needle, n = 1) => haystack
   .split(needle, n)
@@ -129,3 +131,14 @@ module.exports.findWordBounds = (string, index) => [
     .split(/\W/)[0].length,
   index + string.slice(index).split(/\W/)[0].length,
 ];
+
+
+module.exports.formatShortcut = ({ win, mac }, plaintext = false) => {
+  const binding = (
+    typeof navigator !== 'undefined' && navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i) ? mac : win
+  ).split('-');
+  if (plaintext) {
+    return binding.join(' + ');
+  }
+  return binding.map(key => <kbd>{key}</kbd>).reduce((acc, v) => [acc, ' + ', v]);
+};

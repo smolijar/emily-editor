@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import autoBind from 'react-autobind';
+import { formatShortcut } from '../helpers/helpers';
 
 const ARROW_UP = 38;
 const ARROW_DOWN = 40;
@@ -39,7 +41,7 @@ class CommandPalette extends React.PureComponent {
     handleChange(e) {
       const { value } = e.target;
       const show = Object.keys(this.props.options)
-        .filter(optionKey => this.props.options[optionKey]
+        .filter(optionKey => this.props.options[optionKey].text
           .toLowerCase()
           .includes(value.toLowerCase()));
       this.setState({
@@ -119,7 +121,13 @@ class CommandPalette extends React.PureComponent {
                     }}
                     onMouseEnter={() => this.setState({ selected: index })}
                   >
-                    {this.props.options[optionKey]}
+                    {this.props.options[optionKey].text}
+                    <span className="shortcut">
+                      {
+                        _.get(this.props.options[optionKey], 'bindKey') &&
+                        formatShortcut(_.get(this.props.options[optionKey], 'bindKey'))
+                      }
+                    </span>
                   </button>
                 ))
             }
@@ -190,9 +198,24 @@ class CommandPalette extends React.PureComponent {
                       text-align: left;
                       color: #aaa;
                   }
+                  .shortcut {
+                    float: right;
+                    margin-right: 10px;
+                    font-size: 10px;
+                  }
                   nav button.selected {
                       background-color: #ddd;
                       color: #444;
+                  }
+              `}
+          </style>
+          <style jsx global>{`
+                  .shortcut kbd {
+                    color: #eee;
+                    background-color: #aaa;
+                    font-weight: bold;
+                    padding: 2px 5px;
+                    border-radius: 2px;
                   }
               `}
           </style>

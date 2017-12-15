@@ -5,14 +5,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+ - Title tooltips for statusbar and outline
+ - Show shortcuts for commands in palette
+ - Command kbd bindings
+ - Basic text formatting commands
+
 ### Changed
  - Refactor command palette props
  - Move timeouts out of state
+ - Open command pallette is now a command as well
  - Use Pure components instead of Components
 
 ### Removed
  - scrollguard (lastScrolled) from state
  - Ugly-ass timeout waiting for Ace to propagate scrolling into config layer
+ - Proportional font sizes (deprecated from CM) option
 
 ### Fixed
  - Unable to close Command palette through editor focus
@@ -22,6 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - #50 (Jumping beginnig/end does not synchronize scroll)
  - Manually update Ace on scroll to have valid value in callback
  - #34 (Swapping sections resets editor scroll)
+ - Inconsistent and confusing commands behavior and names
 
 ## [0.5.0] - 2017-12-12
 ### Removed

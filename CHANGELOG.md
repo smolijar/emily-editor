@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Changed
  - Refactor command palette props
+ - Use Pure components instead of Components
 
 ### Removed
  - scrollguard (lastScrolled) from state

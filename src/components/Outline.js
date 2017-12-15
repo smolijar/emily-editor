@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import autoBind from 'react-autobind';
 import SortableList from './outline/SortableList';
 
-class Outline extends React.Component {
+class Outline extends React.PureComponent {
   static propTypes = {
     onItemClick: PropTypes.func.isRequired,
     onOrderChange: PropTypes.func.isRequired,

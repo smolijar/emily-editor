@@ -74,15 +74,6 @@ const getCommands = editor => ({
       });
     },
   },
-  proportionalSizes: {
-    text: 'Proportional sizes',
-    execute: () => {
-      editor.setState({
-        ...editor.state,
-        proportionalSizes: !editor.state.proportionalSizes,
-      });
-    },
-  },
   'layout.fullscreen': {
     text: 'Toggle: Fullscreen',
     execute: editor.toggleFullscreen,

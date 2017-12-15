@@ -8,11 +8,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
  - Refactor command palette props
 
+### Removed
+ - scrollguard (lastScrolled) from state
+ - Ugly-ass timeout waiting for Ace to propagate scrolling into config layer
+
 ### Fixed
  - Unable to close Command palette through editor focus
  - #59 (Command palette selected keyboard and mouse)
  - #57 (Missing CSS while draggin in outline)
  - Dragging delay (not needed when using handles)
+ - #50 (Jumping beginnig/end does not synchronize scroll)
+ - Manually update Ace on scroll to have valid value in callback
  - #34 (Swapping sections resets editor scroll)
 
 ## [0.5.0] - 2017-12-12
@@ -20,7 +26,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - CDN Roboto
  - Old editor props
  - Unecessary document quries in command palette component
-
 
 ### Changed
  - Simplify statusbar content

@@ -354,8 +354,6 @@ class Editor extends React.PureComponent {
     );
   }
   render() {
-    const commandPaletteOptions = Object.entries(getCommands(this))
-      .reduce((acc, [k, v]) => { acc[k] = v.text; return acc; }, {});
     let markupEditorStyles = {
       display: 'flex',
       width: 'inherit',
@@ -378,7 +376,7 @@ class Editor extends React.PureComponent {
         >
           <CommandPalette
             ref={(el) => { this.commandPalette = el; }}
-            options={commandPaletteOptions}
+            options={getCommands(this)}
             onSelected={this.handleCommand}
             onExit={() => { this.ace.focus(); }}
           />
@@ -396,7 +394,7 @@ class Editor extends React.PureComponent {
             col={this.state.cursorCol}
             line={this.state.cursorLine}
             autosaved={this.state.autosaved}
-            onCommandPalette={() => this.commandPalette.focus()}
+            commandPaletteCommand={getCommands(this).commandPalette}
           />
         </div>
         <style jsx global>{`

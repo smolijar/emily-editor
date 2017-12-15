@@ -57,8 +57,6 @@ class Editor extends React.Component {
       html,
       outline: this.generateOutline(this.props.content),
       proportionalSizes: true,
-      stoppedTypingTimer: null,
-      stoppedCursorActivityTimer: null,
       columns: {
         editor: true,
         preview: true,
@@ -71,6 +69,8 @@ class Editor extends React.Component {
       cursorCol: 1,
     };
     this.lastScrolled = null;
+    this.stoppedTypingTimer = null;
+    this.stoppedCursorActivityTimer = null;
   }
   componentDidMount() {
     if (typeof ace !== 'undefined' && ace) {
@@ -156,13 +156,14 @@ class Editor extends React.Component {
     });
   }
   handleChange(value) {
-    if (this.state.stoppedTypingTimer) {
-      clearTimeout(this.state.stoppedTypingTimer);
+    if (this.stoppedTypingTimer) {
+      clearTimeout(this.stoppedTypingTimer);
     }
-    this.setState({
-      raw: value,
-      stoppedTypingTimer: setTimeout(() => this.handleStoppedTyping(value), STOPPED_TYPING_TIMEOUT),
-    });
+    this.stoppedTypingTimer = setTimeout(
+      () => this.handleStoppedTyping(value),
+      STOPPED_TYPING_TIMEOUT,
+    );
+    this.setState({ raw: value });
   }
   handleStoppedTyping(value) {
     this.autosaveStore(value);
@@ -217,15 +218,13 @@ class Editor extends React.Component {
     getCommands(this)[command].execute();
   }
   handleCursorActivity() {
-    if (this.state.stoppedCursorActivityTimer) {
-      clearTimeout(this.state.stoppedCursorActivityTimer);
+    if (this.stoppedCursorActivityTimer) {
+      clearTimeout(this.stoppedCursorActivityTimer);
     }
-    this.setState({
-      stoppedCursorActivityTimer: setTimeout(
-        this.handleStoppedCursorActivity,
-        STOPPED_CURSOR_ACTIVITY_TIMEOUT,
-      ),
-    });
+    this.stoppedCursorActivityTimer = setTimeout(
+      this.handleStoppedCursorActivity,
+      STOPPED_CURSOR_ACTIVITY_TIMEOUT,
+    );
   }
   toggleFullscreen() {
     screenfull.on('change', () => {

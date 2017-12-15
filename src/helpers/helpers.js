@@ -133,9 +133,12 @@ module.exports.findWordBounds = (string, index) => [
 ];
 
 
-module.exports.formatShortcut = ({ win, mac }) => {
-  const binding = typeof navigator !== 'undefined' && navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i) ? mac : win;
-  return (
-    binding.split('-').map(key => <kbd>{key}</kbd>).reduce((acc, v) => [acc, ' + ', v])
-  );
+module.exports.formatShortcut = ({ win, mac }, plaintext = false) => {
+  const binding = (
+    typeof navigator !== 'undefined' && navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i) ? mac : win
+  ).split('-');
+  if (plaintext) {
+    return binding.join(' + ');
+  }
+  return binding.map(key => <kbd>{key}</kbd>).reduce((acc, v) => [acc, ' + ', v]);
 };

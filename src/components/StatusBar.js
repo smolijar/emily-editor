@@ -1,26 +1,32 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { formatShortcut } from '../helpers/helpers';
 
 class StatusBar extends React.PureComponent {
     static propTypes = {
       loc: PropTypes.number,
-      onCommandPalette: PropTypes.func,
+      commandPaletteCommand: PropTypes.shape({
+        bindKey: PropTypes.object,
+        text: PropTypes.string,
+        execute: PropTypes.func,
+      }).isRequired,
       line: PropTypes.number,
       col: PropTypes.number,
       autosaved: PropTypes.instanceOf(Date),
     }
     static defaultProps = {
       loc: 0,
-      onCommandPalette: () => console.warn('StatusBar: no onCommandPalette handler set.'),
       line: 1,
       col: 1,
       autosaved: null,
     }
     render() {
+      const cpCommand = this.props.commandPaletteCommand;
+      const buttonTitle = `${cpCommand.text} (${formatShortcut(cpCommand.bindKey, true)})`;
       return (
         <div className="statusBar">
           <div className="left">
-            <button className="command" onClick={this.props.onCommandPalette}>Command</button>
+            <button title={buttonTitle} className="command" onClick={cpCommand.execute}>Command</button>
             <span>{this.props.loc} Lines</span>
           </div>
           <div className="right">

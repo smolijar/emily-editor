@@ -23,6 +23,11 @@ const ensureEditorOrPreview = (columns) => {
 };
 
 const getCommands = editor => ({
+  commandPalette: {
+    text: 'Open command palette',
+    bindKey: { win: 'Ctrl-Shift-P', mac: 'Command-Shift-P' },
+    execute: () => editor.commandPalette.focus(),
+  },
   'editor.gutter': {
     text: 'Editor: Toggle gutter (line numbers)',
     execute: () => {

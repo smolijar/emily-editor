@@ -394,7 +394,7 @@ class Editor extends React.Component {
             col={this.state.cursorCol}
             line={this.state.cursorLine}
             autosaved={this.state.autosaved}
-            onCommandPalette={() => this.commandPalette.focus()}
+            commandPaletteCommand={getCommands(this).commandPalette}
           />
         </div>
         <style jsx global>{`

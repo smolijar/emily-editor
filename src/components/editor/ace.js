@@ -25,11 +25,6 @@ module.exports.initializeAce = (ace, editor, options) => {
       exec: command.execute,
     });
   });
-  ace.commands.addCommand({
-    name: 'command-pallette',
-    bindKey: { win: 'Ctrl-Shift-P', mac: 'Command-Shift-P' },
-    exec: editor.commandPalette.focus,
-  });
   module.exports.setAceOptions(ace, options);
   ace.focus();
 };

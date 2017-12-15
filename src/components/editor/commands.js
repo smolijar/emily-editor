@@ -15,69 +15,58 @@ const toggleOption = (editor, component, option) => {
   setOption(editor, component, option, to);
 };
 
+const ensureEditorOrPreview = (columns) => {
+  if (!columns.editor && !columns.preview) {
+    return { ...columns, editor: true };
+  }
+  return columns;
+};
+
 const getCommands = editor => ({
-  'options.gutter': {
-    text: 'Toggle: Line numbers',
+  'editor.gutter': {
+    text: 'Editor: Toggle gutter (line numbers)',
     execute: () => {
       toggleOption(editor, 'renderer', 'showGutter');
     },
   },
-  'options.wrap': {
-    text: 'Toggle: Line wrapping',
+  'editor.wrap': {
+    text: 'Editor: Toggle wrap',
     execute: () => {
       toggleOption(editor, 'session', 'wrap');
     },
   },
-  'options.whitespace': {
-    text: 'Toggle: Whitespace characters',
+  'editor.whitespace': {
+    text: 'Editor: Toggle whitespace characters',
     execute: () => {
       toggleOption(editor, 'renderer', 'showInvisibles');
     },
   },
-  'columns.both': {
-    text: 'View: Editor & Preview',
+  'layout.editor': {
+    text: 'Layout: Toggle editor',
     execute: () => {
       editor.setState({
-        ...editor.state,
-        columns: {
+        columns: ensureEditorOrPreview({
           ...editor.state.columns,
-          preview: true,
-          editor: true,
-        },
+          editor: !editor.state.columns.editor,
+        }),
       });
     },
   },
-  'columns.editor': {
-    text: 'View: Editor',
+  'layout.preview': {
+    text: 'Layout: Toggle preview',
     execute: () => {
       editor.setState({
-        ...editor.state,
-        columns: {
+        columns: ensureEditorOrPreview({
           ...editor.state.columns,
-          preview: false,
-          editor: true,
-        },
+          preview: !editor.state.columns.preview,
+        }),
       });
     },
   },
-  'columns.preview': {
-    text: 'View: Preview',
+  'layout.outline': {
+    text: 'Layout: Toggle outline',
     execute: () => {
       editor.setState({
-        ...editor.state,
-        columns: {
-          ...editor.state.columns,
-          preview: true,
-          editor: false,
-        },
-      });
-    },
-  },
-  'columns.outline': {
-    text: 'Column outline',
-    execute: () => {
-      editor.setState({
-        ...editor.state,
         columns: {
           ...editor.state.columns,
           outline: !editor.state.columns.outline,
@@ -94,7 +83,7 @@ const getCommands = editor => ({
       });
     },
   },
-  fullscreen: {
+  'layout.fullscreen': {
     text: 'Toggle: Fullscreen',
     execute: editor.toggleFullscreen,
   },

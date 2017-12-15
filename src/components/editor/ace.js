@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import getCommands from './commands';
 
 module.exports.setAceOptions = (ace, options) => {
   _.toPairs(options).forEach(([component, settings]) => {
@@ -17,6 +18,13 @@ module.exports.initializeAce = (ace, editor, options) => {
   });
   ace.session.on('changeScrollTop', editor.handleEditorScroll);
   ace.getSession().selection.on('changeCursor', editor.handleCursorActivity);
+  _.toPairs(getCommands(editor)).forEach(([name, command]) => {
+    ace.commands.addCommand({
+      name,
+      bindKey: command.bindKey,
+      exec: command.execute,
+    });
+  });
   ace.commands.addCommand({
     name: 'command-pallette',
     bindKey: { win: 'Ctrl-Shift-P', mac: 'Command-Shift-P' },

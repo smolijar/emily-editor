@@ -54,6 +54,7 @@ const getCommands = editor => ({
   },
   'layout.preview': {
     text: 'Layout: Toggle preview',
+    bindKey: { win: 'Ctrl-P', mac: 'Command-P' },
     execute: () => {
       editor.setState({
         columns: ensureEditorOrPreview({
@@ -65,6 +66,7 @@ const getCommands = editor => ({
   },
   'layout.outline': {
     text: 'Layout: Toggle outline',
+    bindKey: { win: 'Ctrl-O', mac: 'Command-O' },
     execute: () => {
       editor.setState({
         columns: {
@@ -75,6 +77,7 @@ const getCommands = editor => ({
     },
   },
   'layout.fullscreen': {
+    bindKey: { win: 'F11', mac: 'F11' },
     text: 'Toggle: Fullscreen',
     execute: editor.toggleFullscreen,
   },

@@ -145,6 +145,7 @@ class Editor extends React.Component {
       const firstVisibleLine = this.ace.renderer.getFirstVisibleRow() + 1;
       this.scrollPreviewToLine(firstVisibleLine);
     });
+    this.ace.renderer.$computeLayerConfig();
   }
   updateStateValue(value) {
     const html = this.generateHtml(value);

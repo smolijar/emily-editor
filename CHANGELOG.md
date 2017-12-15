@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
  - Refactor command palette props
+ - Move timeouts out of state
  - Open command pallette is now a command as well
  - Use Pure components instead of Components
 

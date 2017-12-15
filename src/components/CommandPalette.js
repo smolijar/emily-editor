@@ -41,7 +41,7 @@ class CommandPalette extends React.PureComponent {
     handleChange(e) {
       const { value } = e.target;
       const show = Object.keys(this.props.options)
-        .filter(optionKey => this.props.options[optionKey]
+        .filter(optionKey => this.props.options[optionKey].text
           .toLowerCase()
           .includes(value.toLowerCase()));
       this.setState({

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { setAceOptions } from './ace';
+import { setAceOptions, formatAceSelection } from './ace';
 
 const setOption = (editor, component, option, value) => {
   editor.setState(_.set(
@@ -80,6 +80,38 @@ const getCommands = editor => ({
     bindKey: { win: 'F11', mac: 'F11' },
     text: 'Toggle: Fullscreen',
     execute: editor.toggleFullscreen,
+  },
+  'format.bold': {
+    bindKey: { win: 'Ctrl-B', mac: 'Command-B' },
+    text: 'Format: Bold',
+    execute: () => {
+      formatAceSelection(editor.ace, editor.props.language.format.bold);
+    },
+  },
+  'format.italic': {
+    bindKey: { win: 'Ctrl-I', mac: 'Command-I' },
+    text: 'Format: Italic',
+    execute: () => {
+      formatAceSelection(editor.ace, editor.props.language.format.italic);
+    },
+  },
+  'format.ul': {
+    text: 'Format: Unordered list',
+    execute: () => {
+      formatAceSelection(editor.ace, editor.props.language.format.ul);
+    },
+  },
+  'format.ol': {
+    text: 'Format: Ordered list',
+    execute: () => {
+      formatAceSelection(editor.ace, editor.props.language.format.ol);
+    },
+  },
+  'format.quote': {
+    text: 'Format: Quote',
+    execute: () => {
+      formatAceSelection(editor.ace, editor.props.language.format.quote);
+    },
   },
 });
 

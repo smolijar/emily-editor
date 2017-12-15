@@ -33,3 +33,10 @@ module.exports.initializeAce = (ace, editor, options) => {
   module.exports.setAceOptions(ace, options);
   ace.focus();
 };
+
+module.exports.formatAceSelection = (ace, fn) => {
+  ace.session.replace(
+    ace.selection.getRange(),
+    fn(ace.session.getTextRange(ace.getSelectionRange())),
+  );
+};

@@ -66,11 +66,11 @@ class Editor extends React.Component {
       },
       aceOptions: defaultAceOptions,
       autosaved: null,
-      lastScrolled: null,
       loc: raw.split('\n').length,
       cursorLine: 1,
       cursorCol: 1,
     };
+    this.lastScrolled = null;
   }
   componentDidMount() {
     if (typeof ace !== 'undefined' && ace) {
@@ -122,8 +122,8 @@ class Editor extends React.Component {
     this.ace.scrollToLine(ln - 1);
   }
   handlePreviewScroll() {
-    if (this.state.lastScrolled === 'editor') {
-      this.setState({ lastScrolled: null });
+    if (this.lastScrolled === 'editor') {
+      this.lastScrolled = null;
       return;
     }
     const firstVisibleLine = this.getPreviewFirstVisibleLine();
@@ -131,21 +131,19 @@ class Editor extends React.Component {
 
     // dont scroll editor if preview scroll "out of source" (e.g. footnotes)
     if (this.ace.renderer.isScrollableBy(null, deltaPositive ? 1 : -1)) {
-      this.setState({ lastScrolled: 'preview' }, () => {
-        this.scrollEditorToLine(firstVisibleLine);
-      });
+      this.lastScrolled = 'preview';
+      this.scrollEditorToLine(firstVisibleLine);
     }
   }
   handleEditorScroll() {
-    if (this.state.lastScrolled === 'preview') {
-      this.setState({ lastScrolled: null });
+    if (this.lastScrolled === 'preview') {
+      this.lastScrolled = null;
       return;
     }
-    this.setState({ lastScrolled: 'editor' }, () => {
-      const firstVisibleLine = this.ace.renderer.getFirstVisibleRow() + 1;
-      this.scrollPreviewToLine(firstVisibleLine);
-    });
+    this.lastScrolled = 'editor';
     this.ace.renderer.$computeLayerConfig();
+    const firstVisibleLine = this.ace.renderer.getFirstVisibleRow() + 1;
+    this.scrollPreviewToLine(firstVisibleLine);
   }
   updateStateValue(value) {
     const html = this.generateHtml(value);

@@ -19,13 +19,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Dragging delay (not needed when using handles)
  - #50 (Jumping beginnig/end does not synchronize scroll)
  - Manually update Ace on scroll to have valid value in callback
+ - #34 (Swapping sections resets editor scroll)
 
 ## [0.5.0] - 2017-12-12
 ### Removed
  - CDN Roboto
  - Old editor props
  - Unecessary document quries in command palette component
-
 
 ### Changed
  - Simplify statusbar content

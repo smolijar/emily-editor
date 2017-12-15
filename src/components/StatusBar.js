@@ -23,17 +23,22 @@ class StatusBar extends React.PureComponent {
     render() {
       const cpCommand = this.props.commandPaletteCommand;
       const buttonTitle = `${cpCommand.text} (${formatShortcut(cpCommand.bindKey, true)})`;
+      const autosave = this.props.autosaved ? this.props.autosaved.toLocaleTimeString() : null;
       return (
         <div className="statusBar">
           <div className="left">
             <button title={buttonTitle} className="command" onClick={cpCommand.execute}>Command</button>
-            <span>{this.props.loc} Lines</span>
+            <span title="Current length of the document">{this.props.loc} Lines</span>
           </div>
           <div className="right">
-            <span>
-              {this.props.autosaved && `Autosaved ${this.props.autosaved.toLocaleTimeString()}`}
-            </span>
-            <span>
+            {autosave &&
+              <span
+                title={`Document was locally saved to prevent data loss at ${autosave}`}
+              >
+                Autosaved {autosave}
+              </span>
+            }
+            <span title="Current cursor line and character in editor">
               {this.props.line}:{this.props.col}
             </span>
           </div>

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
  - Refactor command palette props
  - Move timeouts out of state
+ - Use Pure components instead of Components
 
 ### Removed
  - scrollguard (lastScrolled) from state

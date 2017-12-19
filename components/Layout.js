@@ -28,6 +28,9 @@ class Layout extends React.PureComponent {
         <Link href="/markdown">
           <button>Markdown</button>
         </Link>
+        <Link href="/embedding">
+          <button>Embed</button>
+        </Link>
         {this.props.children}
       </div>
     );

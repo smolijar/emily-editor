@@ -25,6 +25,8 @@ class Editor extends React.PureComponent {
       renderJsxStyle: PropTypes.func,
       previewClassName: PropTypes.string,
     }),
+    width: PropTypes.number,
+    height: PropTypes.number,
   }
   static defaultProps = {
     content: '',
@@ -34,6 +36,8 @@ class Editor extends React.PureComponent {
       renderJsxStyle: () => {},
       previewClassName: '',
     },
+    width: null,
+    height: null,
   }
   constructor(props) {
     super(props);
@@ -355,8 +359,8 @@ class Editor extends React.PureComponent {
   render() {
     let markupEditorStyles = {
       display: 'flex',
-      width: 'inherit',
-      height: 'inherit',
+      width: this.props.width ? `${this.props.width}px` : '100%',
+      height: this.props.height ? `${this.props.height}px` : '100%',
     };
     if (this.state.fullscreen) {
       markupEditorStyles = {

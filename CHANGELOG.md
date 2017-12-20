@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Show shortcuts for commands in palette
  - Command kbd bindings
  - Basic text formatting commands
+ - Embedding examples
+ - Dimension props
 
 ### Changed
  - Refactor command palette props
@@ -31,6 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Manually update Ace on scroll to have valid value in callback
  - #34 (Swapping sections resets editor scroll)
  - Inconsistent and confusing commands behavior and names
+ - Embedding when container has % dimension
 
 ## [0.5.0] - 2017-12-12
 ### Removed

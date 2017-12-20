@@ -25,6 +25,8 @@ class Editor extends React.PureComponent {
       renderJsxStyle: PropTypes.func,
       previewClassName: PropTypes.string,
     }),
+    width: PropTypes.number,
+    height: PropTypes.number,
   }
   static defaultProps = {
     content: '',
@@ -34,6 +36,8 @@ class Editor extends React.PureComponent {
       renderJsxStyle: () => {},
       previewClassName: '',
     },
+    width: null,
+    height: null,
   }
   constructor(props) {
     super(props);
@@ -355,8 +359,8 @@ class Editor extends React.PureComponent {
   render() {
     let markupEditorStyles = {
       display: 'flex',
-      width: 'inherit',
-      height: 'inherit',
+      width: this.props.width ? `${this.props.width}px` : '100%',
+      height: this.props.height ? `${this.props.height}px` : '100%',
     };
     if (this.state.fullscreen) {
       markupEditorStyles = {
@@ -399,8 +403,8 @@ class Editor extends React.PureComponent {
         <style jsx global>{`
                   .markup-editor-wrapper {
                     display: flex;
-                    height: inherit;
-                    width: inherit;
+                    height: 100%;
+                    width: 100%;
                     align-items: flex-start;
                   }
                   .markup-editor {
@@ -415,7 +419,6 @@ class Editor extends React.PureComponent {
                       font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
                   }
                   .column.preview {
-                      font-family: 'Roboto', sans-serif;
                       padding: 10px 60px;
                   }
                   .preview:focus {
@@ -439,19 +442,19 @@ class Editor extends React.PureComponent {
                   .markup-editor .workspace {
                       align-items: stretch;
                       display: flex;
-                      height: inherit;
-                      width: inherit;
+                      height: 100%;
+                      width: 100%;
                       align-items: flex-start;
                   }
                   .markup-editor .workspace > .columnWrapper {
                       flex: 6;
                       overflow: hidden;
-                      height: inherit;
+                      height: 100%;
                   }
                   .markup-editor .workspace > .columnWrapper > .column {
                       overflow-y: scroll;
                       overflow-x: hidden;
-                      height: inherit;
+                      height: 100%;
                       position: relative; // important for scroll synchro!
                       // margin-right: -16px; // togle for scrollbar hiding
                   }
@@ -463,7 +466,6 @@ class Editor extends React.PureComponent {
                   }
                   .markup-editor .workspace {
                     overflow: hidden;
-
                   }
                   .ace_editor {
                     position: absolute;

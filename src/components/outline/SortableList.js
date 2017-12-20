@@ -1,7 +1,7 @@
 import React from 'react';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 
-const DragHandle = SortableHandle(() => <span className="dragHandle">𝍢</span>);
+const DragHandle = SortableHandle(() => <span title="Move this section" className="dragHandle">𝍢</span>);
 const SortableItem = SortableElement(({
   value,
   onOrderChange,
@@ -12,8 +12,9 @@ const SortableItem = SortableElement(({
   const key = `${value.content}${value.index}`;
   return (
     <li className={`outline-item level-${value.level}`}>
-      <button className="item-wrapper" onClick={() => onItemClick(value)}>
+      <button title="Go to this section" className="item-wrapper" onClick={() => onItemClick(value)}>
         <button
+          title="Collapse/expand section"
           className={`toggle ${value.children.length > 0 ? '' : 'invisible'} ${hidden[key] ? 'closed' : 'opened'}`}
           onClick={() => onSectionToggle(key)}
         />

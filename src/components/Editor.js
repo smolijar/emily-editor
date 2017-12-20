@@ -14,7 +14,7 @@ import { initializeAce } from './editor/ace';
 const STOPPED_TYPING_TIMEOUT = 300;
 const STOPPED_CURSOR_ACTIVITY_TIMEOUT = 300;
 
-class Editor extends React.Component {
+class Editor extends React.PureComponent {
   static propTypes = {
     content: PropTypes.string,
     language: PropTypes.shape({
@@ -25,6 +25,8 @@ class Editor extends React.Component {
       renderJsxStyle: PropTypes.func,
       previewClassName: PropTypes.string,
     }),
+    width: PropTypes.number,
+    height: PropTypes.number,
   }
   static defaultProps = {
     content: '',
@@ -34,6 +36,8 @@ class Editor extends React.Component {
       renderJsxStyle: () => {},
       previewClassName: '',
     },
+    width: null,
+    height: null,
   }
   constructor(props) {
     super(props);
@@ -57,8 +61,6 @@ class Editor extends React.Component {
       html,
       outline: this.generateOutline(this.props.content),
       proportionalSizes: true,
-      stoppedTypingTimer: null,
-      stoppedCursorActivityTimer: null,
       columns: {
         editor: true,
         preview: true,
@@ -66,17 +68,19 @@ class Editor extends React.Component {
       },
       aceOptions: defaultAceOptions,
       autosaved: null,
-      lastScrolled: null,
       loc: raw.split('\n').length,
       cursorLine: 1,
       cursorCol: 1,
     };
+    this.lastScrolled = null;
+    this.stoppedTypingTimer = null;
+    this.stoppedCursorActivityTimer = null;
   }
   componentDidMount() {
     if (typeof ace !== 'undefined' && ace) {
       /* global ace */
       this.ace = ace.edit(this.textarea);
-      initializeAce(this.ace, this);
+      initializeAce(this.ace, this, this.state.aceOptions);
     } else if (process.env.NODE_ENV !== 'test') {
       console.error('Ace is not defined. Forgot to include script?');
     }
@@ -122,42 +126,28 @@ class Editor extends React.Component {
     this.ace.scrollToLine(ln - 1);
   }
   handlePreviewScroll() {
-    if (this.state.lastScrolled === 'editor') {
-      this.setState({
-        ...this.state,
-        lastScrolled: null,
-      });
+    if (this.lastScrolled === 'editor') {
+      this.lastScrolled = null;
       return;
     }
     const firstVisibleLine = this.getPreviewFirstVisibleLine();
-    this.scrollEditorToLine(firstVisibleLine);
-    this.setState({
-      ...this.state,
-      lastScrolled: 'preview',
-    });
+    const deltaPositive = firstVisibleLine > this.ace.renderer.getFirstVisibleRow() + 1;
+
+    // dont scroll editor if preview scroll "out of source" (e.g. footnotes)
+    if (this.ace.renderer.isScrollableBy(null, deltaPositive ? 1 : -1)) {
+      this.lastScrolled = 'preview';
+      this.scrollEditorToLine(firstVisibleLine);
+    }
   }
-  handleEditorScroll(e) {
-    if (e.target.scrollTop === 0) {
-      // triggered by typing
+  handleEditorScroll() {
+    if (this.lastScrolled === 'preview') {
+      this.lastScrolled = null;
       return;
     }
-    if (this.state.lastScrolled === 'preview') {
-      this.setState({
-        ...this.state,
-        lastScrolled: null,
-      });
-      return;
-    }
-    // When scolling fast on top, current scroll is not fully propagated into Ace just yet.
-    // Hackishly wait a tad
-    setTimeout(() => {
-      const firstVisibleLine = this.ace.renderer.getFirstVisibleRow() + 1;
-      this.scrollPreviewToLine(firstVisibleLine);
-      this.setState({
-        ...this.state,
-        lastScrolled: 'editor',
-      });
-    }, 4);
+    this.lastScrolled = 'editor';
+    this.ace.renderer.$computeLayerConfig();
+    const firstVisibleLine = this.ace.renderer.getFirstVisibleRow() + 1;
+    this.scrollPreviewToLine(firstVisibleLine);
   }
   updateStateValue(value) {
     const html = this.generateHtml(value);
@@ -170,14 +160,14 @@ class Editor extends React.Component {
     });
   }
   handleChange(value) {
-    if (this.state.stoppedTypingTimer) {
-      clearTimeout(this.state.stoppedTypingTimer);
+    if (this.stoppedTypingTimer) {
+      clearTimeout(this.stoppedTypingTimer);
     }
-    this.setState({
-      ...this.state,
-      raw: value,
-      stoppedTypingTimer: setTimeout(() => this.handleStoppedTyping(value), STOPPED_TYPING_TIMEOUT),
-    });
+    this.stoppedTypingTimer = setTimeout(
+      () => this.handleStoppedTyping(value),
+      STOPPED_TYPING_TIMEOUT,
+    );
+    this.setState({ raw: value });
   }
   handleStoppedTyping(value) {
     this.autosaveStore(value);
@@ -186,7 +176,6 @@ class Editor extends React.Component {
   autosaveStore(value) {
     const { date } = autosaveStore(value);
     this.setState({
-      ...this.state,
       autosaved: date,
     });
   }
@@ -199,7 +188,6 @@ class Editor extends React.Component {
       }
       this.updateStateValue(value);
       this.setState({
-        ...this.state,
         autosaved: date,
       });
     }
@@ -211,7 +199,6 @@ class Editor extends React.Component {
     if (this.ace) {
       const { row, column } = this.ace.selection.getCursor();
       this.setState({
-        ...this.state,
         cursorLine: row + 1,
         cursorCol: column + 1,
       });
@@ -235,22 +222,18 @@ class Editor extends React.Component {
     getCommands(this)[command].execute();
   }
   handleCursorActivity() {
-    if (this.state.stoppedCursorActivityTimer) {
-      clearTimeout(this.state.stoppedCursorActivityTimer);
+    if (this.stoppedCursorActivityTimer) {
+      clearTimeout(this.stoppedCursorActivityTimer);
     }
-    this.setState({
-      ...this.state,
-      stoppedCursorActivityTimer: setTimeout(
-        this.handleStoppedCursorActivity,
-        STOPPED_CURSOR_ACTIVITY_TIMEOUT,
-      ),
-    });
+    this.stoppedCursorActivityTimer = setTimeout(
+      this.handleStoppedCursorActivity,
+      STOPPED_CURSOR_ACTIVITY_TIMEOUT,
+    );
   }
   toggleFullscreen() {
     screenfull.on('change', () => {
       if (!screenfull.isFullscreen && this.state.fullscreen) {
         this.setState({
-          ...this.state,
           fullscreen: false,
         });
       }
@@ -261,7 +244,6 @@ class Editor extends React.Component {
       screenfull.request(this.editor);
     }
     this.setState({
-      ...this.state,
       fullscreen: !this.state.fullscreen,
     });
   }
@@ -270,27 +252,42 @@ class Editor extends React.Component {
     if (oldIndex === newIndex) {
       return;
     }
-    // Container in which headers are swapped
-    const container = header ? header.children : this.state.outline;
-    // Header section to move
-    const movingItem = container[oldIndex];
 
-    // [cutStart, cutEnd, pasteStart, (pasteEnd)]
-    const indicies = [
-      movingItem,
-      findNextSibling(movingItem),
-      // Header section to paste before
-      newIndex > oldIndex ? findNextSibling(container[newIndex]) : container[newIndex],
-    ].map(item => (item ?
-      nthIndexOf(this.state.raw, item.source, item.dupIndex) : this.state.raw.length
-    ));
+    const setAceValueKeepSession = (ace, value) => {
+      const scroll = ace.renderer.getScrollTop();
+      const selection = ace.selection.toJSON();
+      if (ace) {
+        ace.setValue(value, -1);
+        ace.renderer.scrollToY(scroll);
+        ace.selection.fromJSON(selection);
+        ace.focus();
+      }
+    };
 
-    // Move the section
-    const newValue = moveSubstring(this.state.raw, ...indicies);
+    const newValue = (() => {
+      // Container in which headers are swapped
+      const container = header ? header.children : this.state.outline;
+      // Header section to move
+      const movingItem = container[oldIndex];
+
+      // [cutStart, cutEnd, pasteStart, (pasteEnd)]
+      const indicies = [
+        movingItem,
+        findNextSibling(movingItem),
+        // Header section to paste before
+        newIndex > oldIndex ? findNextSibling(container[newIndex]) : container[newIndex],
+      ].map(item => (item ?
+        nthIndexOf(this.state.raw, item.source, item.dupIndex) : this.state.raw.length
+      ));
+
+      // Move the section
+      return moveSubstring(this.state.raw, ...indicies);
+    })();
 
     this.updateStateValue(newValue);
+
     if (this.ace) {
-      this.ace.setValue(newValue, -1);
+      setAceValueKeepSession(this.ace, newValue);
     }
   }
   generateOutline(raw) {
@@ -331,7 +328,7 @@ class Editor extends React.Component {
           );
         case 'editor':
           return (
-            <div className="column editor" onScroll={this.handleEditorScroll} ref={(el) => { this.editorColumn = el; }}>
+            <div className="column editor" ref={(el) => { this.editorColumn = el; }}>
               <textarea
                 ref={(el) => { this.textarea = el; }}
                 onChange={e => this.handleChange(e.target.value)}
@@ -360,12 +357,10 @@ class Editor extends React.Component {
     );
   }
   render() {
-    const commandPaletteOptions = Object.entries(getCommands(this))
-      .reduce((acc, [k, v]) => { acc[k] = v.text; return acc; }, {});
     let markupEditorStyles = {
       display: 'flex',
-      width: 'inherit',
-      height: 'inherit',
+      width: this.props.width ? `${this.props.width}px` : '100%',
+      height: this.props.height ? `${this.props.height}px` : '100%',
     };
     if (this.state.fullscreen) {
       markupEditorStyles = {
@@ -384,7 +379,7 @@ class Editor extends React.Component {
         >
           <CommandPalette
             ref={(el) => { this.commandPalette = el; }}
-            options={commandPaletteOptions}
+            options={getCommands(this)}
             onSelected={this.handleCommand}
             onExit={() => { this.ace.focus(); }}
           />
@@ -402,14 +397,14 @@ class Editor extends React.Component {
             col={this.state.cursorCol}
             line={this.state.cursorLine}
             autosaved={this.state.autosaved}
-            onCommandPalette={() => this.commandPalette.focus()}
+            commandPaletteCommand={getCommands(this).commandPalette}
           />
         </div>
         <style jsx global>{`
                   .markup-editor-wrapper {
                     display: flex;
-                    height: inherit;
-                    width: inherit;
+                    height: 100%;
+                    width: 100%;
                     align-items: flex-start;
                   }
                   .markup-editor {
@@ -424,7 +419,6 @@ class Editor extends React.Component {
                       font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
                   }
                   .column.preview {
-                      font-family: 'Roboto', sans-serif;
                       padding: 10px 60px;
                   }
                   .preview:focus {
@@ -448,19 +442,19 @@ class Editor extends React.Component {
                   .markup-editor .workspace {
                       align-items: stretch;
                       display: flex;
-                      height: inherit;
-                      width: inherit;
+                      height: 100%;
+                      width: 100%;
                       align-items: flex-start;
                   }
                   .markup-editor .workspace > .columnWrapper {
                       flex: 6;
                       overflow: hidden;
-                      height: inherit;
+                      height: 100%;
                   }
                   .markup-editor .workspace > .columnWrapper > .column {
                       overflow-y: scroll;
                       overflow-x: hidden;
-                      height: inherit;
+                      height: 100%;
                       position: relative; // important for scroll synchro!
                       // margin-right: -16px; // togle for scrollbar hiding
                   }
@@ -472,7 +466,6 @@ class Editor extends React.Component {
                   }
                   .markup-editor .workspace {
                     overflow: hidden;
-
                   }
                   .ace_editor {
                     position: absolute;

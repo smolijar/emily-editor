@@ -29,9 +29,16 @@ module.exports.initializeAce = (ace, editor, options) => {
   ace.focus();
 };
 
-module.exports.formatAceSelection = (ace, fn) => {
+module.exports.getBlockSelection = ace => _.merge(ace.selection.getRange(), {
+  start: { column: 0 },
+  // Don't know how many columns on line, Ace handles overflow
+  end: { column: Infinity },
+});
+
+module.exports.formatAceSelection = (ace, fn, inline = true) => {
+  const range = inline ? ace.selection.getRange() : module.exports.getBlockSelection(ace);
   ace.session.replace(
-    ace.selection.getRange(),
-    fn(ace.session.getTextRange(ace.getSelectionRange())),
+    range,
+    fn(ace.session.getTextRange(range)),
   );
 };

@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - #34 (Swapping sections resets editor scroll)
  - Inconsistent and confusing commands behavior and names
  - Embedding when container has % dimension
+ - Selection expanding on block formatting
 
 ## [0.5.0] - 2017-12-12
 ### Removed

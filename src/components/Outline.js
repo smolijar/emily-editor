@@ -126,7 +126,6 @@ class Outline extends React.PureComponent {
             }
             .toggle::before {
               display: inline-block;
-              width: 10px;
               content: '⌵';
               position: relative;
             }

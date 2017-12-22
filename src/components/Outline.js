@@ -120,7 +120,7 @@ class Outline extends React.PureComponent {
               opacity: 0;
               position: absolute;
               right: 20px;
-              bottom: 0.6em;
+              bottom: 0.54em;
               font-weight: normal;
               cursor: move;
             }

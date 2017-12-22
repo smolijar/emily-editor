@@ -398,6 +398,7 @@ class Editor extends React.PureComponent {
             line={this.state.cursorLine}
             autosaved={this.state.autosaved}
             commandPaletteCommand={getCommands(this).commandPalette}
+            mode={this.props.language.name}
           />
         </div>
         <style jsx global>{`

@@ -13,12 +13,14 @@ class StatusBar extends React.PureComponent {
       line: PropTypes.number,
       col: PropTypes.number,
       autosaved: PropTypes.instanceOf(Date),
+      mode: PropTypes.string,
     }
     static defaultProps = {
       loc: 0,
       line: 1,
       col: 1,
       autosaved: null,
+      mode: null,
     }
     render() {
       const cpCommand = this.props.commandPaletteCommand;
@@ -28,6 +30,7 @@ class StatusBar extends React.PureComponent {
         <div className="statusBar">
           <div className="left">
             <button title={buttonTitle} className="command" onClick={cpCommand.execute}>Command</button>
+            {this.props.mode && <span title="Markup mode">{this.props.mode.charAt(0).toUpperCase() + this.props.mode.slice(1)}</span>}
             <span title="Current length of the document">{this.props.loc} Lines</span>
           </div>
           <div className="right">

@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - #59 (Command palette selected keyboard and mouse)
  - #57 (Missing CSS while draggin in outline)
  - Dragging delay (not needed when using handles)
+ - Markdown heading pattern
  - #50 (Jumping beginnig/end does not synchronize scroll)
  - Manually update Ace on scroll to have valid value in callback
  - #34 (Swapping sections resets editor scroll)

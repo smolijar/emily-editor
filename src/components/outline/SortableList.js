@@ -1,7 +1,7 @@
 import React from 'react';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 
-const DragHandle = SortableHandle(() => <span title="Move this section" className="dragHandle">𝍢</span>);
+const DragHandle = SortableHandle(() => <span title="Move this section" className="dragHandle">☰</span>);
 const SortableItem = SortableElement(({
   value,
   onOrderChange,

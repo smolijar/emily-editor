@@ -35,6 +35,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - #34 (Swapping sections resets editor scroll)
  - Inconsistent and confusing commands behavior and names
  - Embedding when container has % dimension
+ - #56 (Fix move-section handle icon symbol missing on some platforms)
+ - #67 (Truncated toggle arrow)
 
 ## [0.5.0] - 2017-12-12
 ### Removed

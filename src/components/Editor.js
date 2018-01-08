@@ -19,7 +19,7 @@ class Editor extends React.PureComponent {
     content: PropTypes.string,
     language: PropTypes.shape({
       name: PropTypes.string.isRequired,
-      getToHtml: PropTypes.func.isRequired,
+      toHtml: PropTypes.func.isRequired,
       lineSafeInsert: PropTypes.func,
       headerRegex: PropTypes.regex,
       renderJsxStyle: PropTypes.func,
@@ -209,7 +209,7 @@ class Editor extends React.PureComponent {
       .split('\n')
       .map((line, i) => this.props.language.lineSafeInsert(line, createNinja(i)))
       .join('\n');
-    const htmlWithNinjas = ninjasToHtml(this.props.language.getToHtml()(rawWithNinjas));
+    const htmlWithNinjas = ninjasToHtml(this.props.language.toHtml(rawWithNinjas));
     if (typeof document !== 'undefined') {
       const htmlDom = document.createElement('div');
       htmlDom.innerHTML = htmlWithNinjas;
@@ -293,7 +293,7 @@ class Editor extends React.PureComponent {
   generateOutline(raw) {
     return generateOutline(
       raw,
-      this.props.language.getToHtml(),
+      this.props.language.toHtml,
       this.props.language.headerRegex,
     );
   }

@@ -52,20 +52,29 @@ module.exports.moveSubstring = (string, cutStartIndex, cutEndIndex, _pasteIndex)
 
 // Find headers in source code using headerRegex
 const findHeaders = (source, toHtml, headerRegex) => {
+  if (typeof document === 'undefined') {
+    return [];
+  }
   const dupIndexMap = {};
-  return (source.match(headerRegex) || []).map((headerSource, index) => {
-    dupIndexMap[headerSource] = (dupIndexMap[headerSource] || 0) + 1;
-    const html = toHtml(headerSource);
-    const [, level, content] = html.match(/<h([0-9])[^<>]*>(.*)<\/h[0-9]>/);
-    return {
-      source: headerSource,
-      html,
-      level: Number(level),
-      content,
-      index,
-      dupIndex: dupIndexMap[headerSource],
-    };
-  });
+  return (source.match(headerRegex) || [])
+    .map((headerSource) => {
+      dupIndexMap[headerSource] = (dupIndexMap[headerSource] || 0) + 1;
+      const node = document.createElement('div');
+      node.innerHTML = toHtml(headerSource);
+      return [headerSource, node.querySelector('h1,h2,h3,h4,h5,h6')];
+    })
+    .filter(([, headerDom]) => headerDom !== null)
+    .map(([headerSource, headerDom], index) => {
+      const [level, content] = [headerDom.tagName.slice(1), headerDom.textContent];
+      return {
+        source: headerSource,
+        html: headerDom.innerHTML,
+        level: Number(level),
+        content,
+        index,
+        dupIndex: dupIndexMap[headerSource],
+      };
+    });
 };
 
 module.exports.generateOutline = (source, toHtml, headerRegex) => {

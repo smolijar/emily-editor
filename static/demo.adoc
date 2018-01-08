@@ -1,0 +1,301 @@
+= Small string optimalization
+:toc:
+:toclevels: 4
+
+== Task description
+
+https://edux.fit.cvut.cz/courses/MI-MPC/_media/tutorials/mpc_hw_01_cz.pdf[Description]
+
+== Basic String implementation
+
+For basic `String` implementation I used code included in task description combined with code from
+link:++https://edux.fit.cvut.cz/courses/MI-MPC/_media/lectures/mpc_lecture_02_cz.pdf++[Lecture 1] (slide _Třída String
+Výsledná podoba (prozatím ;-)_) where copy constructor, copy assignment operator and converting constructor are implemented.
+
+== Trivial SSO solution
+
+I enhanced the existing String class to use naive SSO.
+
+=== Member variables
+
+[source,c++]
+----
+char *ptr_; // <1>
+char buf_[8]; // <2>
+bool sso_; // <3>
+----
+<1> Pointer for dynamically allocated char array
+<2> Buffer for statically allocated small strings
+<3> SSO indicator (true if buffer used, false otherwise)
+
+=== Size
+
+Size of String object (`sizeof`) is 24. Pointer and buffer occupy each 8 bytes, bool flag needs 1 byte, so actual size is 17 bytes, however object is presumably padded to multiples of 8 resulting in 24 byte size.
+Introducing SSO has thus effectively tripled the size of String object.
+
+
+=== Pros and cons
+
+[cols="2a,2a"]
+|===
+
+|Pros
+
+* easy to implement
+* memory not allocated for short strings
+
+
+|Cons
+
+* size tripled (pointer, buffer, bool)
+
+|===
+
+=== Constructor
+
+==== Basic constructor
+
+Basic constructor must initialize `sso_`. Since no memory allocated, `sso_` is true by default.
+[source,c++]
+----
+String() : data_(nullptr), sso_(true) {}
+----
+
+==== Converting constructor
+
+Converting constructor must either allocate memory or use static buffer.
+[source,c++]
+----
+String(const char *arg) : data_(nullptr), sso_(true)
+{
+    if (strlen(arg) < 8) // <1>
+    {
+        strcpy(buf_, arg); // <2>
+    }
+    else
+    {
+        sso_ = false;
+        data_ = new char[strlen(arg) + 1]; // <3>
+        strcpy(data_, arg);
+    }
+}
+----
+<1> See if small enough for static buffer
+<2> Copy buffer
+<3> Allocate memory and copy
+
+==== Copy constructor
+
+Copy constructor must decide using SSO based on `String &rhs`.
+[source,c++]
+----
+String(const String &rhs) : data_(nullptr), sso_(true)
+{
+    if (rhs.data_) // <1>
+    {
+        sso_ = false; // <2>
+        data_ = new char[strlen(rhs.data_) + 1];
+        strcpy(data_, rhs.data_);
+    }
+    else if (rhs.sso_) // <3>
+    {
+        strcpy(buf_, rhs.buf_);
+    }
+}
+----
+<1> Rhs is using allocated memory. Do it as well.
+<2> Allocating memory, set `sso_` flag to false.
+<3> Rhs using buffer, use as well. `sso_` is true by default in initializer list.
+
+=== Destructor
+
+Remains the same. `data_` is always a valid pointer (or `nullptr`) and delete is thus safe.
+
+[source,c++]
+----
+~String() { delete[] data_; }
+----
+
+=== Swap
+
+Swap must be enhanced to swap new member variables.
+
+[source,c++]
+----
+void swap(String &rhs)
+{
+    std::swap(data_, rhs.data_);
+    std::swap(buf_, rhs.buf_);
+    std::swap(sso_, rhs.sso_);
+}
+----
+
+=== Operator<<
+
+[source,c++]
+----
+friend std::ostream &operator<<(std::ostream &str, const String &arg)
+{
+    if (arg.sso_) // <1>
+    {
+        str << arg.buf_;
+    }
+    else if (arg.data_) // <2>
+        str << arg.data_; 
+    return str;
+}
+----
+<1> String in buffer, use it
+<2> String in dynamic memory, use it
+
+== Union SSO solution
+
+Use c++ union to use same memory space for buffer and pointer, because they are never used at the same time.
+
+=== Member variables
+
+[source,c++]
+----
+union StringData {
+    char *ptr_; // <1>
+    char buf_[8]; // <2>
+};
+StringData data_; // <3>
+bool sso_; // <4>
+----
+<1> Pointer for dynamically allocated char array
+<2> Buffer for statically allocated small strings
+<3> Pointer and buffer share memory space in single member variable
+<4> SSO indicator (true if buffer used, false otherwise)
+
+=== Size
+
+Size of String object (`sizeof`) is 16. Pointer and buffer occupy **share** 8 bytes, bool 1 again, thus 16 altogether due to padding.
+Size is reduced by one third compared to previous solution.
+Poor boolean takes half of overall size, which is not so cool.
+
+=== Pros and cons
+
+[cols="2a,2a"]
+|===
+
+|Pros
+
+* save memory
+* approx same performance (neglecting union access overhead if there is any)
+
+|Cons
+
+* must handle union :-)
+
+|===
+
+
+=== Constructor
+
+==== Basic constructor
+
+Basic constructor logic is unganged, only union referencing must be remembered.
+
+[source,c++]
+----
+String(const char *arg) : sso_(true) // <1>
+{
+    if (strlen(arg) < 8)
+        strcpy(data_.buf_, arg);  // <2>
+    else
+    {
+        sso_ = false;
+        data_.ptr_ = new char[strlen(arg) + 1];  // <2>
+        strcpy(data_.ptr_, arg); // <2>
+    }
+}
+----
+<1> Cannot initialize data anymore, because now it is unkonwn which union member to use
+<2> Must explicitly state union member
+
+
+==== Converting constructor
+
+[source,c++]
+----
+String(const char *arg) : sso_(true) // <1>
+{
+    if (strlen(arg) < 8)
+        strcpy(data_.buf_, arg);  // <2>
+    else
+    {
+        sso_ = false;
+        data_.ptr_ = new char[strlen(arg) + 1];  // <2>
+        strcpy(data_.ptr_, arg); // <2>
+    }
+}
+----
+<1> Cannot initialize data anymore, because now it is unkonwn which union member to use
+<2> Must explicitly state union member
+
+==== Copy constructor
+
+[source,c++]
+----
+String(const String &rhs) : sso_(rhs.sso_) // <1>
+{
+    if (rhs.sso_) // <2>
+        strcpy(data_.buf_, rhs.data_.buf_);
+    else  // <3>
+    {
+        if (rhs.data_.ptr_) // <4>
+        {
+            data_.ptr_ = new char[strlen(rhs.data_.ptr_) + 1];
+            strcpy(data_.ptr_, rhs.data_.ptr_);
+        }
+    }
+}
+----
+<1> Copy `sso_` flag
+<2> If `sso_`, copy buffers
+<3> If no `sso_` and no pointer, leave
+<4> If no `sso_` and pointer, allocate a copy
+
+=== Destructor
+
+Destructor must not delete if `sso_` is used. (`data_` is buffer and pointer interpretation is UB)
+
+[source,c++]
+----
+~String()
+{
+    if (!sso_)
+        delete[] data_.ptr_;
+}
+----
+
+=== Swap
+
+Does not swap `buf_` anymore. Still swaps `data_`, which is an union, which can be swapped.
+
+=== Operator<<
+
+[source,c++]
+----
+friend std::ostream &operator<<(std::ostream &str, const String &arg)
+{
+    if (arg.sso_) // <1>
+    {
+        if (arg.data_.buf_)
+            str << arg.data_.buf_;
+    }
+    else // <2>
+    {
+        if (arg.data_.ptr_)
+            str << arg.data_.ptr_;
+    }
+    return str;
+}
+----
+<1> Is using `sso_`, output buffer if contains data.
+<2> Is using `sso_`, output allocated string if present.
+
+== Union SSO solution without flag
+
+Not implemented 😿

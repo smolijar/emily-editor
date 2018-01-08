@@ -18,7 +18,6 @@ class Layout extends React.PureComponent {
       <div>
         <Head>
           <script src="ace/src-min/ace.js" />
-          <link rel="stylesheet" type="text/css" href="markup-editor/lib/codemirror.css" />
           <link rel="stylesheet" type="text/css" href="hljs/styles/github.css" />
           <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.9.0/github-markdown.min.css" />
         </Head>
@@ -27,6 +26,9 @@ class Layout extends React.PureComponent {
         </Link>
         <Link href="/markdown">
           <button>Markdown</button>
+        </Link>
+        <Link href="/asciidoc">
+          <button>Asciidoc</button>
         </Link>
         <Link href="/embedding">
           <button>Embed</button>

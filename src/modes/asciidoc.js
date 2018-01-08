@@ -5,7 +5,7 @@ const asciidoctor = Asciidoctor();
 
 const asciidoc = {
   name: 'asciidoc',
-  toHtml: src => asciidoctor.convert(src, { attributes: { showtitle: true, icons: 'fonts', imagesdir: 'http://www.methods.co.nz/asciidoc/images/' } }),
+  toHtml: src => asciidoctor.convert(src, { attributes: { showtitle: true, icons: 'fonts@' } }),
   lineSafeInsert: (line, content) => {
     // If line does not contain words, it is
     // most likely not going to render into
@@ -47,6 +47,19 @@ const asciidoc = {
           padding: 15px;
         }
       }
+      .admonitionblock td.icon [class^="fa icon-"]{font-size:2.5em;text-shadow:1px 1px 2px rgba(0,0,0,.5);cursor:default;font-style: normal;}
+      .admonitionblock td.icon .icon-note:before{content:"\f05a";color:#19407c}
+      .admonitionblock td.icon .icon-tip:before{content:"\f0eb";text-shadow:1px 1px 2px rgba(155,155,0,.8);color:#111}
+      .admonitionblock td.icon .icon-warning:before{content:"\f071";color:#bf6900}
+      .admonitionblock td.icon .icon-caution:before{content:"\f06d";color:#bf3400}
+      .admonitionblock td.icon .icon-important:before{content:"\f06a";color:#bf0000}
+      .conum[data-value]{display:inline-block;color:#fff!important;background-color:rgba(0,0,0,.8);-webkit-border-radius:100px;border-radius:100px;text-align:center;font-size:.75em;width:1.67em;height:1.67em;line-height:1.67em;font-family:"Open Sans","DejaVu Sans",sans-serif;font-style:normal;font-weight:bold}
+      .conum[data-value] *{color:#fff!important}
+      .conum[data-value]+b{display:none}
+      .conum[data-value]:after{content:attr(data-value)}
+      pre .conum[data-value]{position:relative;top:-.125em}
+      b.conum *{color:inherit!important}
+      .conum:not([data-value]):empty{display:none}
     `}
     </style>
   ),

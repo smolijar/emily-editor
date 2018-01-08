@@ -20,6 +20,10 @@ const asciidoc = {
     if (line.match(/(^:.*:.*$|```|~~~|----|^\[.*\]\s*$)/)) {
       return line;
     }
+    // Do not break source code numbers `// <1>`
+    if (line.match(/(\/\/\s*<[0-9]+>\s*$)/)) {
+      return line.replace(/(.*)(\/\/\s*<[0-9]+>\s*$)/, `$1 ${content} $2`);
+    }
     // else append to any word
     return line.replace(/(.*)(\w)(.*)/, `$1$2${content}$3`);
   },

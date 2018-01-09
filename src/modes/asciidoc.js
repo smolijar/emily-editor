@@ -5,7 +5,11 @@ const asciidoctor = Asciidoctor();
 
 const asciidoc = {
   name: 'asciidoc',
-  toHtml: src => asciidoctor.convert(src, { attributes: { showtitle: true, icons: 'fonts@' } }),
+  toHtml: src => asciidoctor.convert(src, { attributes: { showtitle: true, icons: 'fonts@', 'source-highlighter': 'highlightjs@' } }),
+  postProcess: (domNode) => {
+    domNode.querySelectorAll('.toc strong').forEach(e => e.parentNode.removeChild(e));
+    return domNode;
+  },
   lineSafeInsert: (line, content) => {
     // If line does not contain words, it is
     // most likely not going to render into

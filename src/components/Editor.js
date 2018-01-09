@@ -8,7 +8,7 @@ import StatusBar from './StatusBar';
 import { createNinja, ninjasToHtml } from './editor/lineNinja';
 import { autosaveStore, autosaveRetrieve } from './editor/autosave';
 import getCommands from './editor/commands';
-import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline } from '../helpers/helpers';
+import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline, applyOnDom } from '../helpers/helpers';
 import { initializeAce } from './editor/ace';
 
 const STOPPED_TYPING_TIMEOUT = 300;
@@ -21,6 +21,7 @@ class Editor extends React.PureComponent {
       name: PropTypes.string.isRequired,
       toHtml: PropTypes.func.isRequired,
       lineSafeInsert: PropTypes.func,
+      postProcess: PropTypes.func,
       headerRegex: PropTypes.regex,
       renderJsxStyle: PropTypes.func,
       previewClassName: PropTypes.string,
@@ -210,13 +211,10 @@ class Editor extends React.PureComponent {
       .map((line, i) => this.props.language.lineSafeInsert(line, createNinja(i)))
       .join('\n');
     const htmlWithNinjas = ninjasToHtml(this.props.language.toHtml(rawWithNinjas));
-    if (typeof document !== 'undefined') {
-      const htmlDom = document.createElement('div');
-      htmlDom.innerHTML = htmlWithNinjas;
-      htmlDom.querySelectorAll('a').forEach(node => node.setAttribute('target', '_blank'));
-      return htmlDom.innerHTML;
-    }
-    return htmlWithNinjas;
+    return applyOnDom(htmlWithNinjas, (node) => {
+      node.querySelectorAll('a').forEach(n => n.setAttribute('target', '_blank'));
+      this.props.language.postProcess(node);
+    });
   }
   handleCommand(command) {
     getCommands(this)[command].execute();

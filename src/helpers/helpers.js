@@ -151,3 +151,13 @@ module.exports.formatShortcut = ({ win, mac }, plaintext = false) => {
   }
   return binding.map(key => <kbd>{key}</kbd>).reduce((acc, v) => [acc, ' + ', v]);
 };
+
+module.exports.applyOnDom = (htmlString, fn) => {
+  if (typeof document !== 'undefined') {
+    const htmlDom = document.createElement('div');
+    htmlDom.innerHTML = htmlString;
+    fn(htmlDom);
+    return htmlDom.innerHTML;
+  }
+  return htmlString;
+};

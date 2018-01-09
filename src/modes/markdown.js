@@ -12,35 +12,29 @@ import ins from 'markdown-it-ins';
 import mark from 'markdown-it-mark';
 
 import twemoji from 'twemoji';
-import { ninjaRegex } from '../components/editor/lineNinja';
+import { higlightSourceWithNinjas, ninjaRegex } from '../components/editor/lineNinja';
 
 const mdOptions = {
   linkify: true,
   typographer: true,
-  highlight: (code) => {
-    const matches = code.match(ninjaRegex);
-    const highlighted = hljs
-      .highlightAuto(code.replace(ninjaRegex, ''))
-      .value
-      .split('\n')
-      .map((line, i) => line + (matches[i] || ''))
-      .join('\n');
-    return highlighted;
-  },
+  highlight: code => higlightSourceWithNinjas(
+    code,
+    src => hljs.highlightAuto(src).value,
+    ninjaRegex,
+  ),
 };
 
 const plugins = [emoji, sub, sup, footnote, deflist, abbr, ins, mark];
 const md = plugins.reduce((_md, mode) => _md.use(mode), MarkdownIt(mdOptions));
 
 md.renderer.rules.emoji = (token, idx) => twemoji.parse(token[idx].content);
+// eslint-disable-next-line react/jsx-no-bind
+const renderer = md.render.bind(md);
 
 const markdown = {
   name: 'markdown',
-  getToHtml: () => {
-    // eslint-disable-next-line react/jsx-no-bind
-    const renderer = md.render.bind(md);
-    return renderer;
-  },
+  toHtml: html => renderer(html),
+  postProcess: domNode => domNode,
   lineSafeInsert: (line, content) => {
     // If line does not contain words, it is
     // most likely not going to render into

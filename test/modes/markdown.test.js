@@ -1,8 +1,7 @@
 import markdown from '../../src/modes/markdown';
 
 describe('Markdown mode', () => {
-  const toHtml = markdown.getToHtml();
-  const documentFromSource = source => new DOMParser().parseFromString(toHtml(source), 'text/html').body;
+  const documentFromSource = source => new DOMParser().parseFromString(markdown.toHtml(source), 'text/html').body;
   const source = '# foo\nfoo\n## bar\nbar\n### **baz**\n_quix_';
   const ninja = '{=O=O=}';
   const testContents = (src) => {

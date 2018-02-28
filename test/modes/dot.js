@@ -4,7 +4,7 @@
 //  >  Every other line is a paragraph.
 const dot = {
   name: 'dot',
-  getToHtml: () => (raw => raw.split('\n')
+  toHtml: raw => raw.split('\n')
     .map((line) => {
       const matches = line.match(/(\.+)(.+)/);
       if (matches) {
@@ -14,8 +14,7 @@ const dot = {
       }
       return `<p>${line}</p>`;
     })
-    .join('\n')
-  ),
+    .join('\n'),
   lineSafeInsert: (line, content) => `${line} ${content}`,
   headerRegex: /(\.+)(.+)\n/g,
 };

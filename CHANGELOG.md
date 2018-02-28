@@ -32,12 +32,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - #59 (Command palette selected keyboard and mouse)
  - #57 (Missing CSS while draggin in outline)
  - Dragging delay (not needed when using handles)
+ - Markdown heading pattern
  - #50 (Jumping beginnig/end does not synchronize scroll)
  - Manually update Ace on scroll to have valid value in callback
  - #34 (Swapping sections resets editor scroll)
  - Inconsistent and confusing commands behavior and names
  - Embedding when container has % dimension
  - #12 (Replace regex matching in Outline generation)
+ - Selection expanding on block formatting
+ - #56 (Fix move-section handle icon symbol missing on some platforms)
+ - #67 (Truncated toggle arrow)
 
 ## [0.5.0] - 2017-12-12
 ### Removed

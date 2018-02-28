@@ -103,19 +103,19 @@ const getCommands = editor => ({
   'format.ul': {
     text: 'Format: Unordered list',
     execute: () => {
-      formatAceSelection(editor.ace, editor.props.language.format.ul);
+      formatAceSelection(editor.ace, editor.props.language.format.ul, false);
     },
   },
   'format.ol': {
     text: 'Format: Ordered list',
     execute: () => {
-      formatAceSelection(editor.ace, editor.props.language.format.ol);
+      formatAceSelection(editor.ace, editor.props.language.format.ol, false);
     },
   },
   'format.quote': {
     text: 'Format: Quote',
     execute: () => {
-      formatAceSelection(editor.ace, editor.props.language.format.quote);
+      formatAceSelection(editor.ace, editor.props.language.format.quote, false);
     },
   },
 });

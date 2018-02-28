@@ -1,6 +1,3 @@
 module.exports = {
-  webpack: config => ({
-    ...config,
-    node: { fs: 'empty' },
-  }),
+  webpack: config => Object.assign(config, { node: { fs: 'empty' } }),
 };

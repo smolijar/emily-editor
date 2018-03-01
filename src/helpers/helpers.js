@@ -56,7 +56,10 @@ const findHeaders = (source, toHtml, headerRegex) => {
   return (source.match(headerRegex) || []).map((headerSource, index) => {
     dupIndexMap[headerSource] = (dupIndexMap[headerSource] || 0) + 1;
     const html = toHtml(headerSource);
-    const [, level, content] = html.match(/<h([0-9])[^<>]*>(.*)<\/h[0-9]>/);
+    const matches = html.match(/<h([0-9])[^<>]*>(.*)<\/h[0-9]>/);
+    // false-friend header (not really a header)
+    if (!matches) return null;
+    const [, level, content] = matches;
     return {
       source: headerSource,
       html,
@@ -65,7 +68,9 @@ const findHeaders = (source, toHtml, headerRegex) => {
       index,
       dupIndex: dupIndexMap[headerSource],
     };
-  });
+  })
+    // trash false-friend headers
+    .filter(header => header !== null);
 };
 
 module.exports.generateOutline = (source, toHtml, headerRegex) => {

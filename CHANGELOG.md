@@ -42,6 +42,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Selection expanding on block formatting
  - #56 (Fix move-section handle icon symbol missing on some platforms)
  - #67 (Truncated toggle arrow)
+ - False header regex findings crashing when destructure
 
 ## [0.5.0] - 2017-12-12
 ### Removed

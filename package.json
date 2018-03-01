@@ -8,9 +8,9 @@
     "start": "NODE_ENV=production node index.js",
     "build": "next build",
     "lint": "./node_modules/eslint/bin/eslint.js .",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test": "./node_modules/jest/bin/jest.js",
+    "test:watch": "./node_modules/jest/bin/jest.js --watch",
+    "test:coverage": "./node_modules/jest/bin/jest.js --coverage",
     "test:ceveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "author": "Jaroslav Šmolík",

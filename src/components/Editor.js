@@ -8,7 +8,7 @@ import StatusBar from './StatusBar';
 import { createNinja, ninjasToHtml } from './editor/lineNinja';
 import { autosaveStore, autosaveRetrieve } from './editor/autosave';
 import getCommands from './editor/commands';
-import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline } from '../helpers/helpers';
+import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline, applyOnDom } from '../helpers/helpers';
 import { initializeAce } from './editor/ace';
 
 const STOPPED_TYPING_TIMEOUT = 300;
@@ -19,8 +19,9 @@ class Editor extends React.PureComponent {
     content: PropTypes.string,
     language: PropTypes.shape({
       name: PropTypes.string.isRequired,
-      getToHtml: PropTypes.func.isRequired,
+      toHtml: PropTypes.func.isRequired,
       lineSafeInsert: PropTypes.func,
+      postProcess: PropTypes.func,
       headerRegex: PropTypes.regex,
       renderJsxStyle: PropTypes.func,
       previewClassName: PropTypes.string,
@@ -174,13 +175,13 @@ class Editor extends React.PureComponent {
     this.updateStateValue(value);
   }
   autosaveStore(value) {
-    const { date } = autosaveStore(value);
+    const { date } = autosaveStore(value, this);
     this.setState({
       autosaved: date,
     });
   }
   autosaveRetrieve() {
-    const retrieved = autosaveRetrieve();
+    const retrieved = autosaveRetrieve(this);
     if (retrieved) {
       const { value, date } = retrieved;
       if (this.ace) {
@@ -209,14 +210,11 @@ class Editor extends React.PureComponent {
       .split('\n')
       .map((line, i) => this.props.language.lineSafeInsert(line, createNinja(i)))
       .join('\n');
-    const htmlWithNinjas = ninjasToHtml(this.props.language.getToHtml()(rawWithNinjas));
-    if (typeof document !== 'undefined') {
-      const htmlDom = document.createElement('div');
-      htmlDom.innerHTML = htmlWithNinjas;
-      htmlDom.querySelectorAll('a').forEach(node => node.setAttribute('target', '_blank'));
-      return htmlDom.innerHTML;
-    }
-    return htmlWithNinjas;
+    const htmlWithNinjas = ninjasToHtml(this.props.language.toHtml(rawWithNinjas));
+    return applyOnDom(htmlWithNinjas, (node) => {
+      node.querySelectorAll('a').forEach(n => n.setAttribute('target', '_blank'));
+      this.props.language.postProcess(node);
+    });
   }
   handleCommand(command) {
     getCommands(this)[command].execute();
@@ -293,7 +291,7 @@ class Editor extends React.PureComponent {
   generateOutline(raw) {
     return generateOutline(
       raw,
-      this.props.language.getToHtml(),
+      this.props.language.toHtml,
       this.props.language.headerRegex,
     );
   }
@@ -398,6 +396,7 @@ class Editor extends React.PureComponent {
             line={this.state.cursorLine}
             autosaved={this.state.autosaved}
             commandPaletteCommand={getCommands(this).commandPalette}
+            mode={this.props.language.name}
           />
         </div>
         <style jsx global>{`

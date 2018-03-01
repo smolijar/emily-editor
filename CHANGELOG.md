@@ -12,12 +12,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Basic text formatting commands
  - Embedding examples
  - Dimension props
+ - AsciiDoc module
 
 ### Changed
  - Refactor command palette props
  - Move timeouts out of state
  - Open command pallette is now a command as well
  - Use Pure components instead of Components
+ - Replace module's getToHtml with toHtml
+ - Refactor header finding
 
 ### Removed
  - scrollguard (lastScrolled) from state
@@ -35,9 +38,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - #34 (Swapping sections resets editor scroll)
  - Inconsistent and confusing commands behavior and names
  - Embedding when container has % dimension
+ - #12 (Replace regex matching in Outline generation)
  - Selection expanding on block formatting
  - #56 (Fix move-section handle icon symbol missing on some platforms)
  - #67 (Truncated toggle arrow)
+ - False header regex findings crashing when destructure
 
 ## [0.5.0] - 2017-12-12
 ### Removed

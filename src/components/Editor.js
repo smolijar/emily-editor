@@ -175,13 +175,13 @@ class Editor extends React.PureComponent {
     this.updateStateValue(value);
   }
   autosaveStore(value) {
-    const { date } = autosaveStore(value);
+    const { date } = autosaveStore(value, this);
     this.setState({
       autosaved: date,
     });
   }
   autosaveRetrieve() {
-    const retrieved = autosaveRetrieve();
+    const retrieved = autosaveRetrieve(this);
     if (retrieved) {
       const { value, date } = retrieved;
       if (this.ace) {

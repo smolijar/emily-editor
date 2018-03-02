@@ -22,11 +22,6 @@ https://emily-editor.herokuapp.com/
 
 You can run it now in dev mode `npm run dev`.
 
-== Heroku deploy
-
-Heroku seems not tu run `npm run build` when it builds.
-To do that, add link:https://github.com/romeovs/heroku-buildpack-npm-build[Heroku Buildpack npm build] as Heroku buildpack.
-
 == Contributing
 
 If you feel like it, do add feature requests, or bug report in https://github.com/grissius/markup-editor/issues[issue tracker].

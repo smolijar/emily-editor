@@ -1,6 +1,6 @@
 const getKey = Editor => `editor-content-${Editor.props.language.name}`;
 
-module.exports.autosaveStore = (value, Editor) => {
+export const autosaveStore = (value, Editor) => {
   const store = {
     value,
     date: new Date(),
@@ -9,7 +9,7 @@ module.exports.autosaveStore = (value, Editor) => {
   return store;
 };
 
-module.exports.autosaveRetrieve = (Editor) => {
+export const autosaveRetrieve = (Editor) => {
   let retrieved = localStorage.getItem(getKey(Editor));
   if (retrieved) {
     retrieved = JSON.parse(retrieved);

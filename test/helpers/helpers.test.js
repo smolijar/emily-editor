@@ -1,22 +1,22 @@
 import _ from 'lodash';
-import helpers from '../../src/helpers/helpers';
+import { nthIndexOf, moveSubstring, generateOutline, findNextSibling, findWordBounds } from '../../src/helpers/helpers';
 
 
 describe('nthIndexOf', () => {
   const hexabeth = '0123456789ABCDEF';
   it(`${hexabeth} find first`, () => {
-    expect(helpers.nthIndexOf(hexabeth, '5', 1)).toBe(5);
+    expect(nthIndexOf(hexabeth, '5', 1)).toBe(5);
   });
   it(`${hexabeth} find default (expect first)`, () => {
-    expect(helpers.nthIndexOf(hexabeth, 'A')).toBe(10);
+    expect(nthIndexOf(hexabeth, 'A')).toBe(10);
   });
 
   const roses = 'Roses are red, violets are blue, suger is sweet and so are you.';
   it('Poems everybody! First', () => {
-    expect(helpers.nthIndexOf(roses, 'are')).toBe(roses.indexOf('are'));
+    expect(nthIndexOf(roses, 'are')).toBe(roses.indexOf('are'));
   });
   it('Poems everybody! Third', () => {
-    expect(helpers.nthIndexOf(roses, 'are', 3)).toBe(55);
+    expect(nthIndexOf(roses, 'are', 3)).toBe(55);
   });
 });
 
@@ -24,13 +24,13 @@ describe('nthIndexOf', () => {
 describe('moveSubstring', () => {
   const hexabeth = '0123456789ABCDEF';
   it('Move to beginnig', () => {
-    expect(helpers.moveSubstring(hexabeth, 10, 16, 0)).toBe('ABCDEF0123456789');
+    expect(moveSubstring(hexabeth, 10, 16, 0)).toBe('ABCDEF0123456789');
   });
   it('Move before cut', () => {
-    expect(helpers.moveSubstring(hexabeth, 10, 13, 5)).toBe('01234ABC56789DEF');
+    expect(moveSubstring(hexabeth, 10, 13, 5)).toBe('01234ABC56789DEF');
   });
   it('Move after cut', () => {
-    expect(helpers.moveSubstring(hexabeth, 4, 8, 10)).toBe('0123894567ABCDEF');
+    expect(moveSubstring(hexabeth, 4, 8, 10)).toBe('0123894567ABCDEF');
   });
 });
 
@@ -50,10 +50,10 @@ const flattenOutline = (outline, reverse = false) => {
 describe('generateOutline', () => {
   describe('Empty', () => {
     it('Empty text', () => {
-      expect(helpers.generateOutline('', () => '<h1></h1>', /.+/)).toEqual([]);
+      expect(generateOutline('', () => '<h1></h1>', /.+/)).toEqual([]);
     });
     it('No match regex', () => {
-      expect(helpers.generateOutline('abc', () => '<h1></h1>', /[0-9]/)).toEqual([]);
+      expect(generateOutline('abc', () => '<h1></h1>', /[0-9]/)).toEqual([]);
     });
   });
   const regex = /y\w*/g;
@@ -63,7 +63,7 @@ describe('generateOutline', () => {
   };
   describe('Yo test', () => {
     const text = 'Break yo neck,\n yll interdum yll volutpat tellus.\nUt nizzle adipiscing lorem. Donizzle\ncool break yo neck, yall.';
-    const yoOutline = helpers.generateOutline(text, toHtml, regex);
+    const yoOutline = generateOutline(text, toHtml, regex);
 
     describe('Yo level1 2x', () => {
       it('2x', () => {
@@ -96,7 +96,7 @@ describe('generateOutline', () => {
   });
   describe('Y test', () => {
     const text2 = 'y yyy yyy yyy yyy y yyyy yyyy yyyyy y yyyyy yyyy yyyy yyy yyy yy yy y';
-    const yOutline = helpers.generateOutline(text2, toHtml, regex);
+    const yOutline = generateOutline(text2, toHtml, regex);
     const traversed = flattenOutline(yOutline).reduce((acc, val) => acc.concat(val.content), []);
     describe('Test full hierarchy with skipping levels', () => {
       it('Traverse and join back to string', () => {
@@ -129,9 +129,9 @@ describe('findNextSibling', () => {
     return `<h${level}>${heading}</h${level}>`;
   };
   const regex = /\.+\w+/g;
-  const flatOutline = flattenOutline(helpers.generateOutline(text, toHtml, regex));
+  const flatOutline = flattenOutline(generateOutline(text, toHtml, regex));
   const got = flatOutline.map(h => (
-    helpers.findNextSibling(h) ? helpers.findNextSibling(h).content : null
+    findNextSibling(h) ? findNextSibling(h).content : null
   ));
   const expected = ['.f', '..c', '.f', '....e', '.f', '.n', '....h', '..i', '..j', '..k', '.n', '.n', '.n', null];
   it('Find correctly next sections', () => {
@@ -143,7 +143,7 @@ describe('findNextSibling', () => {
 describe('findWordBounds', () => {
   const sentence = 'wubba  lubba dub dub';
   const wubbaResults = _.uniqWith(
-    [0, 1, 2, 3, 4].map(i => helpers.findWordBounds(sentence, i)),
+    [0, 1, 2, 3, 4].map(i => findWordBounds(sentence, i)),
     _.isEqual,
   );
   it('Wubba bounds match', () => {
@@ -153,9 +153,9 @@ describe('findWordBounds', () => {
     expect(sentence.slice(...wubbaResults[0])).toBe('wubba');
   });
   it('Second dub matches second dup (duplicates)', () => {
-    expect(helpers.findWordBounds(sentence, 17)).toEqual([17, 20]);
+    expect(findWordBounds(sentence, 17)).toEqual([17, 20]);
   });
   it('Whitespace match matches only ws', () => {
-    expect(sentence.slice(...helpers.findWordBounds(sentence, 6)).trim()).toBe('');
+    expect(sentence.slice(...findWordBounds(sentence, 6)).trim()).toBe('');
   });
 });

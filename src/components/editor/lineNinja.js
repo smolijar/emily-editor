@@ -1,16 +1,17 @@
-module.exports.ninjasToHtml = html =>
+
+export const ninjaRegex = /@@@([0-9]+)@@@/g;
+
+export const ninjasToHtml = html =>
   html.replace(
-    module.exports.ninjaRegex,
+    ninjaRegex,
     '<strong data-line="$1">($1)</strong>',
   );
 
-module.exports.ninjaRegex = /@@@([0-9]+)@@@/g;
+export const createNinja = i => `@@@${i + 1}@@@`;
 
-module.exports.createNinja = i => `@@@${i + 1}@@@`;
-
-module.exports.higlightSourceWithNinjas = (source, highlightFn) => {
-  const matches = source.match(module.exports.ninjaRegex);
-  const highlighted = highlightFn(source.replace(module.exports.ninjaRegex, ''))
+export const higlightSourceWithNinjas = (source, highlightFn) => {
+  const matches = source.match(ninjaRegex);
+  const highlighted = highlightFn(source.replace(ninjaRegex, ''))
     .split('\n')
     .map((line, i) => line + (matches[i] || ''))
     .join('\n');

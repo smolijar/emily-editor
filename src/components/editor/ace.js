@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import getCommands from './commands';
 
-module.exports.setAceOptions = (ace, options) => {
+export const setAceOptions = (ace, options) => {
   _.toPairs(options).forEach(([component, settings]) => {
     _.toPairs(settings).forEach(([option, value]) => {
       ace[component].setOption(option, value);
@@ -10,7 +10,7 @@ module.exports.setAceOptions = (ace, options) => {
 };
 
 
-module.exports.initializeAce = (ace, editor, options) => {
+export const initializeAce = (ace, editor, options) => {
   ace.setTheme('ace/theme/tomorrow');
   ace.getSession().setMode(`ace/mode/${editor.props.language.name}`);
   ace.getSession().on('change', () => {
@@ -25,17 +25,17 @@ module.exports.initializeAce = (ace, editor, options) => {
       exec: command.execute,
     });
   });
-  module.exports.setAceOptions(ace, options);
+  setAceOptions(ace, options);
   ace.focus();
 };
 
-module.exports.getBlockSelection = ace => _.merge(ace.selection.getRange(), {
+export const getBlockSelection = ace => _.merge(ace.selection.getRange(), {
   start: { column: 0 },
   // Don't know how many columns on line, Ace handles overflow
   end: { column: Infinity },
 });
 
-module.exports.formatAceSelection = (ace, fn, inline = true) => {
+export const formatAceSelection = (ace, fn, inline = true) => {
   const range = inline ? ace.selection.getRange() : module.exports.getBlockSelection(ace);
   ace.session.replace(
     range,

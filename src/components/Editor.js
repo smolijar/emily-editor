@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import screenfull from 'screenfull';
-import autoBind from 'react-autobind';
 import CommandPalette from './CommandPalette';
 import Outline from './Outline';
 import StatusBar from './StatusBar';
@@ -34,7 +33,7 @@ export default class Editor extends React.PureComponent {
     language: {
       name: 'markdown',
       lineSafeInsert: line => line,
-      renderJsxStyle: () => {},
+      renderJsxStyle: () => { },
       previewClassName: '',
     },
     width: null,
@@ -42,8 +41,6 @@ export default class Editor extends React.PureComponent {
   }
   constructor(props) {
     super(props);
-
-    autoBind(this);
 
     const defaultAceOptions = {
       renderer: {
@@ -87,10 +84,8 @@ export default class Editor extends React.PureComponent {
     }
     this.autosaveRetrieve();
   }
-  getValue() {
-    return this.state.raw;
-  }
-  getPreviewFirstVisibleLine() {
+  getValue = () => this.state.raw;
+  getPreviewFirstVisibleLine = () => {
     const editorScroll = this.previewColumn.scrollTop;
     let haveSomething = false;
     const firstLineNode = [...this.previewColumn.querySelectorAll('strong[data-line]')]
@@ -107,7 +102,7 @@ export default class Editor extends React.PureComponent {
       });
     return Number(firstLineNode.dataset.line);
   }
-  handleOutlineClick(heading) {
+  handleOutlineClick = (heading) => {
     const inCode = heading.source;
     const value = this.state.raw;
     const pos = nthIndexOf(value, inCode, heading.dupIndex);
@@ -116,17 +111,17 @@ export default class Editor extends React.PureComponent {
     this.ace.scrollToLine(line - 1);
     this.ace.focus();
   }
-  scrollPreviewToLine(ln) {
+  scrollPreviewToLine = (ln) => {
     let lineNode = this.previewColumn.querySelector(`strong[data-line="${ln}"]`);
     for (let i = ln; i > 0 && !lineNode; i -= 1) {
       lineNode = this.previewColumn.querySelector(`strong[data-line="${i}"]`);
     }
     this.previewColumn.scrollTop = findRelativeOffset(lineNode, this.previewColumn);
   }
-  scrollEditorToLine(ln) {
+  scrollEditorToLine = (ln) => {
     this.ace.scrollToLine(ln - 1);
   }
-  handlePreviewScroll() {
+  handlePreviewScroll = () => {
     if (this.lastScrolled === 'editor') {
       this.lastScrolled = null;
       return;
@@ -140,7 +135,7 @@ export default class Editor extends React.PureComponent {
       this.scrollEditorToLine(firstVisibleLine);
     }
   }
-  handleEditorScroll() {
+  handleEditorScroll = () => {
     if (this.lastScrolled === 'preview') {
       this.lastScrolled = null;
       return;
@@ -150,7 +145,7 @@ export default class Editor extends React.PureComponent {
     const firstVisibleLine = this.ace.renderer.getFirstVisibleRow() + 1;
     this.scrollPreviewToLine(firstVisibleLine);
   }
-  updateStateValue(value) {
+  updateStateValue = (value) => {
     const html = this.generateHtml(value);
     const raw = value;
     this.setState({
@@ -160,7 +155,7 @@ export default class Editor extends React.PureComponent {
       outline: this.generateOutline(raw),
     });
   }
-  handleChange(value) {
+  handleChange = (value) => {
     if (this.stoppedTypingTimer) {
       clearTimeout(this.stoppedTypingTimer);
     }
@@ -170,17 +165,17 @@ export default class Editor extends React.PureComponent {
     );
     this.setState({ raw: value });
   }
-  handleStoppedTyping(value) {
+  handleStoppedTyping = (value) => {
     this.autosaveStore(value);
     this.updateStateValue(value);
   }
-  autosaveStore(value) {
+  autosaveStore = (value) => {
     const { date } = autosaveStore(value, this);
     this.setState({
       autosaved: date,
     });
   }
-  autosaveRetrieve() {
+  autosaveRetrieve = () => {
     const retrieved = autosaveRetrieve(this);
     if (retrieved) {
       const { value, date } = retrieved;
@@ -193,10 +188,10 @@ export default class Editor extends React.PureComponent {
       });
     }
   }
-  handleStoppedCursorActivity() {
+  handleStoppedCursorActivity = () => {
     this.updateCursor();
   }
-  updateCursor() {
+  updateCursor = () => {
     if (this.ace) {
       const { row, column } = this.ace.selection.getCursor();
       this.setState({
@@ -205,7 +200,7 @@ export default class Editor extends React.PureComponent {
       });
     }
   }
-  generateHtml(raw) {
+  generateHtml = (raw) => {
     const rawWithNinjas = raw
       .split('\n')
       .map((line, i) => this.props.language.lineSafeInsert(line, createNinja(i)))
@@ -216,10 +211,10 @@ export default class Editor extends React.PureComponent {
       this.props.language.postProcess(node);
     });
   }
-  handleCommand(command) {
+  handleCommand = (command) => {
     getCommands(this)[command].execute();
   }
-  handleCursorActivity() {
+  handleCursorActivity = () => {
     if (this.stoppedCursorActivityTimer) {
       clearTimeout(this.stoppedCursorActivityTimer);
     }
@@ -228,7 +223,7 @@ export default class Editor extends React.PureComponent {
       STOPPED_CURSOR_ACTIVITY_TIMEOUT,
     );
   }
-  toggleFullscreen() {
+  toggleFullscreen = () => {
     screenfull.on('change', () => {
       if (!screenfull.isFullscreen && this.state.fullscreen) {
         this.setState({
@@ -245,7 +240,7 @@ export default class Editor extends React.PureComponent {
       fullscreen: !this.state.fullscreen,
     });
   }
-  handleOutlineOrderChange(header, { oldIndex, newIndex }) {
+  handleOutlineOrderChange = (header, { oldIndex, newIndex }) => {
     // Do nothing if no distance
     if (oldIndex === newIndex) {
       return;
@@ -288,14 +283,12 @@ export default class Editor extends React.PureComponent {
       setAceValueKeepSession(this.ace, newValue);
     }
   }
-  generateOutline(raw) {
-    return generateOutline(
-      raw,
-      this.props.language.toHtml,
-      this.props.language.headerRegex,
-    );
-  }
-  renderProportianalStyles() {
+  generateOutline = raw => generateOutline(
+    raw,
+    this.props.language.toHtml,
+    this.props.language.headerRegex,
+  );
+  renderProportianalStyles = () => {
     if (this.state.proportionalSizes) {
       return (
         <style jsx global>{`
@@ -311,7 +304,7 @@ export default class Editor extends React.PureComponent {
     }
     return null;
   }
-  renderColumn(colName, wrapperStyle) {
+  renderColumn = (colName, wrapperStyle) => {
     const getColumnInner = (name) => {
       switch (name) {
         case 'outline':

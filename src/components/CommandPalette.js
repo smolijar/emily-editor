@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import autoBind from 'react-autobind';
 import { formatShortcut } from '../helpers/helpers';
 
 const ARROW_UP = 38;
@@ -16,7 +15,6 @@ export default class CommandPalette extends React.PureComponent {
     }
     constructor(props) {
       super(props);
-      autoBind(this);
       this.state = {
         value: '',
         selected: 0,
@@ -25,7 +23,7 @@ export default class CommandPalette extends React.PureComponent {
         mouseover: false,
       };
     }
-    hide() {
+    hide = () => {
       this.setState({
         visible: false,
         value: '',
@@ -33,12 +31,12 @@ export default class CommandPalette extends React.PureComponent {
         show: Object.keys(this.props.options),
       }, this.props.onExit);
     }
-    focus() {
+    focus = () => {
       this.setState({
         visible: true,
       }, () => this.input.focus());
     }
-    handleChange(e) {
+    handleChange = (e) => {
       const { value } = e.target;
       const show = Object.keys(this.props.options)
         .filter(optionKey => this.props.options[optionKey].text
@@ -52,14 +50,14 @@ export default class CommandPalette extends React.PureComponent {
         this.nav.scrollTop = 0;
       });
     }
-    handleKeyPress(e) {
+    handleKeyPress = (e) => {
       const { selected } = this.state;
       if (e.key === 'Enter') {
         this.props.onSelected(this.state.show[selected]);
         this.hide();
       }
     }
-    handleKeyDown(e) {
+    handleKeyDown = (e) => {
       if (e.keyCode === ARROW_DOWN || e.keyCode === ARROW_UP) {
         let { selected } = this.state;
         if (e.keyCode === ARROW_UP) {

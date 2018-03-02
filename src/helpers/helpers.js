@@ -1,14 +1,14 @@
 import React from 'react';
 
 // Find nth occurance of needle in haystack
-module.exports.nthIndexOf = (haystack, needle, n = 1) => haystack
+export const nthIndexOf = (haystack, needle, n = 1) => haystack
   .split(needle, n)
   .join(needle)
   .length;
 
 // Find next sibling in LML heading hierarchy
 // That first next with greater or equal level
-module.exports.findNextSibling = (heading) => {
+export const findNextSibling = (heading) => {
   if (!heading) {
     return null;
   }
@@ -21,7 +21,7 @@ module.exports.findNextSibling = (heading) => {
 
 // Find top offset of node, relative to container
 // Note that container needs to have position relative or absolute
-module.exports.findRelativeOffset = (node, container) => {
+export const findRelativeOffset = (node, container) => {
   // container must have position absolute or relative
   let currentNode = node;
   const nodes = [];
@@ -33,7 +33,7 @@ module.exports.findRelativeOffset = (node, container) => {
 };
 
 // Move substring defined by cut indices to pasteIndex in ginven string
-module.exports.moveSubstring = (string, cutStartIndex, cutEndIndex, _pasteIndex) => {
+export const moveSubstring = (string, cutStartIndex, cutEndIndex, _pasteIndex) => {
   const cutted = string.slice(cutStartIndex, cutEndIndex);
   const holed = [
     string.slice(0, cutStartIndex),
@@ -73,7 +73,7 @@ const findHeaders = (source, toHtml, headerRegex) => {
     .filter(header => header !== null);
 };
 
-module.exports.generateOutline = (source, toHtml, headerRegex) => {
+export const generateOutline = (source, toHtml, headerRegex) => {
   const headers = findHeaders(source, toHtml, headerRegex)
     .map(heading => ({
       ...heading,
@@ -130,7 +130,7 @@ module.exports.generateOutline = (source, toHtml, headerRegex) => {
 };
 
 
-module.exports.findWordBounds = (string, index) => [
+export const findWordBounds = (string, index) => [
   index - string.slice(0, index)
     .split('').reverse().join('')
     .split(/\W/)[0].length,
@@ -138,7 +138,7 @@ module.exports.findWordBounds = (string, index) => [
 ];
 
 
-module.exports.formatShortcut = ({ win, mac }, plaintext = false) => {
+export const formatShortcut = ({ win, mac }, plaintext = false) => {
   const binding = (
     typeof navigator !== 'undefined' && navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i) ? mac : win
   ).split('-');
@@ -148,7 +148,7 @@ module.exports.formatShortcut = ({ win, mac }, plaintext = false) => {
   return binding.map(key => <kbd>{key}</kbd>).reduce((acc, v) => [acc, ' + ', v]);
 };
 
-module.exports.applyOnDom = (htmlString, fn) => {
+export const applyOnDom = (htmlString, fn) => {
   if (typeof document !== 'undefined') {
     const htmlDom = document.createElement('div');
     htmlDom.innerHTML = htmlString;

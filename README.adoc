@@ -16,7 +16,7 @@ It shall be beundled and published when I find it is ready for use.
 
 === Try online
 
-https://lml-editor.herokuapp.com/
+https://emily-editor.herokuapp.com/
 
 === Running locally
 

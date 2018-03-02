@@ -1,14 +1,12 @@
-:name: Markup editor
+image::./static/emily.png[Emily editor, width=400, align=center]
 
-= {name}
-
+[.text-center]
 image:https://travis-ci.org/grissius/markup-editor.svg?branch=master[travis, link=https://travis-ci.org/grissius/markup-editor]
 image:https://david-dm.org/grissius/markup-editor/status.svg[dependencies, link=https://david-dm.org/grissius/markup-editor]
 image:https://david-dm.org/grissius/markup-editor/dev-status.svg[devDependencies, link=https://david-dm.org/grissius/markup-editor?type=dev]
 
-
-
-{name} is a React editor component for https://en.wikipedia.org/wiki/Lightweight_markup_language[LML]s, like Markup or Asciidoc.
+[.text-center]
+Emily is a React editor component for https://en.wikipedia.org/wiki/Lightweight_markup_language[LML]s, like Markdown or Asciidoc.
 The focus of the project is to provide fluent efficient interface for advanced users, who are familliar with using IDE or coding text editors.
 
 == Usage

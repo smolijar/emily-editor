@@ -14,7 +14,7 @@ import { initializeAce } from './editor/ace';
 const STOPPED_TYPING_TIMEOUT = 300;
 const STOPPED_CURSOR_ACTIVITY_TIMEOUT = 300;
 
-class Editor extends React.PureComponent {
+export default class Editor extends React.PureComponent {
   static propTypes = {
     content: PropTypes.string,
     language: PropTypes.shape({
@@ -483,5 +483,3 @@ class Editor extends React.PureComponent {
     );
   }
 }
-
-export default Editor;

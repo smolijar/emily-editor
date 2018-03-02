@@ -8,7 +8,7 @@ const ARROW_UP = 38;
 const ARROW_DOWN = 40;
 const ESCAPE = 27;
 
-class CommandPalette extends React.PureComponent {
+export default class CommandPalette extends React.PureComponent {
     static propTypes = {
       options: PropTypes.objectOf(PropTypes.string).isRequired,
       onSelected: PropTypes.func.isRequired,
@@ -223,5 +223,3 @@ class CommandPalette extends React.PureComponent {
       );
     }
 }
-
-export default CommandPalette;

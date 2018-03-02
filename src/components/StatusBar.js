@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { formatShortcut } from '../helpers/helpers';
 
-class StatusBar extends React.PureComponent {
+export default class StatusBar extends React.PureComponent {
     static propTypes = {
       loc: PropTypes.number,
       commandPaletteCommand: PropTypes.shape({
@@ -99,5 +99,3 @@ class StatusBar extends React.PureComponent {
       );
     }
 }
-
-export default StatusBar;

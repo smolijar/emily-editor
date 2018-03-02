@@ -13,7 +13,7 @@ import { initializeAce } from './editor/ace';
 const STOPPED_TYPING_TIMEOUT = 300;
 const STOPPED_CURSOR_ACTIVITY_TIMEOUT = 300;
 
-export default class Editor extends React.PureComponent {
+export default class EmilyEditor extends React.PureComponent {
   static propTypes = {
     content: PropTypes.string,
     language: PropTypes.shape({
@@ -361,9 +361,9 @@ export default class Editor extends React.PureComponent {
       };
     }
     return (
-      <div className="markup-editor-wrapper">
+      <div className="emily-editor-wrapper">
         <div
-          className="markup-editor"
+          className="emily-editor"
           role="presentation"
           style={markupEditorStyles}
           ref={(el) => { this.editor = el; }}
@@ -393,13 +393,13 @@ export default class Editor extends React.PureComponent {
           />
         </div>
         <style jsx global>{`
-                  .markup-editor-wrapper {
+                  .emily-editor-wrapper {
                     display: flex;
                     height: 100%;
                     width: 100%;
                     align-items: flex-start;
                   }
-                  .markup-editor {
+                  .emily-editor {
                       position: relative;
                       border: 1px solid #eee;
                       border-bottom: 0;
@@ -431,32 +431,32 @@ export default class Editor extends React.PureComponent {
                       width: 0;
                       height: 0;
                   }
-                  .markup-editor .workspace {
+                  .emily-editor .workspace {
                       align-items: stretch;
                       display: flex;
                       height: 100%;
                       width: 100%;
                       align-items: flex-start;
                   }
-                  .markup-editor .workspace > .columnWrapper {
+                  .emily-editor .workspace > .columnWrapper {
                       flex: 6;
                       overflow: hidden;
                       height: 100%;
                   }
-                  .markup-editor .workspace > .columnWrapper > .column {
+                  .emily-editor .workspace > .columnWrapper > .column {
                       overflow-y: scroll;
                       overflow-x: hidden;
                       height: 100%;
                       position: relative; // important for scroll synchro!
                       // margin-right: -16px; // togle for scrollbar hiding
                   }
-                  .markup-editor .workspace > .columnWrapper > .column.editor {
+                  .emily-editor .workspace > .columnWrapper > .column.editor {
                       overflow: hidden;
                   }
-                  .markup-editor .workspace > .columnWrapper.outline {
+                  .emily-editor .workspace > .columnWrapper.outline {
                     flex: 2;
                   }
-                  .markup-editor .workspace {
+                  .emily-editor .workspace {
                     overflow: hidden;
                   }
                   .ace_editor {

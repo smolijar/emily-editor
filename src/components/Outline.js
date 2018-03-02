@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import autoBind from 'react-autobind';
 import SortableList from './outline/SortableList';
 
 export default class Outline extends React.PureComponent {
@@ -14,16 +13,13 @@ export default class Outline extends React.PureComponent {
       children: PropTypes.array,
     })).isRequired,
   }
-  static defaultProps = {
-  }
   constructor(props) {
     super(props);
-    autoBind(this);
     this.state = {
       hidden: {},
     };
   }
-  onSectionToggle(key) {
+  onSectionToggle = (key) => {
     this.setState({
       ...this.state,
       hidden: {

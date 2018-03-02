@@ -21,11 +21,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Use Pure components instead of Components
  - Replace module's getToHtml with toHtml
  - Refactor header finding
+ - Use ES6 export syntax
+ - Use arrow functions instead of autobinding function
 
 ### Removed
  - scrollguard (lastScrolled) from state
  - Ugly-ass timeout waiting for Ace to propagate scrolling into config layer
  - Proportional font sizes (deprecated from CM) option
+ - react-autobind
 
 ### Fixed
  - Unable to close Command palette through editor focus
@@ -44,6 +47,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - #67 (Truncated toggle arrow)
  - False header regex findings crashing when destructure
  - Update next, webpack and jest
+ - Missing glob module (Heroku deploy error)
 
 ## [0.5.0] - 2017-12-12
 ### Removed

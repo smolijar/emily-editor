@@ -48,6 +48,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - False header regex findings crashing when destructure
  - Update next, webpack and jest
  - Missing glob module (Heroku deploy error)
+ - Missing module `/dist/pages/_document.js` (Heroku runtime error)
 
 ## [0.5.0] - 2017-12-12
 ### Removed

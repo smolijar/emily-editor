@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "node index.js",
+    "prestart": "next build",
     "start": "NODE_ENV=production node index.js",
     "build": "next build",
     "lint": "./node_modules/eslint/bin/eslint.js .",

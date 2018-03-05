@@ -116,7 +116,7 @@ export default class Outline extends React.PureComponent {
               color: #555;
               position: absolute;
               left: 9px;
-              top: 0.12em;
+              top: 0.7em;
               z-index: 1;
             }
             .outline-item .item-wrapper:hover .dragHandle {
@@ -181,13 +181,13 @@ export default class Outline extends React.PureComponent {
             .outline-item.level-3 .toggle::before { top: -3px; }
             .outline-item.level-3 .item-wrapper { padding-top: 8px; padding-bottom: 8px; }
             .outline-item.level-4, .outline-item.level-4 .text { font-size: 12px; font-weight: normal; color: #888; }
-            .outline-item.level-4 .toggle::before { top: -1px; }
+            .outline-item.level-4 .toggle::before { top: -5px; }
             .outline-item.level-4 .item-wrapper { padding-top: 8px; padding-bottom: 8px; }
             .outline-item.level-5, .outline-item.level-5 .text { font-size: 12px; font-weight: normal; color: #888; }
-            .outline-item.level-5 .toggle::before { top: -2px; }
+            .outline-item.level-5 .toggle::before { top: -8px; }
             .outline-item.level-5 .item-wrapper { padding-top: 5px; padding-bottom: 5px; }
             .outline-item.level-6, .outline-item.level-6 .text { font-size: 12px; font-weight: normal; color: #888; }
-            .outline-item.level-6 .toggle::before { top: -2px; }
+            .outline-item.level-6 .toggle::before { top: -8px; }
             .outline-item.level-6 .item-wrapper { padding-top: 5px; padding-bottom: 5px; }
         `}
         </style>

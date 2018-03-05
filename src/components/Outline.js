@@ -100,6 +100,8 @@ export default class Outline extends React.PureComponent {
               padding-left: 23px;
               padding-right: 20px;
               position: relative;
+              box-sizing: border-box;
+              cursor: pointer;
             }
             .outline-item .item-wrapper:hover {
               background: rgba(0,0,0,.05);
@@ -144,10 +146,6 @@ export default class Outline extends React.PureComponent {
               left: -5px;
               margin-top: 0.2em;
             }
-            // .outline-item button.text {
-            //   width: calc(100% - 60px);
-            //   position: absolute;
-            // }
             .outline-item button {
               cursor: pointer;
               text-align: left;

@@ -9,7 +9,7 @@ const ESCAPE = 27;
 
 export default class CommandPalette extends React.PureComponent {
     static propTypes = {
-      options: PropTypes.objectOf(PropTypes.string).isRequired,
+      options: PropTypes.objectOf(PropTypes.object).isRequired,
       onSelected: PropTypes.func.isRequired,
       onExit: PropTypes.func.isRequired,
     }
@@ -85,11 +85,11 @@ export default class CommandPalette extends React.PureComponent {
         mouseover: false,
       });
       return (
+        // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
         <div
           style={{ display: this.state.visible ? 'block' : 'none' }}
           className="command-palette"
           onMouseOver={mouseOn}
-          onFocus
           onMouseOut={mouseOff}
           onBlur={mouseOff}
         >

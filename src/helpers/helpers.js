@@ -145,7 +145,7 @@ export const formatShortcut = ({ win, mac }, plaintext = false) => {
   if (plaintext) {
     return binding.join(' + ');
   }
-  return binding.map(key => <kbd>{key}</kbd>).reduce((acc, v) => [acc, ' + ', v]);
+  return binding.map(key => <kbd key={key}>{key}</kbd>).reduce((acc, v) => [acc, ' + ', v]);
 };
 
 export const applyOnDom = (htmlString, fn) => {

@@ -10,9 +10,18 @@ const SortableItem = SortableElement(({
   onSectionToggle,
 }) => {
   const key = `${value.content}${value.index}`;
+
   return (
     <li className={`outline-item level-${value.level}`}>
-      <a title="Go to this section" className="item-wrapper" onClick={() => onItemClick(value)}>
+      {/* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/anchor-is-valid */}
+      <a
+        title="Go to this section"
+        className="item-wrapper"
+        onClick={() => onItemClick(value)}
+        role="button"
+        tabIndex={value.index}
+      >
+        {/* eslint-enable jsx-a11y/click-events-have-key-events, jsx-a11y/anchor-is-valid */}
         <button
           title="Collapse/expand section"
           className={`toggle ${value.children.length > 0 ? '' : 'invisible'} ${hidden[key] ? 'closed' : 'opened'}`}
@@ -57,7 +66,7 @@ const SortableList = SortableContainer(({
         onItemClick={onItemClick}
         onSectionToggle={onSectionToggle}
       />
-    ))}
+      ))}
   </ul>
 ));
 

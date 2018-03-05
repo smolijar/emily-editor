@@ -18,6 +18,8 @@ export default (mode) => {
       if (['bold', 'italic'].includes(key)) {
         // inline
         defaultSet.format[key] = string => `${symbol}${string}${symbol}`;
+      } else if (key === 'header') {
+        defaultSet.headerRegex = new RegExp(`(\\n|^)(${symbol}+\\s+\\S.*)|(\\S.*\\n(=+|-+))`, 'g')
       } else {
         // block
         defaultSet.format[key] = string => string.split('\n').map(s => `${symbol}${s}`).join('\n');

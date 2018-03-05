@@ -32,14 +32,13 @@ const asciidoc = {
     // else append to any word
     return line.replace(/(.*)(\w)(.*)/, `$1$2${content}$3`);
   },
-  // must include newline after
-  headerRegex: /((\n|^)=+\s+\S.*\n)|(\S.*\n(===+|---+)\n)/g,
   symbols: {
     bold: '*',
     italic: '_',
     ul: ' - ',
     ol: '. ',
     quote: '> ',
+    header: '=',
   },
   renderJsxStyle: () => (
     <style jsx global>{`

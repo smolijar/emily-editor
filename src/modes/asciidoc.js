@@ -34,12 +34,12 @@ const asciidoc = {
   },
   // must include newline after
   headerRegex: /((\n|^)=+\s+\S.*\n)|(\S.*\n(===+|---+)\n)/g,
-  format: {
-    bold: string => `*${string}*`,
-    italic: string => `_${string}_`,
-    ul: string => string.split('\n').map(s => ` - ${s}`).join('\n'),
-    ol: string => string.split('\n').map(s => `. ${s}`).join('\n'),
-    quote: string => string.split('\n').map(s => `> ${s}`).join('\n'),
+  symbols: {
+    bold: '*',
+    italic: '_',
+    ul: ' - ',
+    ol: '. ',
+    quote: '> ',
   },
   renderJsxStyle: () => (
     <style jsx global>{`

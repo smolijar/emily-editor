@@ -1,4 +1,5 @@
 import React from 'react';
+import bootstrap from './boostrap';
 import hljs from 'highlight.js';
 import MarkdownIt from 'markdown-it';
 // markdown-it plugins
@@ -93,4 +94,4 @@ const markdown = {
   previewClassName: 'markdown-body',
 };
 
-export default markdown;
+export default bootstrap(markdown);

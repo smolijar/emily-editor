@@ -1,5 +1,6 @@
 import React from 'react';
 import Asciidoctor from 'asciidoctor.js';
+import bootstrap from './boostrap';
 
 const asciidoctor = Asciidoctor();
 
@@ -74,4 +75,4 @@ const asciidoc = {
   previewClassName: 'markdown-body',
 };
 
-export default asciidoc;
+export default bootstrap(asciidoc);

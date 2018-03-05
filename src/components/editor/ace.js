@@ -36,7 +36,7 @@ export const getBlockSelection = ace => _.merge(ace.selection.getRange(), {
 });
 
 export const formatAceSelection = (ace, fn, inline = true) => {
-  const range = inline ? ace.selection.getRange() : module.exports.getBlockSelection(ace);
+  const range = inline ? ace.selection.getRange() : getBlockSelection(ace);
   ace.session.replace(
     range,
     fn(ace.session.getTextRange(range)),

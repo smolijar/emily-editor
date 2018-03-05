@@ -12,7 +12,7 @@ const SortableItem = SortableElement(({
   const key = `${value.content}${value.index}`;
   return (
     <li className={`outline-item level-${value.level}`}>
-      <button title="Go to this section" className="item-wrapper" onClick={() => onItemClick(value)}>
+      <a title="Go to this section" className="item-wrapper" onClick={() => onItemClick(value)}>
         <button
           title="Collapse/expand section"
           className={`toggle ${value.children.length > 0 ? '' : 'invisible'} ${hidden[key] ? 'closed' : 'opened'}`}
@@ -24,7 +24,7 @@ const SortableItem = SortableElement(({
           dangerouslySetInnerHTML={{ __html: value.content.replace(/<[^>]*>/g, '') }}
         />
         <DragHandle />
-      </button>
+      </a>
       {!hidden[key] &&
         <SortableList
           items={value.children}

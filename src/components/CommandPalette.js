@@ -9,7 +9,7 @@ const ESCAPE = 27;
 
 export default class CommandPalette extends React.PureComponent {
     static propTypes = {
-      options: PropTypes.objectOf(PropTypes.string).isRequired,
+      options: PropTypes.objectOf(PropTypes.object).isRequired,
       onSelected: PropTypes.func.isRequired,
       onExit: PropTypes.func.isRequired,
     }

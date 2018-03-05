@@ -17,8 +17,6 @@ const dot = {
       return `<p>${line}</p>`;
     })
     .join('\n'),
-  lineSafeInsert: (line, content) => `${line} ${content}`,
-  postProcess: domNode => domNode,
   headerRegex: /(\.+)(.+)\n/g,
 };
 

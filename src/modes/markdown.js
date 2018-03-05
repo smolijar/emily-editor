@@ -35,7 +35,6 @@ const renderer = md.render.bind(md);
 const markdown = {
   name: 'markdown',
   toHtml: html => renderer(html),
-  postProcess: domNode => domNode,
   lineSafeInsert: (line, content) => {
     // If line does not contain words, it is
     // most likely not going to render into

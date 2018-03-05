@@ -1,9 +1,9 @@
 image::./static/emily.png[Emily editor, width=400, align=center]
 
 [.text-center]
-image:https://travis-ci.org/grissius/markup-editor.svg?branch=master[travis, link=https://travis-ci.org/grissius/markup-editor]
-image:https://david-dm.org/grissius/markup-editor/status.svg[dependencies, link=https://david-dm.org/grissius/markup-editor]
-image:https://david-dm.org/grissius/markup-editor/dev-status.svg[devDependencies, link=https://david-dm.org/grissius/markup-editor?type=dev]
+image:https://travis-ci.org/grissius/emily-editor.svg?branch=master[travis, link=https://travis-ci.org/grissius/emily-editor]
+image:https://david-dm.org/grissius/emily-editor/status.svg[dependencies, link=https://david-dm.org/grissius/emily-editor]
+image:https://david-dm.org/grissius/emily-editor/dev-status.svg[devDependencies, link=https://david-dm.org/grissius/emily-editor?type=dev]
 
 [.text-center]
 Emily is a React editor component for https://en.wikipedia.org/wiki/Lightweight_markup_language[LML]s, like Markdown or Asciidoc.
@@ -24,6 +24,6 @@ You can run it now in dev mode `npm run dev`.
 
 == Contributing
 
-If you feel like it, do add feature requests, or bug report in https://github.com/grissius/markup-editor/issues[issue tracker].
+If you feel like it, do add feature requests, or bug report in https://github.com/grissius/emily-editor/issues[issue tracker].
 
 Much obliged!

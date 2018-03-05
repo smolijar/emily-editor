@@ -24,7 +24,7 @@ export default class EmilyEditor extends React.PureComponent {
       headerRegex: PropTypes.instanceOf(RegExp).isRequired,
       renderJsxStyle: PropTypes.func.isRequired,
       previewClassName: PropTypes.string.isRequired,
-    }),
+    }).isRequired,
     width: PropTypes.number,
     height: PropTypes.number,
   }

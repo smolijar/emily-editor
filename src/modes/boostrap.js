@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 export default (mode) => {
-  const fn = _ => _;
+  const fn = x => x;
   // Default required dud properties
   const defaultSet = {
     toHtml: fn,
@@ -14,18 +14,19 @@ export default (mode) => {
   // Generate properties from symbols in _markdown_ style
   if (mode.symbols) {
     defaultSet.format = {};
-    _.entries(mode.symbols).map(([key, symbol]) => {
-      if (['bold', 'italic'].includes(key)) {
-        // inline
-        defaultSet.format[key] = string => `${symbol}${string}${symbol}`;
-      } else if (key === 'header') {
-        defaultSet.headerRegex = new RegExp(`(\\n|^)(${symbol}+\\s+\\S.*)|(\\S.*\\n(=+|-+))`, 'g')
-      } else {
-        // block
-        defaultSet.format[key] = string => string.split('\n').map(s => `${symbol}${s}`).join('\n');
+    _.entries(mode.symbols).forEach(([key, symbol]) => {
+      switch (true) {
+        case ['bold', 'italic'].includes(key):
+          defaultSet.format[key] = string => `${symbol}${string}${symbol}`;
+          break;
+        case key === 'header':
+          defaultSet.headerRegex = new RegExp(`(\\n|^)(${symbol}+\\s+\\S.*)|(\\S.*\\n(=+|-+))`, 'g');
+          break;
+        default:
+          defaultSet.format[key] = string => string.split('\n').map(s => `${symbol}${s}`).join('\n');
       }
-    })
+    });
   }
 
   return _.defaultsDeep(mode, defaultSet);
-}
+};

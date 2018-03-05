@@ -1,5 +1,4 @@
 import React from 'react';
-import bootstrap from './boostrap';
 import hljs from 'highlight.js';
 import MarkdownIt from 'markdown-it';
 // markdown-it plugins
@@ -11,9 +10,9 @@ import deflist from 'markdown-it-deflist';
 import abbr from 'markdown-it-abbr';
 import ins from 'markdown-it-ins';
 import mark from 'markdown-it-mark';
-
 import twemoji from 'twemoji';
 import { higlightSourceWithNinjas, ninjaRegex } from '../components/editor/lineNinja';
+import bootstrap from './boostrap';
 
 const mdOptions = {
   linkify: true,

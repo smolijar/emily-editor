@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- Add mode bootstrapper
+- Symbol based language generation
+
+### Removed
+- Language prop defaults (due to mode bootstrap)
+
 ### Fixed
 - #73 (Fix console errors)
 - Use inherit font in outline

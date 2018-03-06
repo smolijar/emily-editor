@@ -4,9 +4,20 @@ import bootstrap from './boostrap';
 
 const asciidoctor = Asciidoctor();
 
+const options = {
+  attributes: {
+    showtitle: true,
+    icons: 'fonts@',
+    'source-highlighter': 'highlightjs@',
+  },
+};
+
+const toHtml = src => asciidoctor.convert(src, options);
+
+
 const asciidoc = {
   name: 'asciidoc',
-  toHtml: src => asciidoctor.convert(src, { attributes: { showtitle: true, icons: 'fonts@', 'source-highlighter': 'highlightjs@' } }),
+  toHtml,
   postProcess: (domNode) => {
     domNode.querySelectorAll('.toc strong').forEach(e => e.parentNode.removeChild(e));
     return domNode;

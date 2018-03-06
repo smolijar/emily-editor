@@ -1,5 +1,6 @@
 import React from 'react';
 import Asciidoctor from 'asciidoctor.js';
+import bootstrap from './boostrap';
 
 const asciidoctor = Asciidoctor();
 
@@ -31,14 +32,13 @@ const asciidoc = {
     // else append to any word
     return line.replace(/(.*)(\w)(.*)/, `$1$2${content}$3`);
   },
-  // must include newline after
-  headerRegex: /((\n|^)=+\s+\S.*\n)|(\S.*\n(===+|---+)\n)/g,
-  format: {
-    bold: string => `*${string}*`,
-    italic: string => `_${string}_`,
-    ul: string => string.split('\n').map(s => ` - ${s}`).join('\n'),
-    ol: string => string.split('\n').map(s => `. ${s}`).join('\n'),
-    quote: string => string.split('\n').map(s => `> ${s}`).join('\n'),
+  symbols: {
+    bold: '*',
+    italic: '_',
+    ul: ' - ',
+    ol: '. ',
+    quote: '> ',
+    header: '=',
   },
   renderJsxStyle: () => (
     <style jsx global>{`
@@ -74,4 +74,4 @@ const asciidoc = {
   previewClassName: 'markdown-body',
 };
 
-export default asciidoc;
+export default bootstrap(asciidoc);

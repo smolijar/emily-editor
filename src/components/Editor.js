@@ -19,23 +19,17 @@ export default class EmilyEditor extends React.PureComponent {
     language: PropTypes.shape({
       name: PropTypes.string.isRequired,
       toHtml: PropTypes.func.isRequired,
-      lineSafeInsert: PropTypes.func,
-      postProcess: PropTypes.func,
-      headerRegex: PropTypes.regex,
-      renderJsxStyle: PropTypes.func,
-      previewClassName: PropTypes.string,
-    }),
+      lineSafeInsert: PropTypes.func.isRequired,
+      postProcess: PropTypes.func.isRequired,
+      headerRegex: PropTypes.instanceOf(RegExp).isRequired,
+      renderJsxStyle: PropTypes.func.isRequired,
+      previewClassName: PropTypes.string.isRequired,
+    }).isRequired,
     width: PropTypes.number,
     height: PropTypes.number,
   }
   static defaultProps = {
     content: '',
-    language: {
-      name: 'markdown',
-      lineSafeInsert: line => line,
-      renderJsxStyle: () => { },
-      previewClassName: '',
-    },
     width: null,
     height: null,
   }
@@ -470,7 +464,7 @@ export default class EmilyEditor extends React.PureComponent {
                   }
                 `}
         </style>
-        {this.props.language.renderJsxStyle && this.props.language.renderJsxStyle()}
+        {this.props.language.renderJsxStyle()}
         {this.renderProportianalStyles()}
       </div>
     );

@@ -10,9 +10,9 @@ import deflist from 'markdown-it-deflist';
 import abbr from 'markdown-it-abbr';
 import ins from 'markdown-it-ins';
 import mark from 'markdown-it-mark';
-
 import twemoji from 'twemoji';
 import { higlightSourceWithNinjas, ninjaRegex } from '../components/editor/lineNinja';
+import bootstrap from './boostrap';
 
 const mdOptions = {
   linkify: true,
@@ -34,7 +34,6 @@ const renderer = md.render.bind(md);
 const markdown = {
   name: 'markdown',
   toHtml: html => renderer(html),
-  postProcess: domNode => domNode,
   lineSafeInsert: (line, content) => {
     // If line does not contain words, it is
     // most likely not going to render into
@@ -60,14 +59,13 @@ const markdown = {
     // else append to any word
     return line.replace(/(.*)(\w)(.*)/, `$1$2${content}$3`);
   },
-  // must include newline after
-  headerRegex: /(\n|^)(#+\s+\S.*\n)|(\S.*\n(=+|-+)\n)/g,
-  format: {
-    bold: string => `**${string}**`,
-    italic: string => `_${string}_`,
-    ul: string => string.split('\n').map(s => ` - ${s}`).join('\n'),
-    ol: string => string.split('\n').map(s => `1. ${s}`).join('\n'),
-    quote: string => string.split('\n').map(s => `> ${s}`).join('\n'),
+  symbols: {
+    bold: '**',
+    italic: '_',
+    ul: ' - ',
+    ol: '1. ',
+    quote: '> ',
+    header: '#',
   },
   renderJsxStyle: () => (
     <style jsx global>{`
@@ -93,4 +91,4 @@ const markdown = {
   previewClassName: 'markdown-body',
 };
 
-export default markdown;
+export default bootstrap(markdown);

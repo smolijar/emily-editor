@@ -5,10 +5,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- Add mode bootstrapper
+- Symbol based language generation
+
+### Removed
+- Language prop defaults (due to mode bootstrap)
+
 ### Fixed
 - #73 (Fix console errors)
 - Use inherit font in outline
 - Nested buttons DOM validation
+- Fix block selection error (from export refactor)
 
 ## [0.6.0] - 2018-03-02
 ### Added

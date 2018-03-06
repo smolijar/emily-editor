@@ -1,3 +1,5 @@
+import bootstrap from '../../src/modes/boostrap';
+
 // Dot is a trivial markup language for testing purposes.
 //  >  Line starting with dots, closed with newline is
 //     a heading (number of dots is level).
@@ -15,9 +17,7 @@ const dot = {
       return `<p>${line}</p>`;
     })
     .join('\n'),
-  lineSafeInsert: (line, content) => `${line} ${content}`,
-  postProcess: domNode => domNode,
   headerRegex: /(\.+)(.+)\n/g,
 };
 
-export default dot;
+export default bootstrap(dot);

@@ -1,9 +1,9 @@
-const React = require('react');
-const Asciidoctor = require('asciidoctor.js');
-const bootstrap = require('./boostrap');
+import React from 'react';
+import Asciidoctor from 'asciidoctor.js';
+import bootstrap from './boostrap';
 
 const asciidoctor = Asciidoctor();
-require('asciidoctor-html5s');
+import 'asciidoctor-html5s';
 
 const options = {
   attributes: {

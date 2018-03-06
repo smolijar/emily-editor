@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Add mode bootstrapper
 - Symbol based language generation
+- Asciidoc basic tests
+
+### Changed
+- Use asciidoctor-html5s instead of default backend
 
 ### Removed
 - Language prop defaults (due to mode bootstrap)
@@ -17,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Use inherit font in outline
 - Nested buttons DOM validation
 - Fix block selection error (from export refactor)
+- Allow `modue.exports` exporting in babel
 
 ## [0.6.0] - 2018-03-02
 ### Added

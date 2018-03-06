@@ -1,29 +1,19 @@
 {
-  "env": {
-    "development": {
-      "presets": "next/babel"
-    },
-    "production": {
-      "presets": "next/babel"
-    },
-    "test": {
-      "plugins": [
-        [
-          "styled-jsx/babel",
-          {
-            "optimizeForSpeed": true
-          }
-        ]
-      ],
-      "presets": [
-        [
-          "env",
-          {
-            "modules": "commonjs"
-          }
-        ],
-        "next/babel"
-      ]
-    }
-  }
+  "plugins": [
+    [
+      "styled-jsx/babel",
+      {
+        "optimizeForSpeed": true
+      }
+    ]
+  ],
+  "presets": [
+    [
+      "env",
+      {
+        "modules": "commonjs"
+      }
+    ],
+    "next/babel"
+  ]
 }

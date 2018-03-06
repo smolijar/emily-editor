@@ -1,8 +1,9 @@
-import React from 'react';
-import Asciidoctor from 'asciidoctor.js';
-import bootstrap from './boostrap';
+const React = require('react');
+const Asciidoctor = require('asciidoctor.js');
+const bootstrap = require('./boostrap');
 
 const asciidoctor = Asciidoctor();
+require('asciidoctor-html5s');
 
 const options = {
   attributes: {
@@ -10,6 +11,7 @@ const options = {
     icons: 'fonts@',
     'source-highlighter': 'highlightjs@',
   },
+  backend: 'html5s',
 };
 
 const toHtml = src => asciidoctor.convert(src, options);

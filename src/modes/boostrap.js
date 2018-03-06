@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export default (mode) => {
+module.exports = (mode) => {
   const fn = x => x;
   // Default required dud properties
   const defaultSet = {

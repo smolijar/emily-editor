@@ -34,8 +34,7 @@ describe('<Editor />', () => {
     . Baz
     baz baz baz
     . Quix
-    quix quix quix
-    `;
+    quix quix quix`;
     const getWrapper = () => mount(<Editor content={initialContent} language={dot} />);
     it('Don\'t swap (from = to)', () => {
       const wrapper = getWrapper();
@@ -72,8 +71,7 @@ describe('<Editor />', () => {
       .. Foo2
       foo2 foo2
       . Quix
-      quix quix quix
-    `;
+      quix quix quix`;
       instance.handleOutlineOrderChange(null, { oldIndex: 0, newIndex: 2 });
       expect(instance.getValue()).toBe(expected);
     });
@@ -94,8 +92,7 @@ describe('<Editor />', () => {
       .... Nasty bar skips level again
       bar bar bar
       . Baz
-      baz baz baz
-    `;
+      baz baz baz`;
       instance.handleOutlineOrderChange(null, { oldIndex: 3, newIndex: 1 });
       expect(instance.getValue()).toBe(expected);
     });
@@ -116,8 +113,7 @@ describe('<Editor />', () => {
       .. Foo2
       foo2
       .. Foo2
-      foo2 foo2
-      `;
+      foo2 foo2`;
       instance.handleOutlineOrderChange(null, { oldIndex: 0, newIndex: 100 });
       expect(instance.getValue()).toBe(expected);
     });

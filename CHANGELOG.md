@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Asciidoc basic tests
 - jsdom
 - Autosave tests
+- Mode specific header filtering
 
 ### Changed
 - Use asciidoctor-html5s instead of default backend
@@ -30,6 +31,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - #27 (Autosave key)
 - #28 (Localstorage cleanup)
 - Mismatch server/client in dangerous html due to client only modifications
+- Asciidoc _discrete_ headings are hidden from outline
 
 ## [0.6.0] - 2018-03-02
 ### Added

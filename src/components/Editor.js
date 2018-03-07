@@ -4,7 +4,7 @@ import screenfull from 'screenfull';
 import CommandPalette from './CommandPalette';
 import Outline from './Outline';
 import StatusBar from './StatusBar';
-import { createNinja, ninjasToHtml } from './editor/lineNinja';
+import { toHtmlWithNinjas } from './editor/lineNinja';
 import { autosaveStore, autosaveRetrieve } from './editor/autosave';
 import getCommands from './editor/commands';
 import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline, applyOnDom } from '../helpers/helpers';
@@ -51,7 +51,7 @@ export default class EmilyEditor extends React.PureComponent {
     this.state = {
       raw,
       html,
-      outline: this.generateOutline(this.props.content, html),
+      outline: this.generateOutline(html, raw),
       proportionalSizes: true,
       columns: {
         editor: true,
@@ -142,7 +142,7 @@ export default class EmilyEditor extends React.PureComponent {
       raw,
       html,
       loc: raw.split('\n').length,
-      outline: this.generateOutline(raw, html),
+      outline: this.generateOutline(html, raw),
     });
   }
   handleChange = (value) => {
@@ -191,11 +191,7 @@ export default class EmilyEditor extends React.PureComponent {
     }
   }
   generateHtml = (raw) => {
-    const rawWithNinjas = raw
-      .split('\n')
-      .map((line, i) => this.props.language.lineSafeInsert(line, createNinja(i)))
-      .join('\n');
-    const htmlWithNinjas = ninjasToHtml(this.props.language.toHtml(rawWithNinjas));
+    const htmlWithNinjas = toHtmlWithNinjas(raw, this.props.language.lineSafeInsert, this.props.language.toHtml);
     return applyOnDom(htmlWithNinjas, (node) => {
       node.querySelectorAll('a').forEach(n => n.setAttribute('target', '_blank'));
       this.props.language.postProcess(node);
@@ -273,7 +269,7 @@ export default class EmilyEditor extends React.PureComponent {
       setAceValueKeepSession(this.ace, newValue);
     }
   }
-  generateOutline = (raw, html) => generateOutline(
+  generateOutline = (html, raw) => generateOutline(
     html,
     raw,
     this.props.language.toHtml,

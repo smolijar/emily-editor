@@ -1,14 +1,21 @@
 import _ from 'lodash';
-
-const getKey = Editor => `editor-content-${Editor.props.language.name}`;
+import md5 from 'md5';
 
 const MAX_AGE = 86400000;
+const PREFIX = 'emily-backup-';
+
+const getKey = (Editor) => {
+  const { name, content } = Editor.props;
+  return `${PREFIX}${md5(name + content)}`;
+};
+
 
 const cleanup = () => _.entries(localStorage)
-  .filter(([key, val]) => key.startsWith('editor-content-'))
+  .filter(([key]) => key.startsWith(PREFIX))
   .forEach(([key, val]) => {
     const age = new Date() - new Date(JSON.parse(val).date);
     if (age > MAX_AGE) {
+      console.warn(key);
       localStorage.removeItem(key);
     }
   });

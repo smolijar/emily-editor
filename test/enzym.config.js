@@ -3,21 +3,21 @@ import Adapter from 'enzyme-adapter-react-16';
 
 configure({ adapter: new Adapter() });
 
-const localStorageMock = (() => {
-  let store = {};
-  return {
-    getItem: key => store[key],
-    setItem: (key, value) => {
-      store[key] = value.toString();
-    },
-    clear: () => {
-      store = {};
-    },
-    removeItem: (key) => {
-      delete store[key];
-    },
-  };
-})();
+const localStorageMock = {
+  setItem: function (key, val) {
+    this[key] = val + '';
+  },
+  getItem: function (key) {
+    return this[key];
+  },
+  removeItem: function (key) {
+    delete this[key];
+  }
+};
+Object.defineProperty(localStorageMock, 'length', {
+  get: function () { return Object.keys(this).length - 2; }
+});
+
 global.localStorage = localStorageMock;
 
 const xhrMockClass = () => ({

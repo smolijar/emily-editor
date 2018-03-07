@@ -51,7 +51,7 @@ export default class EmilyEditor extends React.PureComponent {
     this.state = {
       raw,
       html,
-      outline: this.generateOutline(this.props.content),
+      outline: this.generateOutline(this.props.content, html),
       proportionalSizes: true,
       columns: {
         editor: true,
@@ -97,12 +97,8 @@ export default class EmilyEditor extends React.PureComponent {
     return Number(firstLineNode.dataset.line);
   }
   handleOutlineClick = (heading) => {
-    const inCode = heading.source;
-    const value = this.state.raw;
-    const pos = nthIndexOf(value, inCode, heading.dupIndex);
-    const line = value.substr(0, pos).split('\n').length;
-    this.ace.gotoLine(line);
-    this.ace.scrollToLine(line - 1);
+    this.ace.gotoLine(heading.ln);
+    this.ace.scrollToLine(heading.ln - 1);
     this.ace.focus();
   }
   scrollPreviewToLine = (ln) => {
@@ -146,7 +142,7 @@ export default class EmilyEditor extends React.PureComponent {
       raw,
       html,
       loc: raw.split('\n').length,
-      outline: this.generateOutline(raw),
+      outline: this.generateOutline(raw, html),
     });
   }
   handleChange = (value) => {
@@ -264,7 +260,7 @@ export default class EmilyEditor extends React.PureComponent {
         // Header section to paste before
         newIndex > oldIndex ? findNextSibling(container[newIndex]) : container[newIndex],
       ].map(item => (item ?
-        nthIndexOf(this.state.raw, item.source, item.dupIndex) : this.state.raw.length
+        item.pos : this.state.raw.length
       ));
 
       // Move the section
@@ -277,7 +273,8 @@ export default class EmilyEditor extends React.PureComponent {
       setAceValueKeepSession(this.ace, newValue);
     }
   }
-  generateOutline = raw => generateOutline(
+  generateOutline = (raw, html) => generateOutline(
+    html,
     raw,
     this.props.language.toHtml,
     this.props.language.headerRegex,

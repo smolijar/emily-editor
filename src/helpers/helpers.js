@@ -1,4 +1,25 @@
 import React from 'react';
+const { JSDOM } = require('jsdom');
+
+export const getDocument = (html) => new JSDOM(html).window.document;
+
+export const indexOfLine = (str, ln) => str.split('\n').slice(0, ln).join('\n').length;
+
+export const findHeadersFromNinjaHtml = (html, raw) => {
+  const document = getDocument(html);
+  const selector = [...Array(6).keys()].map(n => `h${n+1}>strong[data-line]`).join(',');
+  const nodes = [...document.querySelectorAll(selector)].map((ninja, index) => {
+    const heading = ninja.parentNode;
+    heading.removeChild(ninja);
+    const level = Number(heading.tagName.slice(1));
+    const content = heading.textContent;
+    const html = heading.innerHTML;
+    const ln = Number(ninja.dataset.line);
+    const pos = indexOfLine(raw, ln - 1)
+    return {level, content, html, ln, heading, pos, index};
+  });
+  return nodes;
+}
 
 // Find nth occurance of needle in haystack
 export const nthIndexOf = (haystack, needle, n = 1) => haystack
@@ -73,8 +94,8 @@ const findHeaders = (source, toHtml, headerRegex) => {
     .filter(header => header !== null);
 };
 
-export const generateOutline = (source, toHtml, headerRegex) => {
-  const headers = findHeaders(source, toHtml, headerRegex)
+export const generateOutline = (html, source, toHtml, headerRegex) => {
+  const headers = findHeadersFromNinjaHtml(html, source)
     .map(heading => ({
       ...heading,
       children: [],

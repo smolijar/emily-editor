@@ -10,6 +10,7 @@ export const ninjasToHtml = html =>
 export const createNinja = i => `@@@${i + 1}@@@`;
 
 export const higlightSourceWithNinjas = (source, highlightFn) => {
+  return source;
   const matches = source.match(ninjaRegex);
   const highlighted = highlightFn(source.replace(ninjaRegex, ''))
     .split('\n')

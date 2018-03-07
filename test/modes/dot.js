@@ -17,7 +17,6 @@ const dot = {
       return `<p>${line}</p>`;
     })
     .join('\n'),
-  headerRegex: /(\.+)(.+)\n/g,
 };
 
 export default bootstrap(dot);

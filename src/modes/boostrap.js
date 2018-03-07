@@ -19,9 +19,6 @@ module.exports = (mode) => {
         case ['bold', 'italic'].includes(key):
           defaultSet.format[key] = string => `${symbol}${string}${symbol}`;
           break;
-        case key === 'header':
-          defaultSet.headerRegex = new RegExp(`(\\n|^)(${symbol}+\\s+\\S.*)|(\\S.*\\n(=+|-+))`, 'g');
-          break;
         default:
           defaultSet.format[key] = string => string.split('\n').map(s => `${symbol}${s}`).join('\n');
       }

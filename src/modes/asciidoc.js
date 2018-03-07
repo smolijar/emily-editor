@@ -51,7 +51,6 @@ const asciidoc = {
     ul: ' - ',
     ol: '. ',
     quote: '> ',
-    header: '=',
   },
   renderJsxStyle: () => (
     <style jsx global>{`

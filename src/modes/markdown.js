@@ -65,7 +65,6 @@ const markdown = {
     ul: ' - ',
     ol: '1. ',
     quote: '> ',
-    header: '#',
   },
   renderJsxStyle: () => (
     <style jsx global>{`

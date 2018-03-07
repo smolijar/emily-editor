@@ -2,13 +2,13 @@ import React from 'react';
 import { JSDOM } from 'jsdom';
 import { ninjaSelector } from '../../src/components/editor/lineNinja';
 
-export const getDocument = (html) => new JSDOM(html).window.document;
+export const getDocument = html => new JSDOM(html).window.document;
 
 export const indexOfLine = (str, ln) => str.split('\n').slice(0, ln).join('\n').length;
 
 export const findHeadersFromNinjaHtml = (htmlWithNinjas, raw) => {
   const document = getDocument(htmlWithNinjas);
-  const selector = [...Array(6).keys()].map(n => `h${n+1}>${ninjaSelector}`).join(',');
+  const selector = [...Array(6).keys()].map(n => `h${n + 1}>${ninjaSelector}`).join(',');
   const nodes = [...document.querySelectorAll(selector)].map((ninja, index) => {
     const heading = ninja.parentNode;
     heading.removeChild(ninja);
@@ -23,7 +23,7 @@ export const findHeadersFromNinjaHtml = (htmlWithNinjas, raw) => {
     };
   });
   return nodes;
-}
+};
 
 // Find nth occurance of needle in haystack
 export const nthIndexOf = (haystack, needle, n = 1) => haystack

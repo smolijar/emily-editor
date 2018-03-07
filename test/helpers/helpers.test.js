@@ -129,7 +129,7 @@ describe('findNextSibling', () => {
   ....m
   .n
   `;
-  
+
   const flatOutline = flattenOutline(generateOutline(html(text), text));
   const got = flatOutline.map(h => (
     findNextSibling(h) ? findNextSibling(h).content.trim() : null

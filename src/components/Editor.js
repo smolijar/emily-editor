@@ -7,7 +7,7 @@ import StatusBar from './StatusBar';
 import { toHtmlWithNinjas } from './editor/lineNinja';
 import { autosaveStore, autosaveRetrieve } from './editor/autosave';
 import getCommands from './editor/commands';
-import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline, applyOnDom } from '../helpers/helpers';
+import { findNextSibling, findRelativeOffset, moveSubstring, generateOutline, applyOnDom } from '../helpers/helpers';
 import { initializeAce } from './editor/ace';
 
 const STOPPED_TYPING_TIMEOUT = 300;
@@ -50,7 +50,7 @@ export default class EmilyEditor extends React.PureComponent {
     this.state = {
       raw,
       html,
-      outline: this.generateOutline(html, raw),
+      outline: generateOutline(html, raw),
       proportionalSizes: true,
       columns: {
         editor: true,
@@ -141,7 +141,7 @@ export default class EmilyEditor extends React.PureComponent {
       raw,
       html,
       loc: raw.split('\n').length,
-      outline: this.generateOutline(html, raw),
+      outline: generateOutline(html, raw),
     });
   }
   handleChange = (value) => {
@@ -190,7 +190,8 @@ export default class EmilyEditor extends React.PureComponent {
     }
   }
   generateHtml = (raw) => {
-    const htmlWithNinjas = toHtmlWithNinjas(raw, this.props.language.lineSafeInsert, this.props.language.toHtml);
+    const { lineSafeInsert, toHtml } = this.props.language;
+    const htmlWithNinjas = toHtmlWithNinjas(raw, lineSafeInsert, toHtml);
     return applyOnDom(htmlWithNinjas, (node) => {
       node.querySelectorAll('a').forEach(n => n.setAttribute('target', '_blank'));
       this.props.language.postProcess(node);
@@ -268,12 +269,6 @@ export default class EmilyEditor extends React.PureComponent {
       setAceValueKeepSession(this.ace, newValue);
     }
   }
-  generateOutline = (html, raw) => generateOutline(
-    html,
-    raw,
-    this.props.language.toHtml,
-    this.props.language.headerRegex,
-  );
   renderProportianalStyles = () => {
     if (this.state.proportionalSizes) {
       return (

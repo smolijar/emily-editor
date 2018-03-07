@@ -17,10 +17,10 @@ export const addNinjas = (src, insert) => src
   .join('\n');
 
 
-export const toHtmlWithNinjas = (src, insert, toHtml) => ninjasToHtml(toHtml(addNinjas(src, insert)));
+export const toHtmlWithNinjas = (src, insert, toHtml) =>
+  ninjasToHtml(toHtml(addNinjas(src, insert)));
 
 export const higlightSourceWithNinjas = (source, highlightFn) => {
-  return source;
   const matches = source.match(ninjaRegex);
   const highlighted = highlightFn(source.replace(ninjaRegex, ''))
     .split('\n')

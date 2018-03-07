@@ -3,9 +3,7 @@ import md5 from 'md5';
 
 const PREFIX = 'emily-backup-';
 
-const getKey = (env = '') => {
-  return `${PREFIX}${md5(env)}`;
-};
+const getKey = (env) => `${PREFIX}${md5(env)}`;
 
 const cleanup = () => _.entries(localStorage)
   .filter(([key]) => key.startsWith(PREFIX))
@@ -15,7 +13,7 @@ const cleanup = () => _.entries(localStorage)
     }
   });
 
-export const autosaveStore = (value, env, ttl = 86400000) => {
+export const autosaveStore = (value, env = '', ttl = 86400000) => {
   const store = {
     value,
     date: new Date(),
@@ -25,7 +23,7 @@ export const autosaveStore = (value, env, ttl = 86400000) => {
   return store;
 };
 
-export const autosaveRetrieve = (env) => {
+export const autosaveRetrieve = (env = '') => {
   cleanup();
   let retrieved = localStorage.getItem(getKey(env));
   if (retrieved) {

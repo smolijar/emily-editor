@@ -3,7 +3,7 @@ import md5 from 'md5';
 
 const PREFIX = 'emily-backup-';
 
-const getKey = (env) => `${PREFIX}${md5(env)}`;
+const getKey = env => `${PREFIX}${md5(env)}`;
 
 const cleanup = () => _.entries(localStorage)
   .filter(([key]) => key.startsWith(PREFIX))

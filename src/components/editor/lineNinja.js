@@ -9,6 +9,17 @@ export const ninjasToHtml = html =>
 
 export const createNinja = i => `@@@${i + 1}@@@`;
 
+export const ninjaSelector = 'strong[data-line]';
+
+export const addNinjas = (src, insert) => src
+  .split('\n')
+  .map((line, i) => insert(line, createNinja(i)))
+  .join('\n');
+
+
+export const toHtmlWithNinjas = (src, insert, toHtml) =>
+  ninjasToHtml(toHtml(addNinjas(src, insert)));
+
 export const higlightSourceWithNinjas = (source, highlightFn) => {
   const matches = source.match(ninjaRegex);
   const highlighted = highlightFn(source.replace(ninjaRegex, ''))

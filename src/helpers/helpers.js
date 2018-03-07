@@ -1,4 +1,29 @@
 import React from 'react';
+import { JSDOM } from 'jsdom';
+import { ninjaSelector } from '../../src/components/editor/lineNinja';
+
+export const getDocument = html => new JSDOM(html).window.document;
+
+export const indexOfLine = (str, ln) => str.split('\n').slice(0, ln).join('\n').length;
+
+export const findHeadersFromNinjaHtml = (htmlWithNinjas, raw) => {
+  const document = getDocument(htmlWithNinjas);
+  const selector = [...Array(6).keys()].map(n => `h${n + 1}>${ninjaSelector}`).join(',');
+  const nodes = [...document.querySelectorAll(selector)].map((ninja, index) => {
+    const heading = ninja.parentNode;
+    heading.removeChild(ninja);
+    const ln = Number(ninja.dataset.line);
+    return {
+      level: Number(heading.tagName.slice(1)),
+      content: heading.textContent,
+      html: heading.innerHTML,
+      ln,
+      pos: indexOfLine(raw, ln - 1),
+      index,
+    };
+  });
+  return nodes;
+};
 
 // Find nth occurance of needle in haystack
 export const nthIndexOf = (haystack, needle, n = 1) => haystack
@@ -50,31 +75,8 @@ export const moveSubstring = (string, cutStartIndex, cutEndIndex, _pasteIndex) =
   ].join('');
 };
 
-// Find headers in source code using headerRegex
-const findHeaders = (source, toHtml, headerRegex) => {
-  const dupIndexMap = {};
-  return (source.match(headerRegex) || []).map((headerSource, index) => {
-    dupIndexMap[headerSource] = (dupIndexMap[headerSource] || 0) + 1;
-    const html = toHtml(headerSource);
-    const matches = html.match(/<h([0-9])[^<>]*>(.*)<\/h[0-9]>/);
-    // false-friend header (not really a header)
-    if (!matches) return null;
-    const [, level, content] = matches;
-    return {
-      source: headerSource,
-      html,
-      level: Number(level),
-      content,
-      index,
-      dupIndex: dupIndexMap[headerSource],
-    };
-  })
-    // trash false-friend headers
-    .filter(header => header !== null);
-};
-
-export const generateOutline = (source, toHtml, headerRegex) => {
-  const headers = findHeaders(source, toHtml, headerRegex)
+export const generateOutline = (htmlWithNinjas, source) => {
+  const headers = findHeadersFromNinjaHtml(htmlWithNinjas, source)
     .map(heading => ({
       ...heading,
       children: [],

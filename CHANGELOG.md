@@ -9,9 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Add mode bootstrapper
 - Symbol based language generation
 - Asciidoc basic tests
+- jsdom
 
 ### Changed
 - Use asciidoctor-html5s instead of default backend
+- Regex not used for working with headers, line-ninja and html render used insetead.
 
 ### Removed
 - Language prop defaults (due to mode bootstrap)
@@ -22,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Nested buttons DOM validation
 - Fix block selection error (from export refactor)
 - Allow `modue.exports` exporting in babel
+- jsdom isomorphic usage
 
 ## [0.6.0] - 2018-03-02
 ### Added

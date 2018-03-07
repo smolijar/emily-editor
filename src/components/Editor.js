@@ -4,10 +4,10 @@ import screenfull from 'screenfull';
 import CommandPalette from './CommandPalette';
 import Outline from './Outline';
 import StatusBar from './StatusBar';
-import { createNinja, ninjasToHtml } from './editor/lineNinja';
+import { toHtmlWithNinjas } from './editor/lineNinja';
 import { autosaveStore, autosaveRetrieve } from './editor/autosave';
 import getCommands from './editor/commands';
-import { nthIndexOf, findNextSibling, findRelativeOffset, moveSubstring, generateOutline, applyOnDom } from '../helpers/helpers';
+import { findNextSibling, findRelativeOffset, moveSubstring, generateOutline, applyOnDom } from '../helpers/helpers';
 import { initializeAce } from './editor/ace';
 
 const STOPPED_TYPING_TIMEOUT = 300;
@@ -21,7 +21,6 @@ export default class EmilyEditor extends React.PureComponent {
       toHtml: PropTypes.func.isRequired,
       lineSafeInsert: PropTypes.func.isRequired,
       postProcess: PropTypes.func.isRequired,
-      headerRegex: PropTypes.instanceOf(RegExp).isRequired,
       renderJsxStyle: PropTypes.func.isRequired,
       previewClassName: PropTypes.string.isRequired,
     }).isRequired,
@@ -51,7 +50,7 @@ export default class EmilyEditor extends React.PureComponent {
     this.state = {
       raw,
       html,
-      outline: this.generateOutline(this.props.content),
+      outline: generateOutline(html, raw),
       proportionalSizes: true,
       columns: {
         editor: true,
@@ -97,12 +96,8 @@ export default class EmilyEditor extends React.PureComponent {
     return Number(firstLineNode.dataset.line);
   }
   handleOutlineClick = (heading) => {
-    const inCode = heading.source;
-    const value = this.state.raw;
-    const pos = nthIndexOf(value, inCode, heading.dupIndex);
-    const line = value.substr(0, pos).split('\n').length;
-    this.ace.gotoLine(line);
-    this.ace.scrollToLine(line - 1);
+    this.ace.gotoLine(heading.ln);
+    this.ace.scrollToLine(heading.ln - 1);
     this.ace.focus();
   }
   scrollPreviewToLine = (ln) => {
@@ -146,7 +141,7 @@ export default class EmilyEditor extends React.PureComponent {
       raw,
       html,
       loc: raw.split('\n').length,
-      outline: this.generateOutline(raw),
+      outline: generateOutline(html, raw),
     });
   }
   handleChange = (value) => {
@@ -195,11 +190,8 @@ export default class EmilyEditor extends React.PureComponent {
     }
   }
   generateHtml = (raw) => {
-    const rawWithNinjas = raw
-      .split('\n')
-      .map((line, i) => this.props.language.lineSafeInsert(line, createNinja(i)))
-      .join('\n');
-    const htmlWithNinjas = ninjasToHtml(this.props.language.toHtml(rawWithNinjas));
+    const { lineSafeInsert, toHtml } = this.props.language;
+    const htmlWithNinjas = toHtmlWithNinjas(raw, lineSafeInsert, toHtml);
     return applyOnDom(htmlWithNinjas, (node) => {
       node.querySelectorAll('a').forEach(n => n.setAttribute('target', '_blank'));
       this.props.language.postProcess(node);
@@ -264,7 +256,7 @@ export default class EmilyEditor extends React.PureComponent {
         // Header section to paste before
         newIndex > oldIndex ? findNextSibling(container[newIndex]) : container[newIndex],
       ].map(item => (item ?
-        nthIndexOf(this.state.raw, item.source, item.dupIndex) : this.state.raw.length
+        item.pos : this.state.raw.length
       ));
 
       // Move the section
@@ -277,11 +269,6 @@ export default class EmilyEditor extends React.PureComponent {
       setAceValueKeepSession(this.ace, newValue);
     }
   }
-  generateOutline = raw => generateOutline(
-    raw,
-    this.props.language.toHtml,
-    this.props.language.headerRegex,
-  );
   renderProportianalStyles = () => {
     if (this.state.proportionalSizes) {
       return (

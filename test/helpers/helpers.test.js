@@ -1,5 +1,9 @@
 import _ from 'lodash';
 import { nthIndexOf, moveSubstring, generateOutline, findNextSibling, findWordBounds } from '../../src/helpers/helpers';
+import { toHtmlWithNinjas } from '../../src/components/editor/lineNinja';
+import dot from '../modes/dot';
+
+const html = src => toHtmlWithNinjas(src, dot.lineSafeInsert, dot.toHtml);
 
 
 describe('nthIndexOf', () => {
@@ -56,52 +60,54 @@ describe('generateOutline', () => {
       expect(generateOutline('abc', () => '<h1></h1>', /[0-9]/)).toEqual([]);
     });
   });
-  const regex = /y\w*/g;
-  const toHtml = (yo) => {
-    const level = yo.length - 1;
-    return `<h${level}>${yo}</h${level}>`;
-  };
-  describe('Yo test', () => {
-    const text = 'Break yo neck,\n yll interdum yll volutpat tellus.\nUt nizzle adipiscing lorem. Donizzle\ncool break yo neck, yall.';
-    const yoOutline = generateOutline(text, toHtml, regex);
 
-    describe('Yo level1 2x', () => {
-      it('2x', () => {
-        expect(yoOutline.length).toBe(2);
-      });
-      it('level1', () => {
-        expect(yoOutline.map(h => h.level)).toEqual([1, 1]);
-      });
-    });
-    describe('Yall level2 2x in first', () => {
-      it('2x', () => {
-        expect(yoOutline[0].children.length).toBe(2);
-      });
-      it('level1', () => {
-        expect(yoOutline[0].children.map(h => h.level)).toEqual([2, 2]);
-      });
-      it('valid path', () => {
-        expect(yoOutline[0].path).toEqual([0]);
-      });
-    });
+  const text = `
+  .foo
+  ..foobar
+  ..foobaz
+  .bar
+  ..baz
+  ...quix
+  `;
+  const dotOutline = generateOutline(html(text), text);
 
-    describe('next and prev traversal', () => {
-      const path = flattenOutline(yoOutline)
-        .concat(flattenOutline(yoOutline, true))
-        .reduce((acc, val) => acc.concat(val.content), []);
-      it('Traverse back and forth', () => {
-        expect(path).toEqual(text.match(regex).concat(text.match(regex).reverse()));
-      });
+  describe('dotOutline level1 2x', () => {
+    it('2x', () => {
+      expect(dotOutline.length).toBe(2);
+    });
+    it('level1', () => {
+      expect(dotOutline.map(h => h.level)).toEqual([1, 1]);
     });
   });
-  describe('Y test', () => {
-    const text2 = 'y yyy yyy yyy yyy y yyyy yyyy yyyyy y yyyyy yyyy yyyy yyy yyy yy yy y';
-    const yOutline = generateOutline(text2, toHtml, regex);
-    const traversed = flattenOutline(yOutline).reduce((acc, val) => acc.concat(val.content), []);
-    describe('Test full hierarchy with skipping levels', () => {
-      it('Traverse and join back to string', () => {
-        expect(traversed.join(' ')).toEqual(text2);
-      });
+  describe('dotOutline level2 2x in first', () => {
+    it('2x', () => {
+      expect(dotOutline[0].children.length).toBe(2);
+    });
+    it('level1', () => {
+      expect(dotOutline[0].children.map(h => h.level)).toEqual([2, 2]);
+    });
+    it('valid path', () => {
+      expect(dotOutline[0].path).toEqual([0]);
+    });
+  });
+
+  describe('next and prev traversal', () => {
+    const path = flattenOutline(dotOutline)
+      .reduce((acc, val) => acc.concat(val.content), []);
+    const revPath = flattenOutline(dotOutline, true)
+      .reduce((acc, val) => acc.concat(val.content), []);
+    it('Traverse back and forth', () => {
+      expect(path).toEqual([...revPath].reverse());
+      expect(revPath).toEqual([...path].reverse());
+    });
+  });
+
+  const text2 = '.x\n...x\n...x\n...x\n...x\n.x\n....x\n....x\n.....x\n.x\n.....x\n....x\n....x\n...x\n...x\n..x\n..x\n.x';
+  const dot2Outline = generateOutline(html(text2), text2);
+  const traversed = flattenOutline(dot2Outline).reduce((acc, val) => acc.concat(`${'.'.repeat(val.level)}${val.content.trim()}`), []);
+  describe('Test full hierarchy with skipping levels', () => {
+    it('Traverse and join back to string', () => {
+      expect(traversed.join('\n')).toEqual(text2);
     });
   });
 });
@@ -123,17 +129,12 @@ describe('findNextSibling', () => {
   ....m
   .n
   `;
-  const toHtml = (heading) => {
-    // count dots
-    const level = heading.split('.').length - 1;
-    return `<h${level}>${heading}</h${level}>`;
-  };
-  const regex = /\.+\w+/g;
-  const flatOutline = flattenOutline(generateOutline(text, toHtml, regex));
+
+  const flatOutline = flattenOutline(generateOutline(html(text), text));
   const got = flatOutline.map(h => (
-    findNextSibling(h) ? findNextSibling(h).content : null
+    findNextSibling(h) ? findNextSibling(h).content.trim() : null
   ));
-  const expected = ['.f', '..c', '.f', '....e', '.f', '.n', '....h', '..i', '..j', '..k', '.n', '.n', '.n', null];
+  const expected = ['f', 'c', 'f', 'e', 'f', 'n', 'h', 'i', 'j', 'k', 'n', 'n', 'n', null];
   it('Find correctly next sections', () => {
     expect(got).toEqual(expected);
   });

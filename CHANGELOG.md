@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Symbol based language generation
 - Asciidoc basic tests
 - jsdom
+- Autosave tests
 
 ### Changed
 - Use asciidoctor-html5s instead of default backend
@@ -25,6 +26,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Fix block selection error (from export refactor)
 - Allow `modue.exports` exporting in babel
 - jsdom isomorphic usage
+- #27 (Autosave key)
+- #28 (Localstorage cleanup)
 
 ## [0.6.0] - 2018-03-02
 ### Added

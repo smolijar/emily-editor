@@ -1,12 +1,25 @@
-import React from 'react';
-import Asciidoctor from 'asciidoctor.js';
-import bootstrap from './boostrap';
+const React = require('react');
+const Asciidoctor = require('asciidoctor.js');
+const bootstrap = require('./boostrap');
 
 const asciidoctor = Asciidoctor();
+require('asciidoctor-html5s');
+
+const options = {
+  attributes: {
+    showtitle: true,
+    icons: 'fonts@',
+    'source-highlighter': 'highlightjs@',
+  },
+  backend: 'html5s',
+};
+
+const toHtml = src => asciidoctor.convert(src, options);
+
 
 const asciidoc = {
   name: 'asciidoc',
-  toHtml: src => asciidoctor.convert(src, { attributes: { showtitle: true, icons: 'fonts@', 'source-highlighter': 'highlightjs@' } }),
+  toHtml,
   postProcess: (domNode) => {
     domNode.querySelectorAll('.toc strong').forEach(e => e.parentNode.removeChild(e));
     return domNode;

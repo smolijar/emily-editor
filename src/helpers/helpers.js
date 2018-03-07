@@ -151,11 +151,7 @@ export const formatShortcut = ({ win, mac }, plaintext = false) => {
 };
 
 export const applyOnDom = (htmlString, fn) => {
-  if (typeof document !== 'undefined') {
-    const htmlDom = document.createElement('div');
-    htmlDom.innerHTML = htmlString;
-    fn(htmlDom);
-    return htmlDom.innerHTML;
-  }
-  return htmlString;
+  const document = getDocument(htmlString);
+  fn(document);
+  return document.body.innerHTML;
 };

@@ -4,9 +4,8 @@ import md5 from 'md5';
 const MAX_AGE = 86400000;
 const PREFIX = 'emily-backup-';
 
-const getKey = (Editor) => {
-  const { name, content } = Editor.props;
-  return `${PREFIX}${md5(name + content)}`;
+const getKey = (env = '') => {
+  return `${PREFIX}${md5(env)}`;
 };
 
 
@@ -20,18 +19,18 @@ const cleanup = () => _.entries(localStorage)
     }
   });
 
-export const autosaveStore = (value, Editor) => {
+export const autosaveStore = (value, env) => {
   const store = {
     value,
     date: new Date(),
   };
-  localStorage.setItem(getKey(Editor), JSON.stringify(store));
+  localStorage.setItem(getKey(env), JSON.stringify(store));
   return store;
 };
 
-export const autosaveRetrieve = (Editor) => {
+export const autosaveRetrieve = (env) => {
   cleanup();
-  let retrieved = localStorage.getItem(getKey(Editor));
+  let retrieved = localStorage.getItem(getKey(env));
   if (retrieved) {
     retrieved = JSON.parse(retrieved);
     retrieved.date = new Date(retrieved.date);

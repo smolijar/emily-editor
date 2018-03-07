@@ -159,13 +159,13 @@ export default class EmilyEditor extends React.PureComponent {
     this.updateStateValue(value);
   }
   autosaveStore = (value) => {
-    const { date } = autosaveStore(value, this);
+    const { date } = autosaveStore(value, this.props.content);
     this.setState({
       autosaved: date,
     });
   }
   autosaveRetrieve = () => {
-    const retrieved = autosaveRetrieve(this);
+    const retrieved = autosaveRetrieve(this.props.content);
     if (retrieved) {
       const { value, date } = retrieved;
       if (this.ace) {

@@ -6,22 +6,24 @@ export const getDocument = html => new JSDOM(html).window.document;
 
 export const indexOfLine = (str, ln) => str.split('\n').slice(0, ln).join('\n').length;
 
-export const findHeadersFromNinjaHtml = (htmlWithNinjas, raw) => {
+export const findHeadersFromNinjaHtml = (htmlWithNinjas, raw, excludeNode) => {
   const document = getDocument(htmlWithNinjas);
   const selector = [...Array(6).keys()].map(n => `h${n + 1}>${ninjaSelector}`).join(',');
-  const nodes = [...document.querySelectorAll(selector)].map((ninja, index) => {
-    const heading = ninja.parentNode;
-    heading.removeChild(ninja);
-    const ln = Number(ninja.dataset.line);
-    return {
-      level: Number(heading.tagName.slice(1)),
-      content: heading.textContent,
-      html: heading.innerHTML,
-      ln,
-      pos: indexOfLine(raw, ln - 1),
-      index,
-    };
-  });
+  const nodes = [...document.querySelectorAll(selector)]
+    .filter(ninja => !excludeNode(ninja.parentNode))
+    .map((ninja, index) => {
+      const heading = ninja.parentNode;
+      heading.removeChild(ninja);
+      const ln = Number(ninja.dataset.line);
+      return {
+        level: Number(heading.tagName.slice(1)),
+        content: heading.textContent,
+        html: heading.innerHTML,
+        ln,
+        pos: indexOfLine(raw, ln - 1),
+        index,
+      };
+    });
   return nodes;
 };
 
@@ -75,8 +77,8 @@ export const moveSubstring = (string, cutStartIndex, cutEndIndex, _pasteIndex) =
   ].join('');
 };
 
-export const generateOutline = (htmlWithNinjas, source) => {
-  const headers = findHeadersFromNinjaHtml(htmlWithNinjas, source)
+export const generateOutline = (htmlWithNinjas, source, excludeNode = () => false) => {
+  const headers = findHeadersFromNinjaHtml(htmlWithNinjas, source, excludeNode)
     .map(heading => ({
       ...heading,
       children: [],

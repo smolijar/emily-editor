@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Use asciidoctor-html5s instead of default backend
 - Regex not used for working with headers, line-ninja and html render used insetead.
+- applyOnDom now uses jsdom and is isomorphic
 
 ### Removed
 - Language prop defaults (due to mode bootstrap)
@@ -28,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - jsdom isomorphic usage
 - #27 (Autosave key)
 - #28 (Localstorage cleanup)
+- Mismatch server/client in dangerous html due to client only modifications
 
 ## [0.6.0] - 2018-03-02
 ### Added

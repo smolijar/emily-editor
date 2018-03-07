@@ -59,6 +59,7 @@
     "markdown-it-mark": "^2.0.0",
     "markdown-it-sub": "^1.0.0",
     "markdown-it-sup": "^1.0.0",
+    "md5": "^2.2.1",
     "next": "^5.0.0",
     "prop-types": "^15.6.0",
     "react": "^16.0.0",

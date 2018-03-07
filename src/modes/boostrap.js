@@ -9,6 +9,7 @@ module.exports = (mode) => {
     lineSafeInsert: (line, content) => `${line} ${content}`,
     renderJsxStyle: () => {},
     previewClassName: '',
+    excludeNode: () => false,
   };
 
   // Generate properties from symbols in _markdown_ style

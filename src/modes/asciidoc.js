@@ -52,6 +52,7 @@ const asciidoc = {
     ol: '. ',
     quote: '> ',
   },
+  excludeNode: node => node.classList.contains('discrete'),
   renderJsxStyle: () => (
     <style jsx global>{`
       .markdown-body {

@@ -3,7 +3,7 @@ import { nthIndexOf, moveSubstring, generateOutline, findNextSibling, findWordBo
 import { toHtmlWithNinjas } from '../../src/components/editor/lineNinja';
 import dot from '../modes/dot';
 
-const html = src => toHtmlWithNinjas(src, dot.lineSafeInsert, dot.convert);
+const html = src => toHtmlWithNinjas(src, dot.lineSafeInsert, dot.convert).html;
 
 
 describe('nthIndexOf', () => {

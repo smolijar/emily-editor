@@ -192,8 +192,8 @@ export default class EmilyEditor extends React.PureComponent {
   }
   generateHtml = (raw) => {
     const { lineSafeInsert, convert } = this.props.language;
-    const htmlWithNinjas = toHtmlWithNinjas(raw, lineSafeInsert, convert);
-    return applyOnDom(htmlWithNinjas, (node) => {
+    const { html, references } = toHtmlWithNinjas(raw, lineSafeInsert, convert);
+    return applyOnDom(html, (node) => {
       node.querySelectorAll('a').forEach(n => n.setAttribute('target', '_blank'));
       this.props.language.postProcess(node);
     });

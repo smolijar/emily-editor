@@ -1,7 +1,7 @@
 import asciidoc from '../../src/modes/asciidoc';
 
 describe('Asciidoc mode', () => {
-  const documentFromSource = source => new DOMParser().parseFromString(asciidoc.toHtml(source), 'text/html').body;
+  const documentFromSource = source => new DOMParser().parseFromString(asciidoc.convert(source).html, 'text/html').body;
   const source = '= foo\nfoo\n\n== bar\nbar\n\n=== *baz*\n_quix_';
   const ninja = '{=O=O=}';
   const testContents = (src) => {

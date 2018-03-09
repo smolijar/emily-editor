@@ -17,8 +17,8 @@ export const addNinjas = (src, insert) => src
   .join('\n');
 
 
-export const toHtmlWithNinjas = (src, insert, toHtml) =>
-  ninjasToHtml(toHtml(addNinjas(src, insert)));
+export const toHtmlWithNinjas = (src, insert, convert) =>
+  ninjasToHtml(convert(addNinjas(src, insert)).html);
 
 export const higlightSourceWithNinjas = (source, highlightFn) => {
   const matches = source.match(ninjaRegex);

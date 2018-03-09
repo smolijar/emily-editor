@@ -13,15 +13,15 @@ const options = {
   backend: 'html5s',
 };
 
-const toHtml = src => {
+const convert = (src) => {
   const doc = asciidoctor.load(src, options);
-  return doc.convert(src);
-}
+  return { html: doc.convert(src) };
+};
 
 
 const asciidoc = {
   name: 'asciidoc',
-  toHtml,
+  convert,
   postProcess: (domNode) => {
     domNode.querySelectorAll('.toc strong').forEach(e => e.parentNode.removeChild(e));
     return domNode;

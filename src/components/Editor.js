@@ -18,7 +18,7 @@ export default class EmilyEditor extends React.PureComponent {
     content: PropTypes.string,
     language: PropTypes.shape({
       name: PropTypes.string.isRequired,
-      toHtml: PropTypes.func.isRequired,
+      convert: PropTypes.func.isRequired,
       lineSafeInsert: PropTypes.func.isRequired,
       postProcess: PropTypes.func.isRequired,
       renderJsxStyle: PropTypes.func.isRequired,
@@ -191,8 +191,8 @@ export default class EmilyEditor extends React.PureComponent {
     }
   }
   generateHtml = (raw) => {
-    const { lineSafeInsert, toHtml } = this.props.language;
-    const htmlWithNinjas = toHtmlWithNinjas(raw, lineSafeInsert, toHtml);
+    const { lineSafeInsert, convert } = this.props.language;
+    const htmlWithNinjas = toHtmlWithNinjas(raw, lineSafeInsert, convert);
     return applyOnDom(htmlWithNinjas, (node) => {
       node.querySelectorAll('a').forEach(n => n.setAttribute('target', '_blank'));
       this.props.language.postProcess(node);

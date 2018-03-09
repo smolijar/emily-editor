@@ -1,11 +1,10 @@
 import _ from 'lodash';
 
 module.exports = (mode) => {
-  const fn = x => x;
   // Default required dud properties
   const defaultSet = {
-    toHtml: fn,
-    postProcess: fn,
+    convert: x => ({ html: x }),
+    postProcess: x => x,
     lineSafeInsert: (line, content) => `${line} ${content}`,
     renderJsxStyle: () => {},
     previewClassName: '',

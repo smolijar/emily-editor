@@ -1,7 +1,6 @@
 const React = require('react');
 const Asciidoctor = require('asciidoctor.js');
 const bootstrap = require('./boostrap');
-
 const asciidoctor = Asciidoctor();
 require('asciidoctor-html5s');
 
@@ -14,7 +13,10 @@ const options = {
   backend: 'html5s',
 };
 
-const toHtml = src => asciidoctor.convert(src, options);
+const toHtml = src => {
+  const doc = asciidoctor.load(src, options);
+  return doc.convert(src);
+}
 
 
 const asciidoc = {

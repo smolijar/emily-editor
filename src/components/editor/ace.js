@@ -10,15 +10,15 @@ export const setAceOptions = (ace, options) => {
 };
 
 
-export const initializeAce = (ace, editor, options) => {
+export const initializeAce = (ace, emily, options) => {
   ace.setTheme('ace/theme/tomorrow');
-  ace.getSession().setMode(`ace/mode/${editor.props.language.name}`);
+  ace.getSession().setMode(`ace/mode/${emily.props.language.name}`);
   ace.getSession().on('change', () => {
-    editor.handleChange(ace.getValue());
+    emily.handleChange(ace.getValue());
   });
-  ace.session.on('changeScrollTop', editor.handleEditorScroll);
-  ace.getSession().selection.on('changeCursor', editor.handleCursorActivity);
-  _.toPairs(getCommands(editor)).forEach(([name, command]) => {
+  ace.session.on('changeScrollTop', emily.handleEditorScroll);
+  ace.getSession().selection.on('changeCursor', emily.handleCursorActivity);
+  _.toPairs(getCommands(emily)).forEach(([name, command]) => {
     ace.commands.addCommand({
       name,
       bindKey: command.bindKey,

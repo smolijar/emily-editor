@@ -29,7 +29,8 @@ export const initializeAce = (aceEditor, emily, options) => {
 
   const refCompleter = {
     getCompletions(editor, session, pos, prefix, callback) {
-      callback(null, emily.state.references);
+      const pfx = session.getLine(pos.row).slice(0, pos.column);
+      pfx.match(/<<[a-zA-Z0-9_]*$/) && callback(null, emily.state.references);
     },
   };
   const langTools = ace.require('ace/ext/language_tools');

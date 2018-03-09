@@ -26,6 +26,18 @@ export const initializeAce = (aceEditor, emily, options) => {
     });
   });
   setAceOptions(aceEditor, options);
+
+  const refCompleter = {
+    getCompletions(editor, session, pos, prefix, callback) {
+      callback(null, emily.state.references);
+    },
+  };
+  const langTools = ace.require('ace/ext/language_tools');
+  langTools.setCompleters([refCompleter]);
+  aceEditor.setOptions({
+    enableBasicAutocompletion: true,
+    enableLiveAutocompletion: true,
+  });
   aceEditor.focus();
 };
 

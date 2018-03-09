@@ -10,23 +10,23 @@ export const setAceOptions = (ace, options) => {
 };
 
 
-export const initializeAce = (ace, emily, options) => {
-  ace.setTheme('ace/theme/tomorrow');
-  ace.getSession().setMode(`ace/mode/${emily.props.language.name}`);
-  ace.getSession().on('change', () => {
-    emily.handleChange(ace.getValue());
+export const initializeAce = (aceEditor, emily, options) => {
+  aceEditor.setTheme('ace/theme/tomorrow');
+  aceEditor.getSession().setMode(`ace/mode/${emily.props.language.name}`);
+  aceEditor.getSession().on('change', () => {
+    emily.handleChange(aceEditor.getValue());
   });
-  ace.session.on('changeScrollTop', emily.handleEditorScroll);
-  ace.getSession().selection.on('changeCursor', emily.handleCursorActivity);
+  aceEditor.session.on('changeScrollTop', emily.handleEditorScroll);
+  aceEditor.getSession().selection.on('changeCursor', emily.handleCursorActivity);
   _.toPairs(getCommands(emily)).forEach(([name, command]) => {
-    ace.commands.addCommand({
+    aceEditor.commands.addCommand({
       name,
       bindKey: command.bindKey,
       exec: command.execute,
     });
   });
-  setAceOptions(ace, options);
-  ace.focus();
+  setAceOptions(aceEditor, options);
+  aceEditor.focus();
 };
 
 export const getBlockSelection = ace => _.merge(ace.selection.getRange(), {

@@ -10,6 +10,24 @@ export const setAceOptions = (ace, options) => {
 };
 
 
+const addCompleters = (aceEditor, references) => {
+  const refCompleter = {
+    getCompletions(editor, session, pos, prefix, callback) {
+      const pfx = session.getLine(pos.row).slice(0, pos.column);
+      if (pfx.match(/<<[a-zA-Z0-9_]*$/)) {
+        callback(null, references());
+      }
+    },
+  };
+  /* global ace */
+  const langTools = ace.require('ace/ext/language_tools');
+  langTools.setCompleters([refCompleter]);
+  aceEditor.setOptions({
+    enableBasicAutocompletion: true,
+    enableLiveAutocompletion: true,
+  });
+};
+
 export const initializeAce = (aceEditor, emily, options) => {
   aceEditor.setTheme('ace/theme/tomorrow');
   aceEditor.getSession().setMode(`ace/mode/${emily.props.language.name}`);
@@ -26,19 +44,8 @@ export const initializeAce = (aceEditor, emily, options) => {
     });
   });
   setAceOptions(aceEditor, options);
+  addCompleters(aceEditor, () => emily.state.references);
 
-  const refCompleter = {
-    getCompletions(editor, session, pos, prefix, callback) {
-      const pfx = session.getLine(pos.row).slice(0, pos.column);
-      pfx.match(/<<[a-zA-Z0-9_]*$/) && callback(null, emily.state.references);
-    },
-  };
-  const langTools = ace.require('ace/ext/language_tools');
-  langTools.setCompleters([refCompleter]);
-  aceEditor.setOptions({
-    enableBasicAutocompletion: true,
-    enableLiveAutocompletion: true,
-  });
   aceEditor.focus();
 };
 

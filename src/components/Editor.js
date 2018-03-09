@@ -46,7 +46,7 @@ export default class EmilyEditor extends React.PureComponent {
       },
     };
 
-    const html = this.generateHtml(props.content);
+    const { html, references } = this.generateHtml(props.content);
     const raw = props.content;
     this.state = {
       raw,
@@ -58,6 +58,8 @@ export default class EmilyEditor extends React.PureComponent {
         preview: true,
         outline: true,
       },
+      // eslint-disable-next-line react/no-unused-state
+      references,
       aceOptions: defaultAceOptions,
       autosaved: null,
       loc: raw.split('\n').length,
@@ -136,11 +138,13 @@ export default class EmilyEditor extends React.PureComponent {
     this.scrollPreviewToLine(firstVisibleLine);
   }
   updateStateValue = (value) => {
-    const html = this.generateHtml(value);
+    const { html, references } = this.generateHtml(value);
     const raw = value;
     this.setState({
       raw,
       html,
+      // eslint-disable-next-line react/no-unused-state
+      references,
       loc: raw.split('\n').length,
       outline: generateOutline(html, raw, this.props.language.excludeNode),
     });
@@ -193,10 +197,12 @@ export default class EmilyEditor extends React.PureComponent {
   generateHtml = (raw) => {
     const { lineSafeInsert, convert } = this.props.language;
     const { html, references } = toHtmlWithNinjas(raw, lineSafeInsert, convert);
-    return applyOnDom(html, (node) => {
+    const processPrevewHtml = htmlSrc => applyOnDom(htmlSrc, (node) => {
       node.querySelectorAll('a').forEach(n => n.setAttribute('target', '_blank'));
       this.props.language.postProcess(node);
     });
+
+    return { html: processPrevewHtml(html), references };
   }
   handleCommand = (command) => {
     getCommands(this)[command].execute();

@@ -1,6 +1,7 @@
 const React = require('react');
 const Asciidoctor = require('asciidoctor.js');
 const bootstrap = require('./boostrap');
+
 const asciidoctor = Asciidoctor();
 require('asciidoctor-html5s');
 
@@ -15,7 +16,12 @@ const options = {
 
 const convert = (src) => {
   const doc = asciidoctor.load(src, options);
-  return { html: doc.convert(src) };
+  const references = doc.$references().$fetch('ids').$to_a().map(([key, caption]) => ({
+    value: `${key}, ${caption}`,
+    caption,
+    meta: 'reference',
+  }));
+  return { html: doc.convert(src), references };
 };
 
 

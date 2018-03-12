@@ -10,12 +10,13 @@ export const setAceOptions = (ace, options) => {
 };
 
 
-const addCompleters = (aceEditor, references) => {
+const addCompleters = (aceEditor, getReferences) => {
+  const references = getReferences();
   const refCompleter = {
     getCompletions(editor, session, pos, prefix, callback) {
       const pfx = session.getLine(pos.row).slice(0, pos.column);
-      if (pfx.match(/<<[a-zA-Z0-9_]*$/)) {
-        callback(null, references());
+      if (pfx.match(references.prefix)) {
+        callback(null, references.refs);
       }
     },
   };

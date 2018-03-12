@@ -14,13 +14,21 @@ const options = {
   backend: 'html5s',
 };
 
-const convert = (src) => {
-  const doc = asciidoctor.load(src, options);
-  const references = doc.$references().$fetch('ids').$to_a().map(([key, caption]) => ({
+const fetchReferences = adocDoc => adocDoc.$references().$fetch('ids').$to_a().map(([key, content]) => {
+  const caption = content.replace(/<[^>]*>?/g, '');
+  return {
     value: `${key}, ${caption}`,
     caption,
     meta: 'reference',
-  }));
+  };
+});
+
+const convert = (src) => {
+  const doc = asciidoctor.load(src, options);
+  const references = {
+    prefix: /<<[a-zA-Z0-9_]*$/,
+    refs: fetchReferences(doc),
+  };
   return { html: doc.convert(src), references };
 };
 

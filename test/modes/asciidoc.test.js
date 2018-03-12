@@ -1,4 +1,5 @@
 import asciidoc from '../../src/modes/asciidoc';
+import _ from 'lodash';
 
 describe('Asciidoc mode', () => {
   const documentFromSource = source => new DOMParser().parseFromString(asciidoc.convert(source).html, 'text/html').body;
@@ -32,6 +33,12 @@ describe('Asciidoc mode', () => {
       it('Ninjas match number of lines', () => {
         expect(withNinjas.match(new RegExp(ninja, 'g')).length).toBe(source.split('\n').filter(x => x !== '').length);
       });
+    });
+  });
+  describe('Autocomplete', () => {
+    const refs = asciidoc.convert(source).references;
+    it('Contains plain heading reference', () => {
+      expect(_.some(refs, { value: '_bar, bar', caption: 'bar', meta: 'reference' })).toBe(true);
     });
   });
 });

@@ -35,7 +35,7 @@ const convert = (src) => {
     prefix: /{[a-zA-Z0-9_]*$/,
     refs: fetchVariables(doc),
   };
-  return { html: doc.convert(src), references: [references, variables] };
+  return { html: doc.convert(src), suggestions: [references, variables] };
 };
 
 

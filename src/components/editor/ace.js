@@ -10,11 +10,11 @@ export const setAceOptions = (ace, options) => {
 };
 
 
-const addCompleters = (aceEditor, getReferences) => {
+const addCompleters = (aceEditor, getSuggegstions) => {
   const referenceCompleter = {
     getCompletions(editor, session, pos, prefix, callback) {
       const lineStart = session.getLine(pos.row).slice(0, pos.column);
-      getReferences().forEach((references) => {
+      getSuggegstions().forEach((references) => {
         if (lineStart.match(references.prefix)) {
           callback(null, references.refs);
         }
@@ -46,7 +46,7 @@ export const initializeAce = (aceEditor, emily, options) => {
     });
   });
   setAceOptions(aceEditor, options);
-  addCompleters(aceEditor, () => emily.state.references);
+  addCompleters(aceEditor, () => emily.state.suggestions);
 
   aceEditor.focus();
 };

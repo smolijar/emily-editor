@@ -11,20 +11,19 @@ export const setAceOptions = (ace, options) => {
 
 
 const addCompleters = (aceEditor, getReferences) => {
-  const completers = [{
+  const referenceCompleter = {
     getCompletions(editor, session, pos, prefix, callback) {
-      const refReferences = getReferences();
-      const pfx = session.getLine(pos.row).slice(0, pos.column);
-      refReferences.forEach(references => {
-        if (pfx.match(references.prefix)) {
+      const lineStart = session.getLine(pos.row).slice(0, pos.column);
+      getReferences().forEach(references => {
+        if (lineStart.match(references.prefix)) {
           callback(null, references.refs);
         }
       });
     },
-  }];
+  };
   /* global ace */
   const langTools = ace.require('ace/ext/language_tools');
-  langTools.setCompleters(completers);
+  langTools.setCompleters([referenceCompleter]);
   aceEditor.setOptions({
     enableBasicAutocompletion: true,
     enableLiveAutocompletion: true,

@@ -14,7 +14,7 @@ const addCompleters = (aceEditor, getReferences) => {
   const referenceCompleter = {
     getCompletions(editor, session, pos, prefix, callback) {
       const lineStart = session.getLine(pos.row).slice(0, pos.column);
-      getReferences().forEach(references => {
+      getReferences().forEach((references) => {
         if (lineStart.match(references.prefix)) {
           callback(null, references.refs);
         }

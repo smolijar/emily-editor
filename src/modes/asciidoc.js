@@ -23,7 +23,7 @@ const fetchReferences = adocDoc => adocDoc.$references().$fetch('ids').$to_a().m
   };
 });
 
-const fetchVariables = adocDoc => adocDoc.attributes_modified.$to_a().map(value => ({value, caption: value, meta: 'variable'}));
+const fetchVariables = adocDoc => adocDoc.attributes_modified.$to_a().map(value => ({ value, caption: value, meta: 'variable' }));
 
 const convert = (src) => {
   const doc = asciidoctor.load(src, options);

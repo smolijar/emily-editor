@@ -29,7 +29,7 @@ const convert = (src) => {
     prefix: /<<[a-zA-Z0-9_]*$/,
     refs: fetchReferences(doc),
   };
-  return { html: doc.convert(src), references };
+  return { html: doc.convert(src), references: [references] };
 };
 
 

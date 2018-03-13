@@ -15,12 +15,11 @@ const addCompleters = (aceEditor, getReferences) => {
     getCompletions(editor, session, pos, prefix, callback) {
       const refReferences = getReferences();
       const pfx = session.getLine(pos.row).slice(0, pos.column);
-      for (let i = 0; i < refReferences.length; ++i) {
-        const references = getReferences()[i];
+      refReferences.forEach(references => {
         if (pfx.match(references.prefix)) {
           callback(null, references.refs);
         }
-      }
+      });
     },
   }];
   /* global ace */

@@ -11,14 +11,18 @@ export const setAceOptions = (ace, options) => {
 
 
 const addCompleters = (aceEditor, getReferences) => {
-  const completers = getReferences().map(references => ({
+  const completers = [{
     getCompletions(editor, session, pos, prefix, callback) {
+      const refReferences = getReferences();
       const pfx = session.getLine(pos.row).slice(0, pos.column);
-      if (pfx.match(references.prefix)) {
-        callback(null, references.refs);
+      for (let i = 0; i < refReferences.length; ++i) {
+        const references = getReferences()[i];
+        if (pfx.match(references.prefix)) {
+          callback(null, references.refs);
+        }
       }
     },
-  }))
+  }];
   /* global ace */
   const langTools = ace.require('ace/ext/language_tools');
   langTools.setCompleters(completers);

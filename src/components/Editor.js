@@ -25,11 +25,18 @@ export default class EmilyEditor extends React.PureComponent {
       excludeNode: PropTypes.func.isRequired,
       previewClassName: PropTypes.string.isRequired,
     }).isRequired,
+    // eslint-disable-next-line react/no-unused-prop-types
+    listFiles: PropTypes.func,
     width: PropTypes.number,
     height: PropTypes.number,
   }
   static defaultProps = {
     content: '',
+    listFiles: (pfx) => {
+      const files = ['foo', 'bar', 'baz', 'quix'];
+      console.log([pfx, files]);
+      return ['foo', 'bar', 'baz', 'quix'];
+    },
     width: null,
     height: null,
   }

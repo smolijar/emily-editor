@@ -9,6 +9,7 @@ module.exports = (mode) => {
     renderJsxStyle: () => {},
     previewClassName: '',
     excludeNode: () => false,
+    getPathPrefix: () => null,
   };
 
   // Generate properties from symbols in _markdown_ style

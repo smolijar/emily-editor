@@ -10,7 +10,7 @@ export const setAceOptions = (ace, options) => {
 };
 
 
-const addCompleters = (aceEditor, getSuggegstions) => {
+const addCompleters = (aceEditor, getSuggegstions, listFiles, languageMode) => {
   const referenceCompleter = {
     getCompletions(editor, session, pos, prefix, callback) {
       const lineStart = session.getLine(pos.row).slice(0, pos.column);
@@ -21,9 +21,18 @@ const addCompleters = (aceEditor, getSuggegstions) => {
       });
     },
   };
+  const fileCompleter = {
+    getCompletions(editor, session, pos, prefix, callback) {
+      const lineStart = session.getLine(pos.row).slice(0, pos.column);
+      const pathPrefix = languageMode.getPathPrefix(lineStart);
+      if (pathPrefix !== null) {
+        callback(null, listFiles(pathPrefix).map(path => ({ value: path, caption: path, meta: 'file' })));
+      }
+    },
+  };
   /* global ace */
   const langTools = ace.require('ace/ext/language_tools');
-  langTools.setCompleters([referenceCompleter]);
+  langTools.setCompleters([referenceCompleter, fileCompleter]);
   aceEditor.setOptions({
     enableBasicAutocompletion: true,
     enableLiveAutocompletion: true,
@@ -46,7 +55,8 @@ export const initializeAce = (aceEditor, emily, options) => {
     });
   });
   setAceOptions(aceEditor, options);
-  addCompleters(aceEditor, () => emily.state.suggestions);
+  const { listFiles, language } = emily.props;
+  addCompleters(aceEditor, () => emily.state.suggestions, listFiles, language);
 
   aceEditor.focus();
 };

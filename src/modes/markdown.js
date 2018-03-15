@@ -33,7 +33,7 @@ const renderer = md.render.bind(md);
 
 const markdown = {
   name: 'markdown',
-  convert: (src) => ({ html: renderer(src) }),
+  convert: src => ({ html: renderer(src), suggestions: [] }),
   lineSafeInsert: (line, content) => {
     // If line does not contain words, it is
     // most likely not going to render into
@@ -65,6 +65,12 @@ const markdown = {
     ul: ' - ',
     ol: '1. ',
     quote: '> ',
+  },
+  getPathPrefix: (lineStart) => {
+    if (lineStart.match(/\[\S*\]\(\S*$/)) {
+      return lineStart.split('(').slice(-1)[0];
+    }
+    return null;
   },
   renderJsxStyle: () => (
     <style jsx global>{`

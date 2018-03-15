@@ -14,34 +14,37 @@ const options = {
   backend: 'html5s',
 };
 
-const fetchReferences = (adocDoc, transformValue = null) => {
-  return adocDoc.$references().$fetch('ids').$to_a().map(([key, content]) => {
-    const caption = content.replace(/<[^>]*>?/g, '');
-    return {
-      value: transformValue ? transformValue(key, caption) : key,
-      caption,
-      meta: 'reference',
-    };
-  });
-}
+const fetchReferences = (adocDoc, transformValue = null) => adocDoc.$references().$fetch('ids').$to_a().map(([key, content]) => {
+  const caption = content.replace(/<[^>]*>?/g, '');
+  return {
+    value: transformValue ? transformValue(key, caption) : key,
+    caption,
+    meta: 'reference',
+  };
+});
 
 const fetchVariables = adocDoc => adocDoc.attributes_modified.$to_a().map(value => ({ value, caption: value, meta: 'variable' }));
 
 const convert = (src, srcOriginal = null) => {
   const doc = asciidoctor.load(srcOriginal || src, options);
-  const referencesWithLabels = {
-    prefix: /<<[a-zA-Z0-9_]*$/,
-    refs: fetchReferences(doc, (key, caption) => `${key}, ${caption}`),
-  };
-  const referencesX = {
-    prefix: /xref:[a-zA-Z0-9_]*$/,
-    refs: fetchReferences(doc),
-  };
-  const variables = {
-    prefix: /{[a-zA-Z0-9_]*$/,
-    refs: fetchVariables(doc),
-  };
-  return { html: asciidoctor.convert(src, options), suggestions: [referencesWithLabels, referencesX, variables] };
+  const suggestions = [
+    {
+      // <<>> references
+      prefix: /<<[a-zA-Z0-9_]*$/,
+      refs: fetchReferences(doc, (key, caption) => `${key}, ${caption}`),
+    },
+    {
+      // xref references
+      prefix: /xref:[a-zA-Z0-9_]*$/,
+      refs: fetchReferences(doc),
+    },
+    {
+      // variables
+      prefix: /{[a-zA-Z0-9_]*$/,
+      refs: fetchVariables(doc),
+    },
+  ];
+  return { html: asciidoctor.convert(src, options), suggestions };
 };
 
 
@@ -79,6 +82,15 @@ const asciidoc = {
     ul: ' - ',
     ol: '. ',
     quote: '> ',
+  },
+  getPathPrefix: (lineStart) => {
+    if (lineStart.match(/(include|image|link)::\S*$/)) {
+      return lineStart.split('::').slice(-1)[0];
+    }
+    if (lineStart.match(/(link):\S*$/)) {
+      return lineStart.split(':').slice(-1)[0];
+    }
+    return null;
   },
   excludeNode: node => node.classList.contains('discrete'),
   renderJsxStyle: () => (

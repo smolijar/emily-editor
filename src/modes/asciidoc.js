@@ -25,8 +25,8 @@ const fetchReferences = adocDoc => adocDoc.$references().$fetch('ids').$to_a().m
 
 const fetchVariables = adocDoc => adocDoc.attributes_modified.$to_a().map(value => ({ value, caption: value, meta: 'variable' }));
 
-const convert = (src) => {
-  const doc = asciidoctor.load(src, options);
+const convert = (src, srcOriginal = null) => {
+  const doc = asciidoctor.load(srcOriginal || src, options);
   const references = {
     prefix: /<<[a-zA-Z0-9_]*$/,
     refs: fetchReferences(doc),

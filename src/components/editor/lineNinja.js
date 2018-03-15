@@ -18,7 +18,7 @@ export const addNinjas = (src, insert) => src
 
 
 export const toHtmlWithNinjas = (src, insert, convert) => {
-  const converted = convert(addNinjas(src, insert));
+  const converted = convert(addNinjas(src, insert), src);
   return { ...converted, html: ninjasToHtml(converted.html) };
 };
 

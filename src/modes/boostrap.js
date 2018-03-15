@@ -3,7 +3,7 @@ import _ from 'lodash';
 module.exports = (mode) => {
   // Default required dud properties
   const defaultSet = {
-    convert: x => ({ html: x }),
+    convert: (src, srcOriginal) => ({ html: src, input: { src, srcOriginal } }),
     postProcess: x => x,
     lineSafeInsert: (line, content) => `${line} ${content}`,
     renderJsxStyle: () => {},

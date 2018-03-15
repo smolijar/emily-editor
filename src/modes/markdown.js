@@ -33,7 +33,7 @@ const renderer = md.render.bind(md);
 
 const markdown = {
   name: 'markdown',
-  convert: html => ({ html: renderer(html) }),
+  convert: (src, srcOriginal) => ({ html: renderer(src) }),
   lineSafeInsert: (line, content) => {
     // If line does not contain words, it is
     // most likely not going to render into

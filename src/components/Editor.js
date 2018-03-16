@@ -35,7 +35,7 @@ export default class EmilyEditor extends React.PureComponent {
     listFiles: (pfx) => {
       const files = ['foo', 'bar', 'baz', 'quix'];
       console.log([pfx, files]);
-      return ['foo', 'bar', 'baz', 'quix'];
+      return Promise.resolve(files);
     },
     width: null,
     height: null,

@@ -13,7 +13,9 @@ const getFileCompletions = (listFiles, languageMode) =>
     const lineStart = session.getLine(pos.row).slice(0, pos.column);
     const pathPrefix = languageMode.getPathPrefix(lineStart);
     if (pathPrefix !== null) {
-      callback(null, listFiles(pathPrefix).map(path => ({ value: path, caption: path, meta: 'file' })));
+      listFiles(pathPrefix)
+        .then(files => files.map(path => ({ value: path, caption: path, meta: 'file' })))
+        .then(suggestions => callback(null, suggestions));
     }
   };
 

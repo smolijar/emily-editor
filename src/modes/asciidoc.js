@@ -14,12 +14,43 @@ const options = {
   backend: 'html5s',
 };
 
-const toHtml = src => asciidoctor.convert(src, options);
+const fetchReferences = (adocDoc, transformValue = null) => adocDoc.$references().$fetch('ids').$to_a().map(([key, content]) => {
+  const caption = content.replace(/<[^>]*>?/g, '');
+  return {
+    value: transformValue ? transformValue(key, caption) : key,
+    caption,
+    meta: 'reference',
+  };
+});
+
+const fetchVariables = adocDoc => adocDoc.attributes_modified.$to_a().map(value => ({ value, caption: value, meta: 'variable' }));
+
+const convert = (src, srcOriginal = null) => {
+  const doc = asciidoctor.load(srcOriginal || src, options);
+  const suggestions = [
+    {
+      // <<>> references
+      prefix: /<<[a-zA-Z0-9_]*$/,
+      refs: fetchReferences(doc, (key, caption) => `${key}, ${caption}`),
+    },
+    {
+      // xref references
+      prefix: /xref:[a-zA-Z0-9_]*$/,
+      refs: fetchReferences(doc),
+    },
+    {
+      // variables
+      prefix: /{[a-zA-Z0-9_]*$/,
+      refs: fetchVariables(doc),
+    },
+  ];
+  return { html: asciidoctor.convert(src, options), suggestions };
+};
 
 
 const asciidoc = {
   name: 'asciidoc',
-  toHtml,
+  convert,
   postProcess: (domNode) => {
     domNode.querySelectorAll('.toc strong').forEach(e => e.parentNode.removeChild(e));
     return domNode;
@@ -51,6 +82,15 @@ const asciidoc = {
     ul: ' - ',
     ol: '. ',
     quote: '> ',
+  },
+  getPathPrefix: (lineStart) => {
+    if (lineStart.match(/(include|image|link)::\S*$/)) {
+      return lineStart.split('::').slice(-1)[0];
+    }
+    if (lineStart.match(/(link):\S*$/)) {
+      return lineStart.split(':').slice(-1)[0];
+    }
+    return null;
   },
   excludeNode: node => node.classList.contains('discrete'),
   renderJsxStyle: () => (

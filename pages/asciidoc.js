@@ -37,6 +37,7 @@ export default class extends React.Component {
           <Editor
             content={this.props.adocExample}
             language={asciidoc}
+            listFiles={() => Promise.resolve(['foo', 'bar', 'baz', 'quix'])}
           />
         </div>
       </Layout>

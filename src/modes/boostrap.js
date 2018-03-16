@@ -1,15 +1,15 @@
 import _ from 'lodash';
 
 module.exports = (mode) => {
-  const fn = x => x;
   // Default required dud properties
   const defaultSet = {
-    toHtml: fn,
-    postProcess: fn,
+    convert: (src, srcOriginal) => ({ html: src, input: { src, srcOriginal } }),
+    postProcess: x => x,
     lineSafeInsert: (line, content) => `${line} ${content}`,
     renderJsxStyle: () => {},
     previewClassName: '',
     excludeNode: () => false,
+    getPathPrefix: () => null,
   };
 
   // Generate properties from symbols in _markdown_ style

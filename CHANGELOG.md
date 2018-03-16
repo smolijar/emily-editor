@@ -12,11 +12,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - jsdom
 - Autosave tests
 - Mode specific header filtering
+- Reference autocomplete
+- Attribute/variable autocomplete
+- File listing suggestions
 
 ### Changed
 - Use asciidoctor-html5s instead of default backend
 - Regex not used for working with headers, line-ninja and html render used insetead.
 - applyOnDom now uses jsdom and is isomorphic
+- `toHtml` replaced by `convert`, which might produce additional document information (suggestions for now)
 
 ### Removed
 - Language prop defaults (due to mode bootstrap)
@@ -32,6 +36,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - #28 (Localstorage cleanup)
 - Mismatch server/client in dangerous html due to client only modifications
 - Asciidoc _discrete_ headings are hidden from outline
+- #90 (Autocomplete for document elements)
+- #91 (Autocomplete available files)
 
 ## [0.6.0] - 2018-03-02
 ### Added

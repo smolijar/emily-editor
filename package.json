@@ -18,9 +18,9 @@
   "license": "ISC",
   "scripts": {
     "dev": "node index.js",
-    "prestart": "next build",
+    "prestart": "next build --max_old_space_size=460",
     "start": "NODE_ENV=production node index.js",
-    "build": "next build",
+    "build": "next build --max_old_space_size=460",
     "lint": "./node_modules/eslint/bin/eslint.js .",
     "test": "./node_modules/jest/bin/jest.js",
     "test:watch": "./node_modules/jest/bin/jest.js --watch",

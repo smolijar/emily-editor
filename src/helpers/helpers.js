@@ -1,24 +1,25 @@
 import React from 'react';
-import { JSDOM } from 'jsdom';
+import cheerio from 'cheerio';
 import { ninjaSelector } from '../../src/components/editor/lineNinja';
 
-export const getDocument = html => new JSDOM(html).window.document;
+export const getCheerio = html => cheerio.load(html);
 
 export const indexOfLine = (str, ln) => str.split('\n').slice(0, ln).join('\n').length;
 
 export const findHeadersFromNinjaHtml = (htmlWithNinjas, raw, excludeNode) => {
-  const document = getDocument(htmlWithNinjas);
+  const $ = getCheerio(htmlWithNinjas);
   const selector = [...Array(6).keys()].map(n => `h${n + 1}>${ninjaSelector}`).join(',');
-  const nodes = [...document.querySelectorAll(selector)]
-    .filter(ninja => !excludeNode(ninja.parentNode))
-    .map((ninja, index) => {
-      const heading = ninja.parentNode;
-      heading.removeChild(ninja);
-      const ln = Number(ninja.dataset.line);
+  const nodes = $(selector).toArray()
+    .map(ninja => $(ninja))
+    .filter($ninja => !excludeNode($ninja.parent()))
+    .map(($ninja, index) => {
+      const ln = Number($ninja.data('line'));
+      const $heading = $ninja.parent();
+      $ninja.remove();
       return {
-        level: Number(heading.tagName.slice(1)),
-        content: heading.textContent,
-        html: heading.innerHTML,
+        level: Number($heading.get(0).name.slice(1)),
+        content: $heading.text(),
+        html: $heading.html(),
         ln,
         pos: indexOfLine(raw, ln - 1),
         index,
@@ -152,8 +153,8 @@ export const formatShortcut = ({ win, mac }, plaintext = false) => {
   return binding.map(key => <kbd key={key}>{key}</kbd>).reduce((acc, v) => [acc, ' + ', v]);
 };
 
-export const applyOnDom = (htmlString, fn) => {
-  const document = getDocument(htmlString);
-  fn(document);
-  return document.body.innerHTML;
+export const applyOnCheerio = (htmlString, fn) => {
+  const $ = getCheerio(htmlString);
+  fn($);
+  return $.html();
 };

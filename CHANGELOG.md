@@ -15,15 +15,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Reference autocomplete
 - Attribute/variable autocomplete
 - File listing suggestions
+- Cheerio
 
 ### Changed
 - Use asciidoctor-html5s instead of default backend
 - Regex not used for working with headers, line-ninja and html render used insetead.
 - applyOnDom now uses jsdom and is isomorphic
 - `toHtml` replaced by `convert`, which might produce additional document information (suggestions for now)
+- All dom parsing done through ugly ass cheerio instead of heavy jsdom with elegant interface
 
 ### Removed
 - Language prop defaults (due to mode bootstrap)
+- jsdom
 
 ### Fixed
 - #73 (Fix console errors)

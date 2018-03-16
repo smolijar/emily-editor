@@ -32,7 +32,7 @@ export default class EmilyEditor extends React.PureComponent {
   }
   static defaultProps = {
     content: '',
-    listFiles: (_) => Promise.resolve([]),
+    listFiles: () => Promise.resolve([]),
     width: null,
     height: null,
   }

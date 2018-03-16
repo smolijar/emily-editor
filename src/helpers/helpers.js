@@ -161,3 +161,9 @@ export const applyOnDom = (htmlString, fn) => {
   fn(document);
   return document.body.innerHTML;
 };
+
+export const applyOnCheerio = (htmlString, fn) => {
+  const $ = getCheerio(htmlString);
+  fn($);
+  return $.html();
+};

@@ -51,9 +51,9 @@ const convert = (src, srcOriginal = null) => {
 const asciidoc = {
   name: 'asciidoc',
   convert,
-  postProcess: (domNode) => {
-    domNode.querySelectorAll('.toc strong').forEach(e => e.parentNode.removeChild(e));
-    return domNode;
+  postProcess: ($) => {
+    $('.toc strong').toArray().forEach(el => $(el).remove());
+    return $;
   },
   lineSafeInsert: (line, content) => {
     // If line does not contain words, it is

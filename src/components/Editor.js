@@ -7,7 +7,7 @@ import StatusBar from './StatusBar';
 import { toHtmlWithNinjas } from './editor/lineNinja';
 import { autosaveStore, autosaveRetrieve } from './editor/autosave';
 import getCommands from './editor/commands';
-import { findNextSibling, findRelativeOffset, moveSubstring, generateOutline, applyOnDom } from '../helpers/helpers';
+import { findNextSibling, findRelativeOffset, moveSubstring, generateOutline, applyOnCheerio } from '../helpers/helpers';
 import { initializeAce } from './editor/ace';
 
 const STOPPED_TYPING_TIMEOUT = 300;
@@ -200,9 +200,9 @@ export default class EmilyEditor extends React.PureComponent {
   generateHtml = (raw) => {
     const { lineSafeInsert, convert } = this.props.language;
     const { html, suggestions } = toHtmlWithNinjas(raw, lineSafeInsert, convert);
-    const processPrevewHtml = htmlSrc => applyOnDom(htmlSrc, (node) => {
-      node.querySelectorAll('a').forEach(n => n.setAttribute('target', '_blank'));
-      this.props.language.postProcess(node);
+    const processPrevewHtml = htmlSrc => applyOnCheerio(htmlSrc, ($) => {
+      $('a').toArray().forEach(el => $(el).attr('target', '_blank'))
+      this.props.language.postProcess($);
     });
 
     return { html: processPrevewHtml(html), suggestions };

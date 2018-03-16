@@ -201,7 +201,7 @@ export default class EmilyEditor extends React.PureComponent {
     const { lineSafeInsert, convert } = this.props.language;
     const { html, suggestions } = toHtmlWithNinjas(raw, lineSafeInsert, convert);
     const processPrevewHtml = htmlSrc => applyOnCheerio(htmlSrc, ($) => {
-      $('a').toArray().forEach(el => $(el).attr('target', '_blank'))
+      $('a').toArray().forEach(el => $(el).attr('target', '_blank'));
       this.props.language.postProcess($);
     });
 

@@ -1,9 +1,6 @@
 import React from 'react';
-import { JSDOM } from 'jsdom';
 import cheerio from 'cheerio';
 import { ninjaSelector } from '../../src/components/editor/lineNinja';
-
-export const getDocument = html => new JSDOM(html).window.document;
 
 export const getCheerio = html => cheerio.load(html);
 
@@ -154,12 +151,6 @@ export const formatShortcut = ({ win, mac }, plaintext = false) => {
     return binding.join(' + ');
   }
   return binding.map(key => <kbd key={key}>{key}</kbd>).reduce((acc, v) => [acc, ' + ', v]);
-};
-
-export const applyOnDom = (htmlString, fn) => {
-  const document = getDocument(htmlString);
-  fn(document);
-  return document.body.innerHTML;
 };
 
 export const applyOnCheerio = (htmlString, fn) => {

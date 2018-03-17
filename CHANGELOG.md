@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Attribute/variable autocomplete
 - File listing suggestions
 - Cheerio
+- Travis npm release
 
 ### Changed
 - Use asciidoctor-html5s instead of default backend

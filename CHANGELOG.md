@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [0.7.0] - 2018-03-17
 ### Added
 - Add mode bootstrapper
 - Symbol based language generation
@@ -257,7 +259,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Live html rendered preview column
 - CodeMirror editor
 
-[Unreleased]: https://github.com/grissius/markup-editor/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/grissius/markup-editor/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/grissius/markup-editor/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/grissius/markup-editor/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/grissius/markup-editor/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/grissius/markup-editor/compare/v0.3.1...v0.4.0

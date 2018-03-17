@@ -1,10 +1,17 @@
 language: node_js
 node_js:
-  - "6"
-  - "7"
-
+- '6'
+- '7'
 script:
-  - npm run lint
-  - npm run build
-  - npm run test:coverage
-  - npm run test:ceveralls
+- npm run lint
+- npm run build
+- npm run test:coverage
+- npm run test:ceveralls
+deploy:
+  provider: npm
+  email: grissius@gmail.com
+  api_key:
+    secure: jNUUm6VGOXqnMVOzmhmINwqS8rwnMUth7gI9bb6a9ULoz/fzpGBAIBeKv6afL8+alkZv1bPFGbq0HOqQH4mQgJLy1YLm7sahl8avirrUhe+2c0/v8DXKfhOScqezWsCHJOHTvOvieT4OFflezRg4Kmf+RssfJvb8cNhjN9Bol8C/KLXQZUIf3OJRx73Y0LBIsyNke7dytgfD99J2bdUYhYeFTP+FHMRIOLjXj9NInQfQsWqWHVI3I8HPa2LJ6EULBS5nxJavY3U3sGkShzZ/5EjvbmhfhfYietgoIe2oSzA8ufEFg75o2H2xUhu8+5q29z6wxZZ3p/xYmfBdAyNLYZmfdbrSVsP7cKSKSuFDTwBZ65hNRkZUPSz6KHqffvMg+qPCg1IQsf6zzNE+EH2Q4TeeqzncDmzlZYd9ZVwUMngACkLvxY7GMJKRLGBuPfRq9nC3InxhxTEoKB7iwyJJr65oycjnu/Sf7YcxWEerH5r1n9hwY05vTFD/Vv6gcn2nMYu29IGd7GdRMVAJLKq4Tf22lULHKuZN2+T48rXOhnrO7E/VJCqZRIF5xdjqARaAjnWSoGi5wX6TTHrvMjTO1KOGH3B4BZpn3swG5WDCG2VkDNz7GNv3yFT3pSFFg7BcSS44MFSVCXA2Lb3j6kNKgIIaLhsLea1+M+1r3dBOmp4=
+  on:
+    tags: true
+    repo: grissius/emily-editor

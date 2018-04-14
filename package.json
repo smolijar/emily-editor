@@ -17,9 +17,9 @@
   "author": "Jaroslav Šmolík <grissius@gmail.com>",
   "license": "ISC",
   "scripts": {
-    "dev": "node index.js",
+    "dev": "node demo.js",
     "prestart": "next build",
-    "start": "NODE_ENV=production node index.js",
+    "start": "NODE_ENV=production node demo.js",
     "build": "next build",
     "lint": "./node_modules/eslint/bin/eslint.js .",
     "test": "./node_modules/jest/bin/jest.js",

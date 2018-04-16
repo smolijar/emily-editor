@@ -1,6 +1,6 @@
 import React from 'react';
 import cheerio from 'cheerio';
-import { ninjaSelector } from '../../src/components/editor/lineNinja';
+import { ninjaSelector } from '../components/editor/lineNinja';
 
 export const getCheerio = html => cheerio.load(html);
 

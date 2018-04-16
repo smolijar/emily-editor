@@ -1,6 +1,6 @@
 {
   "name": "emily-editor",
-  "version": "0.7.5",
+  "version": "0.7.6",
   "description": "React editor component for LMLs, like Markdown or Asciidoc. The focus of the project is to provide fluent efficient interface for advanced users, who are familliar with using IDE or coding text editors.",
   "keywords": [
     "editor",
@@ -71,7 +71,7 @@
     "twemoji": "^2.5.0",
     "typo-js": "^1.0.3",
     "webpack": "^4.0.1",
-    "babel-cli": "^6.26.0"    
+    "babel-cli": "^6.26.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

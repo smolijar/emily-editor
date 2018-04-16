@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.7.3] - 2018-04-16
+### Fixed
+- Eslint not finding dist folder
+
 ## [0.7.2] - 2018-04-16
 ### Fixed
 - Transpiled before publish
@@ -268,7 +272,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Live html rendered preview column
 - CodeMirror editor
 
-[Unreleased]: https://github.com/grissius/markup-editor/compare/v0.7.2...HEAD
+[Unreleased]: https://github.com/grissius/markup-editor/compare/v0.7.3...HEAD
+[0.7.3]: https://github.com/grissius/markup-editor/compare/v0.7.2...v0.7.3
 [0.7.2]: https://github.com/grissius/markup-editor/compare/v0.7.1...v0.7.2
 [0.7.1]: https://github.com/grissius/markup-editor/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/grissius/markup-editor/compare/v0.6.0...v0.7.0

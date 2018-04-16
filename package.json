@@ -21,6 +21,7 @@
     "prestart": "next build",
     "start": "NODE_ENV=production node demo.js",
     "build": "next build",
+    "prepublishonly": "babel src --out-dir dist",
     "lint": "./node_modules/eslint/bin/eslint.js .",
     "test": "./node_modules/jest/bin/jest.js",
     "test:watch": "./node_modules/jest/bin/jest.js --watch",
@@ -72,10 +73,14 @@
     "webpack": "^4.0.1"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.1",
     "babel-jest": "^22.4.1",
     "babel-loader": "^7.1.2",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "chai": "^4.1.2",

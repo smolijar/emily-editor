@@ -1,6 +1,6 @@
 {
   "name": "emily-editor",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "description": "React editor component for LMLs, like Markdown or Asciidoc. The focus of the project is to provide fluent efficient interface for advanced users, who are familliar with using IDE or coding text editors.",
   "keywords": [
     "editor",
@@ -21,7 +21,7 @@
     "prestart": "next build",
     "start": "NODE_ENV=production node demo.js",
     "build": "next build",
-    "prepublishonly": "babel src --out-dir dist",
+    "prepublish": "babel src --out-dir dist",
     "lint": "./node_modules/eslint/bin/eslint.js .",
     "test": "./node_modules/jest/bin/jest.js",
     "test:watch": "./node_modules/jest/bin/jest.js --watch",

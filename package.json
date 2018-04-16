@@ -21,7 +21,7 @@
     "prestart": "next build",
     "start": "NODE_ENV=production node demo.js",
     "build": "next build",
-    "prepublish": "babel src --out-dir dist",
+    "prepare": "./node_modules/babel-cli/bin/babel.js src --out-dir dist",
     "lint": "./node_modules/eslint/bin/eslint.js .",
     "test": "./node_modules/jest/bin/jest.js",
     "test:watch": "./node_modules/jest/bin/jest.js --watch",

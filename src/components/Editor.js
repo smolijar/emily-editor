@@ -9,6 +9,7 @@ import { autosaveStore, autosaveRetrieve } from './editor/autosave';
 import getCommands from './editor/commands';
 import { findNextSibling, findRelativeOffset, moveSubstring, generateOutline, applyOnCheerio } from '../helpers/helpers';
 import { initializeAce } from './editor/ace';
+import generateMode from '../modes/generateMode';
 
 const STOPPED_TYPING_TIMEOUT = 300;
 const STOPPED_CURSOR_ACTIVITY_TIMEOUT = 300;
@@ -24,7 +25,9 @@ export default class EmilyEditor extends React.PureComponent {
       renderJsxStyle: PropTypes.func.isRequired,
       excludeNode: PropTypes.func.isRequired,
       previewClassName: PropTypes.string.isRequired,
-    }).isRequired,
+      isLml: PropTypes.bool.isRequired,
+    }),
+    aceBase: PropTypes.string,
     // eslint-disable-next-line react/no-unused-prop-types
     listFiles: PropTypes.func,
     width: PropTypes.number,
@@ -33,6 +36,8 @@ export default class EmilyEditor extends React.PureComponent {
   static defaultProps = {
     content: '',
     listFiles: () => Promise.resolve([]),
+    language: generateMode('text'),
+    aceBase: 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.3/',
     width: null,
     height: null,
   }
@@ -51,6 +56,7 @@ export default class EmilyEditor extends React.PureComponent {
 
     const { html, suggestions } = this.generateHtml(props.content);
     const raw = props.content;
+    const { isLml } = this.props.language;
     this.state = {
       raw,
       html,
@@ -58,8 +64,8 @@ export default class EmilyEditor extends React.PureComponent {
       proportionalSizes: true,
       columns: {
         editor: true,
-        preview: true,
-        outline: true,
+        preview: isLml,
+        outline: isLml,
       },
       // eslint-disable-next-line react/no-unused-state
       suggestions,
@@ -77,6 +83,7 @@ export default class EmilyEditor extends React.PureComponent {
     if (typeof ace !== 'undefined' && ace) {
       /* global ace */
       this.ace = ace.edit(this.textarea);
+      ace.config.set('basePath', this.props.aceBase);
       initializeAce(this.ace, this, this.state.aceOptions);
     } else if (process.env.NODE_ENV !== 'test') {
       console.error('Ace is not defined. Forgot to include script?');
@@ -380,7 +387,6 @@ export default class EmilyEditor extends React.PureComponent {
             line={this.state.cursorLine}
             autosaved={this.state.autosaved}
             commandPaletteCommand={getCommands(this).commandPalette}
-            mode={this.props.language.name}
           />
         </div>
         <style jsx global>{`

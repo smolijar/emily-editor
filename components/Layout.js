@@ -32,6 +32,9 @@ class Layout extends React.PureComponent {
         <Link href="/embedding">
           <button>Embed</button>
         </Link>
+        <Link href="/bare">
+          <button>Bare mode</button>
+        </Link>
         {this.props.children}
       </div>
     );

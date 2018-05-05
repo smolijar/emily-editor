@@ -10,9 +10,18 @@ export const setAceOptions = (ace, options) => {
   });
 };
 
+const getModeForPathOrName = input => {
+  const modelist = ace.require("ace/ext/modelist");
+  const mode = modelist.modesByName[input];
+  if (mode) {
+    return mode.mode;
+  }
+  return modelist.getModeForPath(input).mode;
+}
+
 export const initializeAce = (aceEditor, emily, options) => {
   aceEditor.setTheme('ace/theme/tomorrow');
-  aceEditor.getSession().setMode(`ace/mode/${emily.props.language.name}`);
+  aceEditor.getSession().setMode(getModeForPathOrName(emily.props.language.name));
   aceEditor.getSession().on('change', () => {
     emily.handleChange(aceEditor.getValue());
   });

@@ -10,6 +10,7 @@ module.exports = (mode) => {
     previewClassName: '',
     excludeNode: () => false,
     getPathPrefix: () => null,
+    isLml: true,
   };
 
   // Generate properties from symbols in _markdown_ style

@@ -24,6 +24,20 @@ export default () => (
           language={generateMode('javascript')}
         />
       </div>
+      <h1>Custom mode (foo.sh)</h1>
+      <div style={style}>
+        <Editor
+          content="cat $HOME/foo.txt | cowsay"
+          language={generateMode('foo.sh')}
+        />
+      </div>
+      <h1>Automode (text.md)</h1>
+      <div style={style}>
+        <Editor
+          content={'# Foo \n\n `hello`'}
+          language={generateMode('text.md')}
+        />
+      </div>
     </div>
   </Layout>
 );

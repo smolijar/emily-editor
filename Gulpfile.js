@@ -13,6 +13,7 @@ gulp.task('css', () => gulp.src([
 gulp.task('js', () => gulp.src([
   './node_modules/ace-builds/src-min/ace.js',
   './node_modules/ace-builds/src-min/ext-language_tools.js',
+  './node_modules/ace-builds/src-min/ext-modelist.js',
   './node_modules/ace-builds/src-min/mode-asciidoc.js',
   './node_modules/ace-builds/src-min/mode-markdown.js',
   './node_modules/ace-builds/src-min/theme-tomorrow.js',

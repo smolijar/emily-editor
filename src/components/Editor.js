@@ -27,8 +27,8 @@ export default class EmilyEditor extends React.PureComponent {
       previewClassName: PropTypes.string.isRequired,
       isLml: PropTypes.bool.isRequired,
     }),
-    // eslint-disable-next-line react/no-unused-prop-types
     aceBase: PropTypes.string,
+    // eslint-disable-next-line react/no-unused-prop-types
     listFiles: PropTypes.func,
     width: PropTypes.number,
     height: PropTypes.number,
@@ -387,7 +387,6 @@ export default class EmilyEditor extends React.PureComponent {
             line={this.state.cursorLine}
             autosaved={this.state.autosaved}
             commandPaletteCommand={getCommands(this).commandPalette}
-            mode={this.props.language.name}
           />
         </div>
         <style jsx global>{`

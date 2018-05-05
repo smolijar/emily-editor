@@ -92,7 +92,7 @@ const asciidoc = {
     }
     return null;
   },
-  excludeNode: $node => $node.hasClass('discrete'),
+  excludeOutlineItem: $node => $node.hasClass('discrete'),
   renderJsxStyle: () => (
     <style jsx global>{`
       .markdown-body {

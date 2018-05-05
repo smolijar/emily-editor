@@ -6,12 +6,12 @@ export const getCheerio = html => cheerio.load(html);
 
 export const indexOfLine = (str, ln) => str.split('\n').slice(0, ln).join('\n').length;
 
-export const findHeadersFromNinjaHtml = (htmlWithNinjas, raw, excludeNode) => {
+export const findHeadersFromNinjaHtml = (htmlWithNinjas, raw, excludeOutlineItem) => {
   const $ = getCheerio(htmlWithNinjas);
   const selector = [...Array(6).keys()].map(n => `h${n + 1}>${ninjaSelector}`).join(',');
   const nodes = $(selector).toArray()
     .map(ninja => $(ninja))
-    .filter($ninja => !excludeNode($ninja.parent()))
+    .filter($ninja => !excludeOutlineItem($ninja.parent()))
     .map(($ninja, index) => {
       const ln = Number($ninja.data('line'));
       const $heading = $ninja.parent();
@@ -78,8 +78,8 @@ export const moveSubstring = (string, cutStartIndex, cutEndIndex, _pasteIndex) =
   ].join('');
 };
 
-export const generateOutline = (htmlWithNinjas, source, excludeNode = () => false) => {
-  const headers = findHeadersFromNinjaHtml(htmlWithNinjas, source, excludeNode)
+export const generateOutline = (htmlWithNinjas, source, excludeOutlineItem = () => false) => {
+  const headers = findHeadersFromNinjaHtml(htmlWithNinjas, source, excludeOutlineItem)
     .map(heading => ({
       ...heading,
       children: [],

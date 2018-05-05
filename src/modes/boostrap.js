@@ -8,7 +8,7 @@ module.exports = (mode) => {
     lineSafeInsert: (line, content) => `${line} ${content}`,
     renderJsxStyle: () => {},
     previewClassName: '',
-    excludeNode: () => false,
+    excludeOutlineItem: () => false,
     getPathPrefix: () => null,
     isLml: true,
   };

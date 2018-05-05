@@ -23,7 +23,7 @@ export default class EmilyEditor extends React.PureComponent {
       lineSafeInsert: PropTypes.func.isRequired,
       postProcess: PropTypes.func.isRequired,
       renderJsxStyle: PropTypes.func.isRequired,
-      excludeNode: PropTypes.func.isRequired,
+      excludeOutlineItem: PropTypes.func.isRequired,
       previewClassName: PropTypes.string.isRequired,
       isLml: PropTypes.bool.isRequired,
     }),
@@ -60,7 +60,7 @@ export default class EmilyEditor extends React.PureComponent {
     this.state = {
       raw,
       html,
-      outline: generateOutline(html, raw, this.props.language.excludeNode),
+      outline: generateOutline(html, raw, this.props.language.excludeOutlineItem),
       proportionalSizes: true,
       columns: {
         editor: true,
@@ -156,7 +156,7 @@ export default class EmilyEditor extends React.PureComponent {
       // eslint-disable-next-line react/no-unused-state
       suggestions,
       loc: raw.split('\n').length,
-      outline: generateOutline(html, raw, this.props.language.excludeNode),
+      outline: generateOutline(html, raw, this.props.language.excludeOutlineItem),
     });
   }
   handleChange = (value) => {

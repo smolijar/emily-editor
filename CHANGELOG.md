@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- Default text mode
+- Mode inference from name/file extension
+
+### Changed
+- Rename excludeNode mode function
+- Readme from adoc to md
+
 
 ## [0.8.0] - 2018-05-05
 ### Added

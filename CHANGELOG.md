@@ -5,16 +5,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- Gulp
+
+### Changed
+- Browser resources are bundled and one CSS and one JS is required
+
+### Fixed
+- Dist folder is created before deployed, not after install
 
 ## [0.7.7] - 2018-04-16
 ### Fixed
 - Generate dist in postinstall
-
-## [0.7.6] - 2018-04-16
-
-## [0.7.5] - 2018-04-16
-
-## [0.7.4] - 2018-04-16
 
 ## [0.7.3] - 2018-04-16
 ### Fixed

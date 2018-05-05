@@ -1,6 +1,6 @@
 {
   "name": "emily-editor",
-  "version": "0.7.7",
+  "version": "0.8.0",
   "description": "React editor component for LMLs, like Markdown or Asciidoc. The focus of the project is to provide fluent efficient interface for advanced users, who are familliar with using IDE or coding text editors.",
   "keywords": [
     "editor",

@@ -49,6 +49,8 @@ ReactDOM.render(
 );
 ```
 
+For examples, see [pages](./pages)
+
 ## Props
 
 ### `content`
@@ -151,3 +153,8 @@ Take a look at [asciidoc mode](./src/modes/asciidoc.js) example.
 # Online demo
 
 https://emily-editor.herokuapp.com/
+
+
+# License
+
+Emily editor is licenced under the [BSD License](./LICENSE).

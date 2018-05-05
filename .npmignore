@@ -1,0 +1,15 @@
+/node_modules/
+/.next/
+/coverage/
+/src/
+/pages/
+/components/
+/static/
+/test/
+.babelrc
+.eslintignore
+.eslintrc
+.travis.yml
+demo.js
+Gulpfile.js
+next.config.js

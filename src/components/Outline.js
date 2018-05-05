@@ -28,18 +28,28 @@ export default class Outline extends React.PureComponent {
       },
     });
   }
+  renderItems = () => {
+    if (this.props.outline.length === 0) {
+      return (
+        <em>Outline not available.</em>
+      );
+    }
+    return (
+      <SortableList
+        items={this.props.outline}
+        onSortEnd={indicies => this.props.onOrderChange(null, indicies)}
+        onOrderChange={this.props.onOrderChange}
+        onItemClick={this.props.onItemClick}
+        hidden={this.state.hidden}
+        onSectionToggle={this.onSectionToggle}
+        useDragHandle
+      />
+    );
+  }
   render() {
     return (
       <div className="root">
-        <SortableList
-          items={this.props.outline}
-          onSortEnd={indicies => this.props.onOrderChange(null, indicies)}
-          onOrderChange={this.props.onOrderChange}
-          onItemClick={this.props.onItemClick}
-          hidden={this.state.hidden}
-          onSectionToggle={this.onSectionToggle}
-          useDragHandle
-        />
+        {this.renderItems()}
         <style jsx global>{`
             .root {
               background-color: #eee;

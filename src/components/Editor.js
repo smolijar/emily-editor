@@ -9,6 +9,7 @@ import { autosaveStore, autosaveRetrieve } from './editor/autosave';
 import getCommands from './editor/commands';
 import { findNextSibling, findRelativeOffset, moveSubstring, generateOutline, applyOnCheerio } from '../helpers/helpers';
 import { initializeAce } from './editor/ace';
+import generateMode from '../modes/generateMode';
 
 const STOPPED_TYPING_TIMEOUT = 300;
 const STOPPED_CURSOR_ACTIVITY_TIMEOUT = 300;
@@ -24,7 +25,8 @@ export default class EmilyEditor extends React.PureComponent {
       renderJsxStyle: PropTypes.func.isRequired,
       excludeNode: PropTypes.func.isRequired,
       previewClassName: PropTypes.string.isRequired,
-    }).isRequired,
+      isLml: PropTypes.bool.isRequired,
+    }),
     // eslint-disable-next-line react/no-unused-prop-types
     listFiles: PropTypes.func,
     width: PropTypes.number,
@@ -33,6 +35,7 @@ export default class EmilyEditor extends React.PureComponent {
   static defaultProps = {
     content: '',
     listFiles: () => Promise.resolve([]),
+    language: generateMode('text'),
     width: null,
     height: null,
   }
@@ -51,6 +54,7 @@ export default class EmilyEditor extends React.PureComponent {
 
     const { html, suggestions } = this.generateHtml(props.content);
     const raw = props.content;
+    const { isLml } = this.props.language;
     this.state = {
       raw,
       html,
@@ -58,8 +62,8 @@ export default class EmilyEditor extends React.PureComponent {
       proportionalSizes: true,
       columns: {
         editor: true,
-        preview: true,
-        outline: true,
+        preview: isLml,
+        outline: isLml,
       },
       // eslint-disable-next-line react/no-unused-state
       suggestions,

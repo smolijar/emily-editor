@@ -28,6 +28,7 @@ export default class EmilyEditor extends React.PureComponent {
       isLml: PropTypes.bool.isRequired,
     }),
     // eslint-disable-next-line react/no-unused-prop-types
+    aceBase: PropTypes.string,
     listFiles: PropTypes.func,
     width: PropTypes.number,
     height: PropTypes.number,
@@ -36,6 +37,7 @@ export default class EmilyEditor extends React.PureComponent {
     content: '',
     listFiles: () => Promise.resolve([]),
     language: generateMode('text'),
+    aceBase: 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.3/',
     width: null,
     height: null,
   }
@@ -81,6 +83,7 @@ export default class EmilyEditor extends React.PureComponent {
     if (typeof ace !== 'undefined' && ace) {
       /* global ace */
       this.ace = ace.edit(this.textarea);
+      ace.config.set('basePath', this.props.aceBase);
       initializeAce(this.ace, this, this.state.aceOptions);
     } else if (process.env.NODE_ENV !== 'test') {
       console.error('Ace is not defined. Forgot to include script?');

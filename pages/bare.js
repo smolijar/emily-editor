@@ -1,44 +1,29 @@
-import fetch from 'isomorphic-fetch';
 import React from 'react';
-import PropTypes from 'prop-types';
 import Layout from '../components/Layout';
 import Editor from '../src/components/Editor';
+import generateMode from '../src/modes/generateMode';
 
-
-export default class extends React.Component {
-  static async getInitialProps({ req }) {
-    let uri = '/static/demo.md';
-    if (req) {
-      uri = `${req.protocol}://${req.get('host')}${uri}`;
-    }
-    const res = await fetch(uri, {
-      method: 'GET',
-    });
-    const markdownExample = await res.text();
-    return {
-      markdownExample,
-    };
-  }
-
-  static propTypes = {
-    markdownExample: PropTypes.string.isRequired,
-  }
-
-  render() {
-    return (
-      <Layout>
-        <div
-          style={{
-            width: '1400px',
-            height: '750px',
-            display: 'flex',
-          }}
-        >
-          <Editor
-            content={this.props.markdownExample}
-          />
-        </div>
-      </Layout>
-    );
-  }
-}
+const style = {
+  width: '600px',
+  height: '100px',
+  display: 'flex',
+};
+export default () => (
+  <Layout>
+    <div>
+      <h1>No mode</h1>
+      <div style={style}>
+        <Editor
+          content="Plain text content"
+        />
+      </div>
+      <h1>Custom mode (javascript)</h1>
+      <div style={style}>
+        <Editor
+          content="const foo = bar => baz;"
+          language={generateMode('javascript')}
+        />
+      </div>
+    </div>
+  </Layout>
+);

@@ -13,7 +13,7 @@
     "text",
     "ace"
   ],
-  "main": "index.js",
+  "main": "dist/index.js",
   "author": "Jaroslav Šmolík <grissius@gmail.com>",
   "license": "ISC",
   "scripts": {

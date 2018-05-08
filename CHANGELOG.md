@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.9.4] - 2018-05-08
+
 ## [0.9.3] - 2018-05-08
 
 ## [0.9.2] - 2018-05-08
@@ -302,7 +304,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Live html rendered preview column
 - CodeMirror editor
 
-[Unreleased]: https://github.com/grissius/markup-editor/compare/v0.9.3...HEAD
+[Unreleased]: https://github.com/grissius/markup-editor/compare/v0.9.4...HEAD
+[0.9.4]: https://github.com/grissius/markup-editor/compare/v0.9.3...v0.9.4
 [0.9.3]: https://github.com/grissius/markup-editor/compare/v0.9.2...v0.9.3
 [0.9.2]: https://github.com/grissius/markup-editor/compare/v0.9.1...v0.9.2
 [0.9.1]: https://github.com/grissius/markup-editor/compare/v0.9.0...v0.9.1
